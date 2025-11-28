@@ -149,6 +149,24 @@
                 "Honrando el talento, la locura y los momentos que definen nuestra singularidad."
             </p>
 
+            <div id="countdown" class="flex flex-wrap justify-center gap-4 md:gap-8 py-6">
+                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px] shadow-[0_0_20px_rgba(212,175,55,0.1)]">
+                    <span id="days" class="text-3xl md:text-5xl font-display font-bold text-gold">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-neutral-400 mt-2">Días</span>
+                </div>
+                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px] shadow-[0_0_20px_rgba(212,175,55,0.1)]">
+                    <span id="hours" class="text-3xl md:text-5xl font-display font-bold text-gold">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-neutral-400 mt-2">Horas</span>
+                </div>
+                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px] shadow-[0_0_20px_rgba(212,175,55,0.1)]">
+                    <span id="minutes" class="text-3xl md:text-5xl font-display font-bold text-gold">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-neutral-400 mt-2">Min</span>
+                </div>
+                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px] shadow-[0_0_20px_rgba(212,175,55,0.1)]">
+                    <span id="seconds" class="text-3xl md:text-5xl font-display font-bold text-gold">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-neutral-400 mt-2">Seg</span>
+                </div>
+            </div>
             <div class="pt-8 flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="#active-phase" class="btn-gold px-10 py-4 rounded-sm shadow-[0_0_20px_rgba(212,175,55,0.4)]">
                     PARTICIPAR AHORA
@@ -442,9 +460,37 @@
            </p>
         </div>
     </footer>
-
     <script>
+      // Iniciar iconos
       lucide.createIcons();
+
+      // === LÓGICA DE LA CUENTA ATRÁS ===
+      // Fecha objetivo: 19 Diciembre 2025 a las 20:00
+      const targetDate = new Date("December 19, 2025 20:00:00").getTime();
+
+      const timer = setInterval(function() {
+          const now = new Date().getTime();
+          const distance = targetDate - now;
+
+          // Cálculos de tiempo
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          // Mostrar en el HTML (con ceros a la izquierda si es menor de 10)
+          document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+          document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+          document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+          document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+
+          // Si la cuenta atrás termina
+          if (distance < 0) {
+              clearInterval(timer);
+              document.getElementById("countdown").innerHTML = 
+                  "<div class='text-4xl md:text-6xl font-display font-bold text-gold animate-bounce tracking-widest'>¡YA ES LA HORA!</div>";
+          }
+      }, 1000);
     </script>
 </body>
 </html>
