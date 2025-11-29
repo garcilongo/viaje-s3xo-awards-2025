@@ -30,7 +30,7 @@
             animation: {
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'float': 'float 6s ease-in-out infinite',
-              'marquee': 'marquee 25s linear infinite',
+              'marquee': 'marquee 60s linear infinite',
             },
             keyframes: {
               float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
@@ -511,21 +511,40 @@
         </div>
     </section>
 
-    <div class="bg-gold text-black py-3 overflow-hidden relative border-t border-b border-white/10">
-        <div class="whitespace-nowrap animate-marquee font-bold tracking-widest uppercase text-sm flex gap-12 items-center">
-            <span>🚨 ÚLTIMA HORA: EL FENÓMENO ATACA DE NUEVO</span>
+    <div class="bg-gold text-black py-3 overflow-hidden border-t border-b border-white/10 flex select-none">
+        
+        <div class="animate-marquee whitespace-nowrap flex-shrink-0 flex gap-12 items-center pr-12 font-bold tracking-widest uppercase text-sm">
+            <span>★ ÚLTIMA HORA: EL FENÓMENO REPARTE SALAMI EN DIRECTO</span>
             <span>★ VIAJE DE S3X0 AWARDS 2025</span>
-            <span>★ NO OLVIDES VOTAR</span>
-            <span>★ ¿QUIÉN SERÁ EL MÁS PESADO?</span>
+            <span>★ RUMOR: ADRIANA DICE QUE ESTÁ "LLEGANDO" (LLEVA 2H EN CASA)</span>
+            <span>★ ¿QUIÉN ACABARÁ LLORANDO PRIMERO?</span>
+            <span>★ OJO: JOSE LUIS LLEVA 2 CAÑAS... SE VIENE CHAPA DE KANT</span>
+            <span>★ NO OLVIDES VOTAR O HABRÁ CONSECUENCIAS</span>
+            <span>★ EXCLUSIVA: SE BUSCA LA DIGNIDAD PERDIDA EN LA SIDRERÍA</span>
+            <span>★ ALERTA SÍSMICA: PABLO GARCÍA SE HA REÍDO</span>
+            <span>★ ¿NICOLÁS HA CONSULTADO ESTA GALA CON GEMINI?</span>
+            <span>★ PABLO DOLZ: ¿CENICIENTA O REY DE LA PISTA A LAS 00:00?</span>
+            <span>★ LUCÍA HA CERRADO OTRO BAR (Y AL DUEÑO TAMBIÉN)</span>
             <span>★ CÓDIGO DE VESTIMENTA: ETIQUETA O MUERTE</span>
-            <span>★ PABLO GARCÍA YA SE ESCUCHA LLEGAR</span>
-            <span>🚨 ÚLTIMA HORA: EL FENÓMENO ATACA DE NUEVO</span>
-            <span>★ VIAJE DE S3X0 AWARDS 2025</span>
-            <span>★ NO OLVIDES VOTAR</span>
-            <span>★ ¿QUIÉN SERÁ EL MÁS PESADO?</span>
-            <span>★ CÓDIGO DE VESTIMENTA: ETIQUETA O MUERTE</span>
-            <span>★ PABLO GARCÍA YA SE ESCUCHA LLEGAR</span>
+            <span>★ PREGUNTA SERIA: ¿QUIÉN ES EL MÁS PESADO?</span>
         </div>
+
+        <div class="animate-marquee whitespace-nowrap flex-shrink-0 flex gap-12 items-center pr-12 font-bold tracking-widest uppercase text-sm" aria-hidden="true">
+            <span>★ ÚLTIMA HORA: EL FENÓMENO REPARTE SALAMI EN DIRECTO</span>
+            <span>★ VIAJE DE S3X0 AWARDS 2025</span>
+            <span>★ RUMOR: ADRIANA DICE QUE ESTÁ "LLEGANDO" (LLEVA 2H EN CASA)</span>
+            <span>★ ¿QUIÉN ACABARÁ LLORANDO PRIMERO?</span>
+            <span>★ OJO: JOSE LUIS LLEVA 2 CAÑAS... SE VIENE CHAPA DE KANT</span>
+            <span>★ NO OLVIDES VOTAR O HABRÁ CONSECUENCIAS</span>
+            <span>★ EXCLUSIVA: SE BUSCA LA DIGNIDAD PERDIDA EN LA SIDRERÍA</span>
+            <span>★ ALERTA SÍSMICA: PABLO GARCÍA SE HA REÍDO</span>
+            <span>★ ¿NICOLÁS HA CONSULTADO ESTA GALA CON GEMINI?</span>
+            <span>★ PABLO DOLZ: ¿CENICIENTA O REY DE LA PISTA A LAS 00:00?</span>
+            <span>★ LUCÍA HA CERRADO OTRO BAR (Y AL DUEÑO TAMBIÉN)</span>
+            <span>★ CÓDIGO DE VESTIMENTA: ETIQUETA O MUERTE</span>
+            <span>★ PREGUNTA SERIA: ¿QUIÉN ES EL MÁS PESADO?</span>
+        </div>
+        
     </div>
 
     <section id="active-phase" class="py-24 px-6 bg-black relative">
