@@ -846,8 +846,12 @@
       }
 
       // ===========================
-      // 8. GENERADOR DE TICKET VIP
+      // 8. GENERADOR DE TICKET VIP (ULTRA PREMIUM)
       // ===========================
+      
+      // QR Code en Base64 (Para evitar problemas de carga externa)
+      const qrBase64 = "data:image/png;base64,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";
+
       function generateTicket() {
           const nameInput = document.getElementById('vip-name').value.trim().toUpperCase();
           const passInput = document.getElementById('vip-pass').value.trim();
@@ -857,10 +861,9 @@
           const imgElement = document.getElementById('final-ticket-img');
           const downloadLink = document.getElementById('download-link');
 
-          // Verificación de Contraseña
+          // Verificación de Contraseña (viajedesexo)
           if (passInput !== "viajedesexo") {
               errorMsg.classList.remove('hidden');
-              // Pequeña vibración en el formulario
               formDiv.classList.add('animate-pulse'); 
               setTimeout(() => formDiv.classList.remove('animate-pulse'), 500);
               return;
@@ -871,80 +874,157 @@
               return;
           }
 
-          // Todo correcto: Generamos el Ticket con Canvas
           errorMsg.classList.add('hidden');
           
-          // Crear un canvas temporal en memoria
+          // Crear un canvas de ALTA RESOLUCIÓN (Formato Ticket Alargado)
           const tCanvas = document.createElement('canvas');
           const tCtx = tCanvas.getContext('2d');
-          tCanvas.width = 600;
-          tCanvas.height = 350;
+          const width = 850;
+          const height = 320;
+          tCanvas.width = width;
+          tCanvas.height = height;
 
-          // 1. Fondo Dorado Premium
-          const gradient = tCtx.createLinearGradient(0, 0, 600, 350);
-          gradient.addColorStop(0, '#aa771c');
-          gradient.addColorStop(0.3, '#fffacD'); // Brillo
-          gradient.addColorStop(0.6, '#d4af37');
-          gradient.addColorStop(1, '#aa771c');
-          tCtx.fillStyle = gradient;
-          tCtx.fillRect(0, 0, 600, 350);
-
-          // 2. Marco Negro Interior
-          tCtx.fillStyle = '#0a0a0a';
-          tCtx.fillRect(10, 10, 580, 330);
-
-          // 3. Textos
-          tCtx.textAlign = 'center';
+          // --- 1. FONDO PREMIUM (Negro Mate con Textura) ---
+          tCtx.fillStyle = '#0F0F0F';
+          tCtx.fillRect(0, 0, width, height);
           
-          // Título
-          tCtx.fillStyle = '#d4af37';
-          tCtx.font = 'bold 20px Montserrat';
-          tCtx.fillText('★ VIAJE DE S3X0 AWARDS 2025 ★', 300, 50);
-
-          // Nombre del Candidato (GRANDE)
-          tCtx.fillStyle = '#ffffff';
-          tCtx.font = 'bold 40px Playfair Display';
-          tCtx.shadowColor = "rgba(212, 175, 55, 0.8)";
-          tCtx.shadowBlur = 15;
-          tCtx.fillText(nameInput, 300, 140);
-          tCtx.shadowBlur = 0; // Reseteamos sombra
-
-          // Etiqueta VIP
-          tCtx.fillStyle = '#d4af37';
-          tCtx.font = 'tracking-widest 16px Montserrat';
-          tCtx.fillText('INVITADO DE HONOR', 300, 180);
-
-          // 4. Dibujar un QR Falso (Cuadrados aleatorios)
-          const qrSize = 80;
-          const qrX = 300 - (qrSize/2);
-          const qrY = 220;
-          
-          tCtx.fillStyle = 'white';
-          tCtx.fillRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10); // Borde blanco QR
-          tCtx.fillStyle = 'black';
-          
-          // Patrón aleatorio simulando QR
-          for(let i=0; i<8; i++) {
-              for(let j=0; j<8; j++) {
-                  if(Math.random() > 0.5) {
-                      tCtx.fillRect(qrX + (i*10), qrY + (j*10), 10, 10);
-                  }
-              }
+          // Ruido/Textura sutil
+          for (let i = 0; i < 5000; i++) {
+              tCtx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.05})`;
+              tCtx.fillRect(Math.random() * width, Math.random() * height, 2, 2);
           }
-          // Esquinas QR fijas (para que parezca real)
-          tCtx.fillRect(qrX, qrY, 20, 20);
-          tCtx.fillRect(qrX + 60, qrY, 20, 20);
-          tCtx.fillRect(qrX, qrY + 60, 20, 20);
 
-          // 5. Mostrar Resultado
-          imgElement.src = tCanvas.toDataURL('image/png');
-          downloadLink.href = tCanvas.toDataURL('image/png');
+          // --- 2. MARCO DORADO ---
+          // Gradiente Dorado
+          const borderGrad = tCtx.createLinearGradient(0, 0, width, height);
+          borderGrad.addColorStop(0, '#aa771c');
+          borderGrad.addColorStop(0.5, '#fbf5b7'); // Brillo central
+          borderGrad.addColorStop(1, '#aa771c');
           
-          formDiv.classList.add('hidden'); // Ocultar form
-          resultDiv.classList.remove('hidden'); // Mostrar ticket
+          tCtx.lineWidth = 4;
+          tCtx.strokeStyle = borderGrad;
+          tCtx.strokeRect(15, 15, width - 30, height - 30);
           
-          // Disparar confeti de celebración
-          fireConfetti();
+          // Esquinas decorativas
+          tCtx.fillStyle = borderGrad;
+          tCtx.fillRect(15, 15, 40, 4); // Top Left H
+          tCtx.fillRect(15, 15, 4, 40); // Top Left V
+          tCtx.fillRect(width-55, 15, 40, 4); // Top Right H
+          tCtx.fillRect(width-19, 15, 4, 40); // Top Right V
+          tCtx.fillRect(15, height-19, 40, 4); // Bot Left H
+          tCtx.fillRect(15, height-55, 4, 40); // Bot Left V
+          tCtx.fillRect(width-55, height-19, 40, 4); // Bot Right H
+          tCtx.fillRect(width-19, height-55, 4, 40); // Bot Right V
+
+          // --- 3. LÍNEA DE CORTE (Perforada) ---
+          tCtx.beginPath();
+          tCtx.setLineDash([10, 10]);
+          tCtx.moveTo(600, 15);
+          tCtx.lineTo(600, height - 15);
+          tCtx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+          tCtx.stroke();
+          tCtx.setLineDash([]); // Reset dash
+
+          // --- 4. TEXTOS (Parte Izquierda) ---
+          tCtx.textAlign = 'left';
+          
+          // "VIAJE DE S3X0" (Marca de agua gigante fondo)
+          tCtx.save();
+          tCtx.translate(300, 160);
+          tCtx.rotate(-Math.PI / 12);
+          tCtx.font = 'bold 80px Montserrat';
+          tCtx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+          tCtx.textAlign = 'center';
+          tCtx.fillText('S3X0 AWARDS', 0, 0);
+          tCtx.restore();
+
+          // Header
+          tCtx.font = 'bold 16px Montserrat';
+          tCtx.fillStyle = '#d4af37';
+          tCtx.fillText('★ OFFICIAL INVITATION', 50, 60);
+
+          // Título Evento
+          tCtx.font = 'bold 32px Playfair Display';
+          tCtx.fillStyle = '#ffffff';
+          tCtx.fillText('VIAJE DE S3X0', 50, 100);
+          tCtx.fillStyle = '#d4af37'; // Cambio a dorado
+          tCtx.fillText('AWARDS 2025', 290, 100);
+
+          // Nombre del Usuario (CON EFECTO ORO)
+          tCtx.font = 'bold 50px Montserrat';
+          const nameGrad = tCtx.createLinearGradient(50, 0, 500, 0);
+          nameGrad.addColorStop(0, '#bf953f');
+          nameGrad.addColorStop(0.5, '#fcf6ba');
+          nameGrad.addColorStop(1, '#bf953f');
+          tCtx.fillStyle = nameGrad;
+          tCtx.fillText(nameInput, 50, 180);
+
+          // Subtítulo
+          tCtx.font = '14px Montserrat';
+          tCtx.fillStyle = '#aaaaaa';
+          tCtx.fillText('CATEGORÍA: INVITADO DE HONOR', 50, 210);
+          tCtx.fillText('CÓDIGO DE VESTIMENTA: ETIQUETA', 50, 230);
+          
+          // Footer Location
+          tCtx.font = 'italic 12px Montserrat';
+          tCtx.fillStyle = '#666';
+          tCtx.fillText('📍 Ubicación Secreta  |  📅 Dic 2025', 50, 275);
+
+          // --- 5. LATERAL DERECHO (El Stub) ---
+          
+          // "ADMIT ONE" Vertical
+          tCtx.save();
+          tCtx.translate(630, 250);
+          tCtx.rotate(-Math.PI / 2);
+          tCtx.font = 'bold 24px Montserrat';
+          tCtx.fillStyle = 'rgba(212, 175, 55, 0.3)';
+          tCtx.fillText('ADMIT ONE', 0, 0);
+          tCtx.restore();
+
+          // QR Code (Imagen Real)
+          const qrImg = new Image();
+          qrImg.src = qrBase64;
+          qrImg.onload = function() {
+              // Dibujamos el QR
+              tCtx.drawImage(qrImg, 660, 50, 120, 120);
+              
+              // Borde del QR
+              tCtx.lineWidth = 2;
+              tCtx.strokeStyle = '#d4af37';
+              tCtx.strokeRect(655, 45, 130, 130);
+
+              // Generar CÓDIGO DE BARRAS (Líneas verticales aleatorias)
+              const barcodeX = 660;
+              const barcodeY = 200;
+              const barcodeW = 120;
+              const barcodeH = 60;
+              
+              tCtx.fillStyle = 'white'; // Fondo blanco para el barcode
+              tCtx.fillRect(barcodeX - 5, barcodeY - 5, barcodeW + 10, barcodeH + 10);
+              
+              tCtx.fillStyle = 'black';
+              let currentX = barcodeX;
+              while(currentX < barcodeX + barcodeW) {
+                  let width = Math.floor(Math.random() * 4) + 1; // Ancho línea 1-4px
+                  if(currentX + width > barcodeX + barcodeW) break;
+                  tCtx.fillRect(currentX, barcodeY, width, barcodeH);
+                  currentX += width + Math.floor(Math.random() * 3) + 1; // Espacio 1-3px
+              }
+              
+              // Texto debajo del barcode
+              tCtx.font = '10px monospace';
+              tCtx.fillStyle = 'black';
+              tCtx.textAlign = 'center';
+              tCtx.fillText('VIP-8392-S3X0', barcodeX + barcodeW/2, barcodeY + barcodeH + 12);
+
+              // --- FINALIZAR ---
+              imgElement.src = tCanvas.toDataURL('image/png');
+              downloadLink.href = tCanvas.toDataURL('image/png');
+              
+              formDiv.classList.add('hidden');
+              resultDiv.classList.remove('hidden');
+              fireConfetti();
+          };
       }
 
       initParticles();
