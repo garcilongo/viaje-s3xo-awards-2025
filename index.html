@@ -13,6 +13,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
       tailwind.config = {
@@ -29,9 +30,11 @@
             animation: {
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'float': 'float 6s ease-in-out infinite',
+              'marquee': 'marquee 25s linear infinite',
             },
             keyframes: {
-              float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } }
+              float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+              marquee: { '0%': { transform: 'translateX(0%)' }, '100%': { transform: 'translateX(-100%)' } }
             }
           }
         }
@@ -39,7 +42,39 @@
     </script>
 
     <style>
-      body { background-color: #0a0a0a; color: #ffffff; }
+      body { background-color: #0a0a0a; color: #ffffff; cursor: none; /* Ocultamos cursor nativo */ }
+      
+      /* --- Cursor Personalizado --- */
+      #custom-cursor {
+        position: fixed;
+        top: 0; left: 0;
+        width: 20px; height: 20px;
+        border: 1px solid #d4af37;
+        background-color: rgba(212, 175, 55, 0.1);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: transform 0.1s ease, width 0.3s, height 0.3s, background-color 0.3s;
+        backdrop-filter: blur(2px);
+      }
+      #custom-cursor.hovered {
+        width: 50px; height: 50px;
+        background-color: rgba(212, 175, 55, 0.05);
+        border-color: #fedc56;
+      }
+      #cursor-dot {
+        position: fixed;
+        top: 0; left: 0;
+        width: 4px; height: 4px;
+        background-color: #d4af37;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+      }
+
+      /* --- Textos y Botones --- */
       .text-gold-gradient {
         background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
         -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 3s linear infinite;
@@ -56,47 +91,66 @@
       .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       
       @keyframes shine { to { background-position: 200% center; } }
-      
-      /* Animación del ecualizador del botón de música */
-      .music-playing { animation: pulse-gold 2s infinite; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); background: rgba(212, 175, 55, 0.1); }
-      @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
 
-      /* --- Estilos para el efecto Flip Card --- */
-    .perspective-container {
-        perspective: 1000px;
-    }
-    .flip-card-inner {
-        position: relative;
-        width: 100%;
+      /* --- Visualizador de Audio (Ecualizador) --- */
+      .equalizer-bar {
+        background-color: #d4af37;
+        width: 3px;
         height: 100%;
-        transition: transform 0.8s;
+        border-radius: 2px;
+        animation: none;
+      }
+      .music-active .equalizer-bar {
+        animation: equalizer-anim 0.8s infinite ease-in-out;
+      }
+      .music-active .equalizer-bar:nth-child(1) { animation-delay: 0.1s; height: 40%; }
+      .music-active .equalizer-bar:nth-child(2) { animation-delay: 0.3s; height: 80%; }
+      .music-active .equalizer-bar:nth-child(3) { animation-delay: 0.5s; height: 50%; }
+      .music-active .equalizer-bar:nth-child(4) { animation-delay: 0.2s; height: 30%; }
+
+      @keyframes equalizer-anim {
+        0% { height: 20%; }
+        50% { height: 100%; }
+        100% { height: 20%; }
+      }
+
+      /* --- Efecto Flip Card --- */
+      .perspective-container { perspective: 1000px; }
+      .flip-card-inner {
+        position: relative; width: 100%; height: 100%;
+        transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         transform-style: preserve-3d;
-    }
-    /* Esta clase se añade con JS al hacer click */
-    .flip-card-inner.flipped {
+      }
+      .flip-card-inner.flipped { transform: rotateY(180deg); }
+      .flip-card-front, .flip-card-back {
+        position: absolute; width: 100%; height: 100%;
+        -webkit-backface-visibility: hidden; backface-visibility: hidden;
+        top: 0; left: 0;
+      }
+      .flip-card-back {
         transform: rotateY(180deg);
-    }
-    .flip-card-front, .flip-card-back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        top: 0;
-        left: 0;
-    }
-    .flip-card-back {
-        transform: rotateY(180deg);
-        background-color: #121212; /* Color de fondo del reverso */
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 1.5rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
+        background-color: #121212;
+        display: flex; flex-direction: column; justify-content: center;
+        padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* --- Efecto Holográfico --- */
+      .holo-overlay {
+        position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+        background: radial-gradient(circle at var(--x) var(--y), rgba(212, 175, 55, 0.3) 0%, rgba(255, 255, 255, 0.1) 20%, transparent 50%);
+        mix-blend-mode: screen; z-index: 20;
+      }
+      .perspective-container:hover .holo-overlay { opacity: 1; }
+
+      /* --- Scroll Reveal Classes --- */
+      .reveal { opacity: 0; transform: translateY(50px); transition: all 1s ease-out; }
+      .reveal.active { opacity: 1; transform: translateY(0); }
     </style>
 </head>
-<body class="antialiased selection:bg-gold selection:text-black">
+<body class="antialiased selection:bg-gold selection:text-black overflow-x-hidden">
+
+    <div id="custom-cursor"></div>
+    <div id="cursor-dot"></div>
 
     <audio id="bg-music" loop>
         <source src="fotos/musica.mp3" type="audio/mpeg">
@@ -110,7 +164,7 @@
     <nav class="fixed w-full z-50 top-0 transition-all duration-300 bg-black/80 backdrop-blur-md border-b border-white/5 py-4">
       <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
         
-        <a href="#hero" class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo(0,0)">
+        <a href="#hero" class="flex items-center gap-3 group cursor-pointer hover-trigger" onclick="window.scrollTo(0,0)">
             <img src="fotos/logo.png" alt="Logo" class="h-10 w-10 object-contain group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]">
             <span class="font-display font-bold tracking-widest text-lg hidden sm:block text-white">
               VIAJE DE S3X0 <span class="text-gold">AWARDS</span>
@@ -118,44 +172,43 @@
         </a>
 
         <div class="hidden md:flex items-center gap-6">
-            <a href="#rules" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors">Fases</a>
-            <a href="#nominees" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors">Candidatos</a>
-            <a href="#group-photo" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors">Foto Grupal</a>
+            <a href="#rules" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Fases</a>
+            <a href="#nominees" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Candidatos</a>
+            <a href="#group-photo" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Foto Grupal</a>
             
-            <button id="music-btn-desktop" onclick="toggleMusic()" class="w-8 h-8 flex items-center justify-center rounded-full border border-gold text-gold hover:bg-gold hover:text-black transition-all" title="Reproducir/Pausar Música">
-                <i id="music-icon-desktop" data-lucide="music" class="w-4 h-4"></i>
+            <button id="music-btn-desktop" onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center gap-[2px] rounded-full border border-gold/50 text-gold hover:bg-gold/10 transition-all hover-trigger" title="Reproducir/Pausar Música">
+                <span class="equalizer-bar h-2"></span>
+                <span class="equalizer-bar h-3"></span>
+                <span class="equalizer-bar h-4"></span>
+                <span class="equalizer-bar h-2"></span>
             </button>
 
-            <a href="#active-phase" class="btn-gold px-6 py-2 rounded-sm text-xs">
-               <span class="flex items-center gap-2"><i data-lucide="star" class="w-3 h-3"></i>PARTICIPAR</span>
-            </a>
+            <button id="confetti-btn" onclick="fireConfetti(); window.location.href='#active-phase'" class="btn-gold px-6 py-2 rounded-sm text-xs hover-trigger">
+               <span class="flex items-center gap-2"><i data-lucide="star" class="w-3 h-3"></i> PARTICIPAR</span>
+            </button>
         </div>
 
-        <button class="md:hidden text-gold" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+        <button class="md:hidden text-gold hover-trigger" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
             <i data-lucide="menu" class="w-6 h-6"></i>
         </button>
       </div>
 
       <div id="mobile-menu" class="hidden md:hidden bg-black border-t border-white/10 absolute w-full">
          <div class="flex flex-col p-4 gap-4 text-center">
-            <a href="#rules" class="text-white font-display uppercase" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Fases</a>
-            <a href="#nominees" class="text-white font-display uppercase" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Candidatos</a>
-            <a href="#group-photo" class="text-white font-display uppercase" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Foto Grupal</a>
-            <button onclick="toggleMusic(); document.getElementById('mobile-menu').classList.add('hidden')" class="text-gold font-display uppercase border border-gold/30 rounded-full py-2 mx-10 hover:bg-gold/10">
-                🎵
-            </button>
-            <a href="#active-phase" class="text-gold font-bold uppercase" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Participar</a>
+            <a href="#rules" class="text-white font-display uppercase">Fases</a>
+            <a href="#nominees" class="text-white font-display uppercase">Candidatos</a>
+            <a href="#active-phase" class="text-gold font-bold uppercase" onclick="fireConfetti()">Participar</a>
          </div>
       </div>
     </nav>
 
     <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center px-4 pt-20">
-        <div class="mb-8 relative group animate-float">
+        <div class="mb-8 relative group animate-float reveal">
             <div class="absolute inset-0 bg-gold blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-700 rounded-full"></div>
             <img src="fotos/grupo.jpg" alt="Grupo" class="relative w-64 md:w-80 h-auto object-cover rounded-xl border border-gold/30 shadow-[0_0_30px_rgba(0,0,0,0.8)] transform group-hover:scale-105 transition-transform duration-700">
         </div>
 
-        <div class="text-center space-y-4 z-10 max-w-4xl">
+        <div class="text-center space-y-4 z-10 max-w-4xl reveal">
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tighter leading-none">
                 VIAJE DE S3X0<br />
                 <span class="text-gold-gradient">AWARDS</span>
@@ -167,695 +220,201 @@
             </p>
 
             <div id="countdown" class="flex flex-wrap justify-center gap-4 md:gap-8 py-6">
-                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px] shadow-[0_0_20px_rgba(212,175,55,0.1)]">
-                    <span id="days" class="text-3xl md:text-5xl font-display font-bold text-gold">00</span>
-                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-neutral-400 mt-2">Días</span>
-                </div>
-                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px] shadow-[0_0_20px_rgba(212,175,55,0.1)]">
-                    <span id="hours" class="text-3xl md:text-5xl font-display font-bold text-gold">00</span>
-                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-neutral-400 mt-2">Horas</span>
-                </div>
-                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px] shadow-[0_0_20px_rgba(212,175,55,0.1)]">
-                    <span id="minutes" class="text-3xl md:text-5xl font-display font-bold text-gold">00</span>
-                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-neutral-400 mt-2">Min</span>
-                </div>
-                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px] shadow-[0_0_20px_rgba(212,175,55,0.1)]">
-                    <span id="seconds" class="text-3xl md:text-5xl font-display font-bold text-gold">00</span>
-                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-neutral-400 mt-2">Seg</span>
-                </div>
+                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px]"><span id="days" class="text-3xl font-display font-bold text-gold">00</span><span class="text-xs uppercase text-neutral-400">Días</span></div>
+                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px]"><span id="hours" class="text-3xl font-display font-bold text-gold">00</span><span class="text-xs uppercase text-neutral-400">Horas</span></div>
+                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px]"><span id="minutes" class="text-3xl font-display font-bold text-gold">00</span><span class="text-xs uppercase text-neutral-400">Min</span></div>
+                <div class="flex flex-col items-center p-4 bg-black/50 border border-gold/30 rounded-lg backdrop-blur-md min-w-[80px] md:min-w-[110px]"><span id="seconds" class="text-3xl font-display font-bold text-gold">00</span><span class="text-xs uppercase text-neutral-400">Seg</span></div>
             </div>
 
             <div class="pt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#active-phase" class="btn-gold px-10 py-4 rounded-sm shadow-[0_0_20px_rgba(212,175,55,0.4)]">
-                    PARTICIPAR AHORA
-                </a>
-                <a href="#intro" class="px-10 py-4 border border-white/20 text-white hover:bg-white/5 hover:border-gold/50 transition-all font-bold text-xs tracking-widest uppercase rounded-sm flex items-center justify-center">
-                    LEER MANIFIESTO
-                </a>
+                <button onclick="fireConfetti(); window.location.href='#active-phase'" class="btn-gold px-10 py-4 rounded-sm shadow-[0_0_20px_rgba(212,175,55,0.4)] hover-trigger">PARTICIPAR AHORA</button>
             </div>
         </div>
     </section>
 
     <section id="intro" class="py-24 px-6 bg-black relative">
-        <div class="max-w-4xl mx-auto text-center relative z-10 glass-panel p-10 md:p-16 rounded-3xl border border-white/5 shadow-[0_0_50px_rgba(212,175,55,0.05)]">
-            
+        <div class="max-w-4xl mx-auto text-center relative z-10 glass-panel p-10 md:p-16 rounded-3xl border border-white/5 shadow-[0_0_50px_rgba(212,175,55,0.05)] reveal">
             <i data-lucide="scroll-text" class="w-12 h-12 text-gold mx-auto mb-8 animate-pulse-slow"></i>
-            
             <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-10 uppercase tracking-widest">
                 Estimado <span class="text-gold">Participante</span>
             </h2>
-            
             <div class="text-neutral-300 leading-loose font-light space-y-8 text-justify md:text-center text-lg">
-                <p>
-                    Es un inmenso honor y un profundo placer poder dirigirnos a usted para invitarle a la 
-                    <strong class="text-white font-medium">Primera Edición de los prestigiosos VIAJE DE S3X0 AWARDS®</strong>.
-                </p>
-                <p>
-                    Estos premios están concebidos para honrar, con el rigor que merecen, aspectos tan variados como el talento individual, 
-                    la creatividad desbordante y las situaciones más cómicas que han quedado grabadas en nuestra memoria.
-                </p>
-                
+                <p>Es un inmenso honor invitarle a la <strong class="text-white font-medium">Primera Edición de los prestigiosos VIAJE DE S3X0 AWARDS®</strong>.</p>
                 <div class="mt-12 p-8 rounded-xl bg-gradient-to-r from-transparent via-gold/5 to-transparent border-t border-b border-gold/20 relative">
                     <span class="absolute top-[-20px] left-1/2 -translate-x-1/2 text-4xl text-gold/30 font-serif">"</span>
                     <p class="italic text-gold-light text-center font-display text-xl leading-relaxed">
-                        Dada la relevancia, la solemnidad y el prestigio de esta convocatoria, se ruega encarecidamente a todos los invitados la observancia de un estricto código de vestimenta de etiqueta.
+                        Se ruega encarecidamente la observancia de un estricto código de vestimenta de etiqueta.
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="rules" class="py-24 px-6 bg-black relative">
-        <div class="max-w-5xl mx-auto">
-            <div class="text-center mb-16">
-                 <span class="text-gold text-xs font-bold tracking-[0.3em] uppercase mb-4 block">El Proceso</span>
-                 <h2 class="text-4xl md:text-5xl font-display font-bold text-white uppercase">Fases del Evento</h2>
-            </div>
-
-            <div class="relative space-y-12">
-                <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gold/30 to-transparent"></div>
-
-                <div class="relative flex flex-col md:flex-row gap-8 items-center">
-                    <div class="md:w-1/2 md:text-right order-2 md:order-1 pl-12 md:pl-0 md:pr-12">
-                        <span class="bg-gold text-black text-[10px] font-bold px-2 py-1 rounded mb-2 inline-block">EN CURSO</span>
-                        <h3 class="text-2xl font-display font-bold text-white">Fase 0: Categorías</h3>
-                        <p class="text-sm text-neutral-400 mt-2">Propuesta de categorías sobre las cuales se realizará la selección definitiva.</p>
-                    </div>
-                    <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-4 h-4 bg-gold rounded-full shadow-[0_0_15px_rgba(212,175,55,1)] z-10"></div>
-                    <div class="md:w-1/2 order-3"></div>
-                </div>
-
-                <div class="relative flex flex-col md:flex-row gap-8 items-center opacity-50 hover:opacity-100 transition-opacity">
-                    <div class="md:w-1/2 order-2 md:order-1"></div>
-                    <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 bg-neutral-700 border border-neutral-500 rounded-full z-10"></div>
-                    <div class="md:w-1/2 pl-12 md:pl-12 order-3 md:order-3">
-                        <h3 class="text-xl font-display font-bold text-white">Fase 1: Candidatos</h3>
-                        <p class="text-sm text-neutral-400 mt-2">Presentación de candidatos a ganar en cada categoría establecida.</p>
-                    </div>
-                </div>
-
-                <div class="relative flex flex-col md:flex-row gap-8 items-center opacity-50 hover:opacity-100 transition-opacity">
-                    <div class="md:w-1/2 md:text-right order-2 md:order-1 pl-12 md:pl-0 md:pr-12">
-                         <h3 class="text-xl font-display font-bold text-white">Fase 2: Votación Global</h3>
-                        <p class="text-sm text-neutral-400 mt-2">Primera votación de la cual saldrán los nominados oficiales.</p>
-                    </div>
-                    <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 bg-neutral-700 border border-neutral-500 rounded-full z-10"></div>
-                    <div class="md:w-1/2 order-3"></div>
-                </div>
-
-                 <div class="relative flex flex-col md:flex-row gap-8 items-center opacity-50 hover:opacity-100 transition-opacity">
-                    <div class="md:w-1/2 order-2 md:order-1"></div>
-                    <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 bg-neutral-700 border border-neutral-500 rounded-full z-10"></div>
-                    <div class="md:w-1/2 pl-12 md:pl-12 order-3 md:order-3">
-                        <h3 class="text-xl font-display font-bold text-white">Fase 3: La Gran Final</h3>
-                        <p class="text-sm text-neutral-400 mt-2">Escrutinio final entre los finalistas.</p>
-                    </div>
-                </div>
-
-                <div class="relative flex flex-col md:flex-row gap-8 items-center pt-8 md:pt-32">
-                    <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-8 h-8 bg-black border-2 border-gold rounded-full z-10 flex items-center justify-center">
-                        <i data-lucide="trophy" class="w-4 h-4 text-gold"></i>
-                    </div>
-                    <div class="w-full text-center pl-12 md:pl-0 md:pt-20">
-                         <h3 class="text-2xl font-display font-bold text-gold uppercase">Gran Gala & Amigo Invisible</h3>
-                         <p class="text-xs uppercase tracking-widest text-white mt-1">Fecha y Ubicación: Probablemente cuando quedemos</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="nominees" class="py-24 bg-nexus-panel border-t border-white/5">
+    <section id="nominees" class="py-24 bg-nexus-panel border-t border-white/5 relative z-10">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                <div>
-                    <h2 class="text-4xl md:text-5xl font-display font-bold text-gold-light uppercase">Candidatos 2025</h2>
-                </div>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 reveal">
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-gold-light uppercase">Candidatos 2025</h2>
                 <div class="flex gap-2 text-neutral-500 text-xs uppercase tracking-widest">
                     <i data-lucide="hand-metal" class="w-4 h-4"></i>
                     <span>Conoce a los longanizas</span>
                 </div>
             </div>
 
-            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 scrollbar-hide">
+            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 scrollbar-hide reveal">
                 
-                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col">
-    
+                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col hover-trigger">
                     <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                        <div class="holo-overlay"></div>
                         <div class="flip-card-inner">
-                            
                             <div class="flip-card-front overflow-hidden">
                                 <img src="fotos/carlos.jpg" alt="Carlos" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none"></div>
-                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30">
-                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                                </div>
+                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30"><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
                             </div>
-
                             <div class="flip-card-back">
                                 <h4 class="text-gold font-display font-bold text-xl mb-4 text-center uppercase tracking-widest">Stats</h4>
-                                
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Inteligencia</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Fuerza</span>
-                                        <span>30/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 30%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Resistencia</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Coraje</span>
-                                        <span>70/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 70%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Carisma</span>
-                                        <span>80/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 80%"></div>
-                                    </div>
-                                </div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Inteligencia</span><span>60/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 60%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Fuerza</span><span>30/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 30%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Carisma</span><span>80/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 80%"></div></div></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="p-6 flex-1 flex flex-col relative z-10 bg-black">
                         <h3 class="text-2xl font-display font-bold text-white mb-2 group-hover:text-gold transition-colors">Carlos</h3>
-                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
-                            "El FENÓMENO, conocido por desaparecer en verano. Su superpoder es repartir salami por Albacete."
-                        </p>
-                        <div class="mt-auto flex gap-4 pt-4 border-t border-white/5">
-                            <a href="https://www.instagram.com/cruizz_17/?igsh=NmhvYjUwZnhsdHVl#" target="_blank" class="text-neutral-500 hover:text-gold transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        </div>
+                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">"El FENÓMENO. Su superpoder es repartir salami por Albacete."</p>
                     </div>
                 </div>
 
-                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col">
-    
+                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col hover-trigger">
                     <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                        <div class="holo-overlay"></div>
                         <div class="flip-card-inner">
-                            
                             <div class="flip-card-front overflow-hidden">
-                                <img src="fotos/adriana.jpg" alt="Carlos" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                                <img src="fotos/adriana.jpg" alt="Adriana" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none"></div>
-                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30">
-                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                                </div>
+                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30"><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
                             </div>
-
                             <div class="flip-card-back">
                                 <h4 class="text-gold font-display font-bold text-xl mb-4 text-center uppercase tracking-widest">Stats</h4>
-                                
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Inteligencia</span>
-                                        <span>90/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 90%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Fuerza</span>
-                                        <span>30/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 30%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Resistencia</span>
-                                        <span>50/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 50%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Coraje</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Carisma</span>
-                                        <span>40/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 40%"></div>
-                                    </div>
-                                </div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Inteligencia</span><span>90/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 90%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Resistencia</span><span>50/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 50%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Tarta de Queso</span><span>100/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 100%"></div></div></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="p-6 flex-1 flex flex-col relative z-10 bg-black">
                         <h3 class="text-2xl font-display font-bold text-white mb-2 group-hover:text-gold transition-colors">Adriana</h3>
-                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
-                            "La reina de la física y los animes. Si hay una tarta de queso cerca, ella ya está saltando. Probablemente llegue tarde a la gala."
-                        </p>
-                        <div class="mt-auto flex gap-4 pt-4 border-t border-white/5">
-                            <a href="https://www.instagram.com/au.drii_?igsh=MXM3dG96ZXc1YW1jaw==" target="_blank" class="text-neutral-500 hover:text-gold transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        </div>
+                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">"Reina de la física. Si hay tarta, ella salta."</p>
                     </div>
                 </div>
 
-                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col">
-    
-                    <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col hover-trigger">
+                   <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                        <div class="holo-overlay"></div>
                         <div class="flip-card-inner">
-                            
                             <div class="flip-card-front overflow-hidden">
-                                <img src="fotos/joseluis.jpg" alt="Carlos" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                                <img src="fotos/joseluis.jpg" alt="Jose Luis" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none"></div>
-                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30">
-                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                                </div>
+                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30"><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
                             </div>
-
                             <div class="flip-card-back">
                                 <h4 class="text-gold font-display font-bold text-xl mb-4 text-center uppercase tracking-widest">Stats</h4>
-                                
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Inteligencia</span>
-                                        <span>90/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 90%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Fuerza</span>
-                                        <span>50/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 50%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Resistencia</span>
-                                        <span>40/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 40%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Coraje</span>
-                                        <span>40/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 40%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Carisma</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Filosofía</span><span>95/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 95%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Odia Liverpool</span><span>100/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 100%"></div></div></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="p-6 flex-1 flex flex-col relative z-10 bg-black">
                         <h3 class="text-2xl font-display font-bold text-white mb-2 group-hover:text-gold transition-colors">José Luis</h3>
-                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
-                            "El filósofo del grupo cuando lleva dos cañas encima. Odia al Liverpool y le encanta Illojuan, algún día llegará a colaborar con él."
-                        </p>
-                        <div class="mt-auto flex gap-4 pt-4 border-t border-white/5">
-                            <a href="https://www.instagram.com/sr.perez42?igsh=MXJtaTRmbDNscHE5aQ==" target="_blank" class="text-neutral-500 hover:text-gold transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        </div>
+                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">"Filósofo con dos cañas. Futuro colaborador de Illojuan."</p>
                     </div>
                 </div>
 
-                 <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col">
-    
+                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col hover-trigger">
                     <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                        <div class="holo-overlay"></div>
                         <div class="flip-card-inner">
-                            
                             <div class="flip-card-front overflow-hidden">
-                                <img src="fotos/nicolas.jpg" alt="Carlos" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                                <img src="fotos/nicolas.jpg" alt="Nicolas" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none"></div>
-                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30">
-                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                                </div>
+                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30"><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
                             </div>
-
                             <div class="flip-card-back">
                                 <h4 class="text-gold font-display font-bold text-xl mb-4 text-center uppercase tracking-widest">Stats</h4>
-                                
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Inteligencia</span>
-                                        <span>70/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 70%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Fuerza</span>
-                                        <span>70/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 70%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Resistencia</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Coraje</span>
-                                        <span>40/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 40%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Carisma</span>
-                                        <span>85/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 85%"></div>
-                                    </div>
-                                </div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Gemini Skills</span><span>99/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 99%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Sidrería</span><span>80/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 80%"></div></div></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="p-6 flex-1 flex flex-col relative z-10 bg-black">
                         <h3 class="text-2xl font-display font-bold text-white mb-2 group-hover:text-gold transition-colors">Nicolás</h3>
-                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
-                            "Capaz de organizar un viaje entero con Gemini y acabar en una sidrería 5 minutos después. Un hombre de contrastes y con conocimiento financiero."
-                        </p>
-                        <div class="mt-auto flex gap-4 pt-4 border-t border-white/5">
-                            <a href="https://www.instagram.com/ernikolau?igsh=MTBxNGNvMDNodTZpNA==" target="_blank" class="text-neutral-500 hover:text-gold transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        </div>
+                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">"Organiza viajes con IA. Hombre de contrastes y finanzas."</p>
                     </div>
                 </div>
 
-                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col">
-    
+                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col hover-trigger">
                     <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                        <div class="holo-overlay"></div>
                         <div class="flip-card-inner">
-                            
                             <div class="flip-card-front overflow-hidden">
-                                <img src="fotos/pablog.jpg" alt="Carlos" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                                <img src="fotos/pablog.jpg" alt="Pablo G" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none"></div>
-                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30">
-                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                                </div>
+                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30"><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
                             </div>
-
                             <div class="flip-card-back">
                                 <h4 class="text-gold font-display font-bold text-xl mb-4 text-center uppercase tracking-widest">Stats</h4>
-                                
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Inteligencia</span>
-                                        <span>70/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 70%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Fuerza</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Resistencia</span>
-                                        <span>50/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 50%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Coraje</span>
-                                        <span>80/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 80%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Carisma</span>
-                                        <span>85/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 85%"></div>
-                                    </div>
-                                </div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Volumen de Voz</span><span>110/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 100%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Carisma</span><span>85/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 85%"></div></div></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="p-6 flex-1 flex flex-col relative z-10 bg-black">
-                        <h3 class="text-2xl font-display font-bold text-white mb-2 group-hover:text-gold transition-colors">Pablo García</h3>
-                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
-                            "Pablogarcialuna. No se sabe si posee autismo o TDAH, pero siempre está ahí para tocar los huevos y para hacer reír a la gente. Su risa y su voz se escuchan a tres kilómetros de distancia."
-                        </p>
-                        <div class="mt-auto flex gap-4 pt-4 border-t border-white/5">
-                            <a href="https://www.instagram.com/_.pabloggarcia?igsh=MXZ3aWdkbWg1cW5xaA%3D%3D&utm_source=qr" target="_blank" class="text-neutral-500 hover:text-gold transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        </div>
+                        <h3 class="text-2xl font-display font-bold text-white mb-2 group-hover:text-gold transition-colors">Pablo G.</h3>
+                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">"Se le escucha a 3km. Siempre ahí para hacer reír."</p>
                     </div>
                 </div>
 
-                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col">
-    
-                    <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col hover-trigger">
+                   <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                        <div class="holo-overlay"></div>
                         <div class="flip-card-inner">
-                            
                             <div class="flip-card-front overflow-hidden">
-                                <img src="fotos/pablod.jpg" alt="Carlos" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                                <img src="fotos/pablod.jpg" alt="Pablo D" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none"></div>
-                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30">
-                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                                </div>
+                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30"><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
                             </div>
-
                             <div class="flip-card-back">
                                 <h4 class="text-gold font-display font-bold text-xl mb-4 text-center uppercase tracking-widest">Stats</h4>
-                                
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Inteligencia</span>
-                                        <span>50/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 50%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Fuerza</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Resistencia</span>
-                                        <span>40/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 40%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Coraje</span>
-                                        <span>50/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 50%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Carisma</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Factos</span><span>90/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 90%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Anime</span><span>80/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 80%"></div></div></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="p-6 flex-1 flex flex-col relative z-10 bg-black">
                         <h3 class="text-2xl font-display font-bold text-white mb-2 group-hover:text-gold transition-colors">Pablo Dolz</h3>
-                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
-                            "El alma de la fiesta... hasta las 12 de la noche. Tiene un doctorado en soltar factos y le mola el anime. Tiene buena sinergia con Adriana."
-                        </p>
-                        <div class="mt-auto flex gap-4 pt-4 border-t border-white/5">
-                            <a href="https://www.instagram.com/pdolz06?igsh=MWs0ZnlwY2hzdzFnZA==" target="_blank" class="text-neutral-500 hover:text-gold transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        </div>
+                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">"Alma de la fiesta (hasta las 12). Doctorado en factos."</p>
                     </div>
                 </div>
 
-                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col">
-    
-                    <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                <div class="snap-start min-w-[320px] w-[320px] bg-black border border-white/10 rounded-xl overflow-hidden group hover:border-gold/40 transition-colors flex flex-col hover-trigger">
+                   <div class="relative aspect-square perspective-container cursor-pointer" onclick="toggleFlip(this)">
+                        <div class="holo-overlay"></div>
                         <div class="flip-card-inner">
-                            
                             <div class="flip-card-front overflow-hidden">
-                                <img src="fotos/lucia.jpg" alt="Carlos" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                                <img src="fotos/lucia.jpg" alt="Lucia" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none"></div>
-                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30">
-                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                                </div>
+                                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full p-1 text-gold border border-gold/30"><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
                             </div>
-
                             <div class="flip-card-back">
                                 <h4 class="text-gold font-display font-bold text-xl mb-4 text-center uppercase tracking-widest">Stats</h4>
-                                
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Inteligencia</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Fuerza</span>
-                                        <span>50/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 50%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Resistencia</span>
-                                        <span>40/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 40%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Coraje</span>
-                                        <span>60/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs uppercase text-neutral-400 mb-1">
-                                        <span>Carisma</span>
-                                        <span>80/100</span>
-                                    </div>
-                                    <div class="w-full bg-neutral-800 rounded-full h-2">
-                                        <div class="bg-gold h-2 rounded-full" style="width: 80%"></div>
-                                    </div>
-                                </div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Debate</span><span>95/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 95%"></div></div></div>
+                                <div class="mb-3"><div class="flex justify-between text-xs uppercase text-neutral-400 mb-1"><span>Cerveza</span><span>90/100</span></div><div class="w-full bg-neutral-800 rounded-full h-2"><div class="bg-gold h-2 rounded-full" style="width: 90%"></div></div></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="p-6 flex-1 flex flex-col relative z-10 bg-black">
                         <h3 class="text-2xl font-display font-bold text-white mb-2 group-hover:text-gold transition-colors">Lucía</h3>
-                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
-                            "Serena pero matona. Si hay una debate, ella lo gana por huevos. Si hay cerveza, ella es feliz, y si hay cubatas, cierra el bar con el dueño."
-                        </p>
-                        <div class="mt-auto flex gap-4 pt-4 border-t border-white/5">
-                            <a href="https://www.instagram.com/luciavf_28?igsh=MXhtM3hvMnF2M3kxYw==" target="_blank" class="text-neutral-500 hover:text-gold transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        </div>
+                        <p class="text-neutral-400 text-sm leading-relaxed mb-6 font-light">"Serena pero matona. Gana debates por huevos."</p>
                     </div>
                 </div>
 
@@ -864,42 +423,49 @@
         </div>
     </section>
 
-    <section id="active-phase" class="py-24 px-6 bg-black relative border-t border-gold/20">
+    <div class="bg-gold text-black py-3 overflow-hidden relative border-t border-b border-white/10">
+        <div class="whitespace-nowrap animate-marquee font-bold tracking-widest uppercase text-sm flex gap-12 items-center">
+            <span>🚨 ÚLTIMA HORA: EL FENÓMENO ATACA DE NUEVO</span>
+            <span>★ VIAJE DE S3X0 AWARDS 2025</span>
+            <span>★ NO OLVIDES VOTAR</span>
+            <span>★ ¿QUIÉN SERÁ EL MÁS PESADO?</span>
+            <span>★ CÓDIGO DE VESTIMENTA: ETIQUETA O MUERTE</span>
+            <span>★ PABLO GARCÍA YA SE ESCUCHA LLEGAR</span>
+            <span>🚨 ÚLTIMA HORA: EL FENÓMENO ATACA DE NUEVO</span>
+            <span>★ VIAJE DE S3X0 AWARDS 2025</span>
+            <span>★ NO OLVIDES VOTAR</span>
+            <span>★ ¿QUIÉN SERÁ EL MÁS PESADO?</span>
+            <span>★ CÓDIGO DE VESTIMENTA: ETIQUETA O MUERTE</span>
+            <span>★ PABLO GARCÍA YA SE ESCUCHA LLEGAR</span>
+        </div>
+    </div>
+
+    <section id="active-phase" class="py-24 px-6 bg-black relative">
         <div class="absolute inset-0 bg-gold/5 blur-[100px] rounded-full opacity-20 pointer-events-none"></div>
-        
-        <div class="max-w-4xl mx-auto text-center relative z-10">
+        <div class="max-w-4xl mx-auto text-center relative z-10 reveal">
              <div class="inline-block border border-gold px-4 py-1 rounded-full mb-6">
                 <span class="text-gold text-xs font-bold tracking-widest uppercase animate-pulse">● Zona de Votación Activa</span>
              </div>
-             
              <h2 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white uppercase">Propón tus Categorías</h2>
-             <p class="text-neutral-300 text-lg mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                ¿Crees que falta algún premio esencial? ¿Alguien hizo algo legendario que merece ser reconocido? 
-                <br/><strong class="text-gold">Ayúdanos a definir la gala.</strong>
-             </p>
-
-             <div class="glass-panel p-8 md:p-12 rounded-xl border border-gold/30 shadow-[0_0_50px_rgba(212,175,55,0.1)]">
+             <div class="glass-panel p-8 md:p-12 rounded-xl border border-gold/30 shadow-[0_0_50px_rgba(212,175,55,0.1)] mt-12">
                 <i data-lucide="clipboard-edit" class="w-12 h-12 text-gold mx-auto mb-6"></i>
                 <h3 class="text-2xl font-display font-bold text-white mb-2">Formulario Oficial - Fase 0</h3>
                 <p class="text-neutral-400 mb-8 text-sm">Este enlace te llevará al formulario seguro de Google Forms.</p>
-                
-                <a href="https://forms.gle/Ye9RqVAjX1f2t7G39" target="_blank" class="btn-gold px-8 py-4 rounded-sm text-sm uppercase tracking-widest inline-flex items-center gap-2">
+                <a href="https://forms.gle/Ye9RqVAjX1f2t7G39" target="_blank" class="btn-gold px-8 py-4 rounded-sm text-sm uppercase tracking-widest inline-flex items-center gap-2 hover-trigger">
                     ABRIR FORMULARIO DE PROPUESTAS <i data-lucide="external-link" class="w-4 h-4"></i>
                 </a>
              </div>
         </div>
     </section>
 
-    <section id="group-photo" class="py-24 px-6 bg-nexus-panel border-t border-white/5 relative overflow-hidden">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.05),transparent_70%)]"></div>
-
-        <div class="max-w-5xl mx-auto relative z-10 text-center">
+    <section id="group-photo" class="py-32 px-6 bg-nexus-panel border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto relative z-10 text-center reveal">
             <i data-lucide="camera" class="w-8 h-8 text-gold mx-auto mb-6 opacity-80"></i>
             <h2 class="text-3xl md:text-5xl font-display font-bold text-white mb-12 uppercase tracking-wider">
                 <span class="text-gold">Foto Grupal</span>
             </h2>
 
-            <div class="relative group max-w-4xl mx-auto transform rotate-1 hover:rotate-0 transition-all duration-700 ease-out">
+            <div id="parallax-container" class="relative group max-w-4xl mx-auto transform transition-transform duration-100 ease-linear">
                 <div class="absolute -inset-1 bg-gradient-to-r from-gold via-yellow-500 to-gold rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
                 <div class="relative rounded-xl overflow-hidden border-2 border-white/10 bg-black shadow-2xl">
                     <img src="fotos/grupo.jpg" alt="Foto Grupal" class="w-full h-auto object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700">
@@ -913,74 +479,140 @@
 
     <footer class="py-12 bg-black border-t border-white/10 text-center relative z-10">
         <div class="flex flex-col items-center gap-4">
-           <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity cursor-pointer" onclick="window.scrollTo(0,0)">
+           <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity cursor-pointer hover-trigger" onclick="window.scrollTo(0,0)">
              <img src="fotos/logo.png" class="w-6 h-6 grayscale">
              <span class="font-display font-bold text-sm tracking-[0.2em] text-white">VIAJE DE S3X0 AWARDS</span>
            </div>
-           
-           <p class="text-[10px] text-neutral-600 font-sans uppercase tracking-wider">
-                © 2025 Comité Organizador. Hecho con cariño y poco presupuesto. Todos los derechos reservados.
-           </p>
+           <p class="text-[10px] text-neutral-600 font-sans uppercase tracking-wider">© 2025 Comité Organizador.</p>
         </div>
     </footer>
 
     <script>
-        lucide.createIcons();
+      lucide.createIcons();
 
-        // ============================================
-        // CUENTA ATRÁS LÓGICA
-        // ============================================
-        const targetDate = new Date("December 19, 2025 20:00:00").getTime();
+      // ===========================
+      // 1. LOGICA CURSOR PERSONALIZADO
+      // ===========================
+      const cursor = document.getElementById('custom-cursor');
+      const cursorDot = document.getElementById('cursor-dot');
+      
+      document.addEventListener('mousemove', (e) => {
+        cursorDot.style.left = e.clientX + 'px';
+        cursorDot.style.top = e.clientY + 'px';
+        
+        // Pequeño delay para el círculo grande (efecto inercia)
+        setTimeout(() => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        }, 50);
+      });
 
-        const timer = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
+      // Agrandar cursor en elementos interactivos
+      const hoverElements = document.querySelectorAll('a, button, .hover-trigger');
+      hoverElements.forEach(el => {
+          el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+          el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+      });
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      // ===========================
+      // 2. EFECTO HOLOGRÁFICO
+      // ===========================
+      const cards = document.querySelectorAll('.perspective-container');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--x', `${x}px`);
+            card.style.setProperty('--y', `${y}px`);
+        });
+      });
 
-            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+      // ===========================
+      // 3. SCROLL REVEAL (Aparición)
+      // ===========================
+      const revealElements = document.querySelectorAll('.reveal');
+      const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                  entry.target.classList.add('active');
+              }
+          });
+      }, { threshold: 0.1 });
 
-            if (distance < 0) {
-                clearInterval(timer);
-                document.getElementById("countdown").innerHTML = 
-                    "<div class='text-4xl md:text-6xl font-display font-bold text-gold animate-bounce tracking-widest'>¡YA ES LA HORA!</div>";
-            }
-        }, 1000);
+      revealElements.forEach(el => revealObserver.observe(el));
 
-        // ============================================
-        // REPRODUCTOR DE MÚSICA LÓGICA
-        // ============================================
-        const audio = document.getElementById('bg-music');
-        const musicBtn = document.getElementById('music-btn-desktop');
-        const musicIcon = document.getElementById('music-icon-desktop');
-        let isPlaying = false;
+      // ===========================
+      // 4. CONFETI
+      // ===========================
+      function fireConfetti() {
+          var duration = 3 * 1000;
+          var animationEnd = Date.now() + duration;
+          var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 99999 };
 
-        function toggleMusic() {
-            if (!isPlaying) {
-                audio.play().catch(error => {
-                    console.log("Error al reproducir: ", error);
-                    alert("Interactúa con la página primero para reproducir música.");
-                });
-                musicBtn.classList.add('music-playing');
-                // Cambiar icono a Pausa (si se quisiera, pero mantener nota musical es elegante)
-            } else {
-                audio.pause();
-                musicBtn.classList.remove('music-playing');
-            }
-            isPlaying = !isPlaying;
-        }
+          function randomInRange(min, max) { return Math.random() * (max - min) + min; }
 
-        // Función para girar la tarjeta al hacer click
-        function toggleFlip(element) {
-            const innerCard = element.querySelector('.flip-card-inner');
-            innerCard.classList.toggle('flipped');
-        }
+          var interval = setInterval(function() {
+            var timeLeft = animationEnd - Date.now();
+            if (timeLeft <= 0) { return clearInterval(interval); }
+            var particleCount = 50 * (timeLeft / duration);
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+          }, 250);
+      }
+
+      // ===========================
+      // 5. PARALLAX SUAVE FOTO GRUPAL
+      // ===========================
+      const parallaxContainer = document.getElementById('parallax-container');
+      window.addEventListener('scroll', () => {
+          const section = document.getElementById('group-photo');
+          const distance = window.scrollY - section.offsetTop;
+          if (distance > -window.innerHeight && distance < window.innerHeight) {
+              const translateY = distance * 0.1; // Velocidad del efecto
+              parallaxContainer.style.transform = `translateY(${translateY}px) rotate(1deg)`;
+          }
+      });
+
+      // ===========================
+      // 6. MUSICA & COUNTDOWN (Existentes)
+      // ===========================
+      const audio = document.getElementById('bg-music');
+      const musicBtn = document.getElementById('music-btn-desktop');
+      let isPlaying = false;
+
+      function toggleMusic() {
+          if (!isPlaying) {
+              audio.play().catch(e => console.log(e));
+              musicBtn.classList.add('music-active');
+          } else {
+              audio.pause();
+              musicBtn.classList.remove('music-active');
+          }
+          isPlaying = !isPlaying;
+      }
+
+      // Countdown Lógica (Sin cambios)
+      const targetDate = new Date("December 19, 2025 20:00:00").getTime();
+      const timer = setInterval(function() {
+          const now = new Date().getTime();
+          const distance = targetDate - now;
+          const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((distance % (1000 * 60)) / 1000);
+          document.getElementById("days").innerText = d < 10 ? "0"+d : d;
+          document.getElementById("hours").innerText = h < 10 ? "0"+h : h;
+          document.getElementById("minutes").innerText = m < 10 ? "0"+m : m;
+          document.getElementById("seconds").innerText = s < 10 ? "0"+s : s;
+          if (distance < 0) { clearInterval(timer); document.getElementById("countdown").innerHTML = "¡YA!"; }
+      }, 1000);
+
+      // Flip Card Lógica
+      function toggleFlip(element) {
+          const innerCard = element.querySelector('.flip-card-inner');
+          innerCard.classList.toggle('flipped');
+      }
     </script>
 </body>
 </html>
