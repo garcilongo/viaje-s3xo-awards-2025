@@ -622,8 +622,8 @@
 
             <div id="vip-form" class="glass-panel p-8 rounded-xl max-w-md mx-auto border border-white/5">
                  <div class="space-y-4">
-                     <input type="text" id="vip-name" placeholder="Tu Nombre (Ej: Carlos)" class="w-full bg-black/50 border border-white/10 rounded p-3 text-white focus:border-gold outline-none text-center placeholder-neutral-600 transition-colors uppercase font-bold text-sm">
-                     <input type="password" id="vip-pass" placeholder="Contraseña de Acceso" class="w-full bg-black/50 border border-white/10 rounded p-3 text-white focus:border-gold outline-none text-center placeholder-neutral-600 transition-colors text-sm">
+                     <input type="text" id="vip-name" placeholder="Nombre" class="w-full bg-black/50 border border-white/10 rounded p-3 text-white focus:border-gold outline-none text-center placeholder-neutral-600 transition-colors uppercase font-bold text-sm">
+                     <input type="password" id="vip-pass" placeholder="Contraseña" class="w-full bg-black/50 border border-white/10 rounded p-3 text-white focus:border-gold outline-none text-center placeholder-neutral-600 transition-colors text-sm">
                      <button onclick="generateTicket()" class="btn-gold w-full py-3 rounded font-bold text-xs uppercase tracking-widest hover-trigger">Generar Acreditación</button>
                      
                      <p id="vip-error-pass" class="text-red-500 text-xs font-bold hidden mt-2 animate-pulse">⛔ CONTRASEÑA INCORRECTA</p>
@@ -633,7 +633,7 @@
 
              <div id="ticket-result" class="hidden mt-12 animate-float">
                  <h3 class="text-gold font-display text-xl mb-4">¡Bienvenido, Invitado de Honor!</h3>
-                 <p class="text-neutral-400 text-xs mb-6">Guarda esta imagen, será tu pase para la gala.</p>
+                 <p class="text-neutral-400 text-xs mb-6">Guarda este tícket, será tu pase para la gala.</p>
                  <div class="relative group max-w-sm mx-auto">
                      <img id="final-ticket-img" src="" class="w-full rounded-lg shadow-[0_0_50px_rgba(212,175,55,0.3)] border border-gold/50">
                      <a id="download-link" href="#" download="Entrada_VIP_S3X0.png" class="absolute bottom-4 right-4 bg-black/80 text-gold p-2 rounded hover:bg-gold hover:text-black transition-colors">
@@ -977,7 +977,7 @@
           // Header pequeño
           tCtx.font = '700 12px Montserrat';
           tCtx.fillStyle = '#d4af37'; 
-          tCtx.fillText('★ OFFICIAL ACCREDITATION', textLeftMargin, 60);
+          tCtx.fillText('★ INVITADO DE HONOR', textLeftMargin, 60);
 
           // Título Principal
           tCtx.font = '900 36px Playfair Display';
@@ -998,8 +998,8 @@
           // Detalles inferiores
           tCtx.font = '600 14px Montserrat';
           tCtx.fillStyle = '#cccccc';
-          tCtx.fillText('STATUS: INVITADO DE HONOR', textLeftMargin, 235);
-          tCtx.fillText('DRESS CODE: ETIQUETA RIGUROSA', textLeftMargin, 260);
+          tCtx.fillText('Fecha: 19 de Diciembre de 2025', textLeftMargin, 235);
+          tCtx.fillText('Ubicación: Por determinar', textLeftMargin, 260);
 
           // Footer
           tCtx.font = 'italic 400 11px Montserrat';
