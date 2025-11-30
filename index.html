@@ -620,12 +620,14 @@
                  <h2 class="text-3xl font-display font-bold text-white uppercase tracking-widest">Acceso VIP</h2>
              </div>
 
-             <div id="vip-form" class="glass-panel p-8 rounded-xl max-w-md mx-auto border border-white/5">
+            <div id="vip-form" class="glass-panel p-8 rounded-xl max-w-md mx-auto border border-white/5">
                  <div class="space-y-4">
-                     <input type="text" id="vip-name" placeholder="Nombre" class="w-full bg-black/50 border border-white/10 rounded p-3 text-white focus:border-gold outline-none text-center placeholder-neutral-600 transition-colors uppercase font-bold text-sm">
-                     <input type="password" id="vip-pass" placeholder="Contraseña" class="w-full bg-black/50 border border-white/10 rounded p-3 text-white focus:border-gold outline-none text-center placeholder-neutral-600 transition-colors text-sm">
-                     <button onclick="generateTicket()" class="btn-gold w-full py-3 rounded font-bold text-xs uppercase tracking-widest hover-trigger">Acceder</button>
-                     <p id="vip-error" class="text-red-500 text-xs font-bold hidden mt-2 animate-pulse">ACCESO DENEGADO: CONTRASEÑA INCORRECTA</p>
+                     <input type="text" id="vip-name" placeholder="Tu Nombre (Ej: Carlos)" class="w-full bg-black/50 border border-white/10 rounded p-3 text-white focus:border-gold outline-none text-center placeholder-neutral-600 transition-colors uppercase font-bold text-sm">
+                     <input type="password" id="vip-pass" placeholder="Contraseña de Acceso" class="w-full bg-black/50 border border-white/10 rounded p-3 text-white focus:border-gold outline-none text-center placeholder-neutral-600 transition-colors text-sm">
+                     <button onclick="generateTicket()" class="btn-gold w-full py-3 rounded font-bold text-xs uppercase tracking-widest hover-trigger">Generar Acreditación</button>
+                     
+                     <p id="vip-error-pass" class="text-red-500 text-xs font-bold hidden mt-2 animate-pulse">⛔ CONTRASEÑA INCORRECTA</p>
+                     <p id="vip-error-name" class="text-red-500 text-xs font-bold hidden mt-2 animate-pulse">⛔ ACCESO DENEGADO: NO ESTÁS EN LA LISTA DE HONOR</p>
                  </div>
              </div>
 
@@ -846,37 +848,85 @@
       }
 
       // ===========================
-      // 8. GENERADOR DE TICKET VIP (ULTRA PREMIUM)
+      // 8. GENERADOR DE TICKET VIP (PERSONALIZADO CON FOTO)
       // ===========================
       
-      // QR Code en Base64 (Para evitar problemas de carga externa)
-      const qrBase64 = "data:image/png;base64,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";
+      // Base de datos de VIPs (Nombres normalizados sin tildes -> Ruta foto)
+      const vipData = {
+          'carlos': 'fotos/carlos.jpg',
+          'adriana': 'fotos/adriana.jpg',
+          'jose luis': 'fotos/joseluis.jpg',
+          'nicolas': 'fotos/nicolas.jpg',
+          'pablo garcia': 'fotos/pablog.jpg',
+          'pablo dolz': 'fotos/pablod.jpg',
+          'lucia': 'fotos/lucia.jpg'
+          // Se pueden añadir variaciones si quieres: 'pablo g': 'fotos/pablog.jpg'
+      };
+
+      // Función auxiliar para quitar tildes y pasar a minúsculas
+      function normalizeText(text) {
+          return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+      }
+
+      const qrBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAABTlJREFUeJztWk1y3CAMRSS5/6W70227zYtJgATIT1L5E89Wl40hgQA5Pj4+Pj4+Pj4+Pj4+Pj4+Pr4F/H1/+/v7D/w6Pj8/r/9f+B74/v5+X79//x4/f/48fv/+/Xq9Xv8/f/4cv379On7+/Hm9/v79e3z9+vV6/fbt2/X68/Pzen358uV6/fXr1/H58+fr9f379+P169fX6/v376/XN2/eXOfw7du34/nz59fr27dvx+vXr6/X169fjxcvXlzn8Pz58+v19evX1+s8h/Mc1vO4zuF4PL7O4TyH8xyeP39+ncN5Duc5PHz48P8T+B/8/wa2b9++XQ/8PIfrHJ7ncJ7DdQ7ncJ7Deg7ncJ7Deg7rOZzncJ7Deg7ncJ7Deg7PczjP4TyH9RzOc3iew3kO5zms53Cew3kO1zl8/vz5fxv4H/z/BtZzWM/hPIfrHK5zOM/hPIfrHM5zOM/hPIfrHM5zOM/hPIfrHM5zOM/hPIfrHM5zOM/hOofzHM5zOM/hPIfrHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+fwO/fv16vb58+fL/E/gf/P8Gnj9/fr2+ffv2+vr16/HixYvrHJ7ncJ7DeQ7rOVzncJ7DeQ7nOazncJ7DeQ7rOVzncJ7DeQ7nOazncJ7DeQ7rOVzncJ7DeQ7nOazncJ7D+X/x+Pj4+Pj4+Pj4+Pj4+Pj4+PjW8Q/rG0qCT9+44QAAAABJRU5ErkJggg==";
 
       function generateTicket() {
-          const nameInput = document.getElementById('vip-name').value.trim().toUpperCase();
+          const nameInputRaw = document.getElementById('vip-name').value;
           const passInput = document.getElementById('vip-pass').value.trim();
-          const errorMsg = document.getElementById('vip-error');
+          
+          const errorPass = document.getElementById('vip-error-pass');
+          const errorName = document.getElementById('vip-error-name');
           const formDiv = document.getElementById('vip-form');
           const resultDiv = document.getElementById('ticket-result');
           const imgElement = document.getElementById('final-ticket-img');
           const downloadLink = document.getElementById('download-link');
 
-          // Verificación de Contraseña (viajedesexo)
+          // Reset errores
+          errorPass.classList.add('hidden');
+          errorName.classList.add('hidden');
+
+          // 1. Verificación de Contraseña
           if (passInput !== "viajedesexo") {
-              errorMsg.classList.remove('hidden');
+              errorPass.classList.remove('hidden');
               formDiv.classList.add('animate-pulse'); 
               setTimeout(() => formDiv.classList.remove('animate-pulse'), 500);
               return;
           }
 
-          if (nameInput === "") {
-              alert("Por favor, introduce tu nombre.");
+          // 2. Verificación de Nombre en la Lista Blanca
+          const normalizedName = normalizeText(nameInputRaw);
+          const userPhotoPath = vipData[normalizedName];
+
+          if (!userPhotoPath) {
+              // Si no está en la lista, denegar acceso
+              errorName.classList.remove('hidden');
+              formDiv.classList.add('animate-pulse');
+              setTimeout(() => formDiv.classList.remove('animate-pulse'), 500);
               return;
           }
 
-          errorMsg.classList.add('hidden');
+          // === TODO CORRECTO: PROCEDEMOS A GENERAR EL TICKET ===
           
-          // Crear un canvas de ALTA RESOLUCIÓN (Formato Ticket Alargado)
+          // Cargamos primero la foto del usuario
+          const userImg = new Image();
+          userImg.src = userPhotoPath;
+          
+          userImg.onload = function() {
+              // Una vez cargada la foto, cargamos el QR y dibujamos todo
+              const qrImg = new Image();
+              qrImg.src = qrBase64;
+              qrImg.onload = function() {
+                  drawFinalTicket(userImg, qrImg, nameInputRaw.toUpperCase());
+              }
+          };
+          
+          userImg.onerror = function() {
+              alert("Error al cargar la foto del candidato. Inténtalo de nuevo.");
+          };
+      }
+
+      // Función auxiliar para dibujar el canvas final
+      function drawFinalTicket(userImg, qrImg, displayName) {
           const tCanvas = document.createElement('canvas');
           const tCtx = tCanvas.getContext('2d');
           const width = 850;
@@ -884,147 +934,99 @@
           tCanvas.width = width;
           tCanvas.height = height;
 
-          // --- 1. FONDO PREMIUM (Negro Mate con Textura) ---
+          // --- FONDO Y MARCO (Igual que antes) ---
           tCtx.fillStyle = '#0F0F0F';
           tCtx.fillRect(0, 0, width, height);
-          
-          // Ruido/Textura sutil
           for (let i = 0; i < 5000; i++) {
               tCtx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.05})`;
               tCtx.fillRect(Math.random() * width, Math.random() * height, 2, 2);
           }
-
-          // --- 2. MARCO DORADO ---
-          // Gradiente Dorado
           const borderGrad = tCtx.createLinearGradient(0, 0, width, height);
-          borderGrad.addColorStop(0, '#aa771c');
-          borderGrad.addColorStop(0.5, '#fbf5b7'); // Brillo central
-          borderGrad.addColorStop(1, '#aa771c');
+          borderGrad.addColorStop(0, '#aa771c'); borderGrad.addColorStop(0.5, '#fbf5b7'); borderGrad.addColorStop(1, '#aa771c');
+          tCtx.lineWidth = 4; tCtx.strokeStyle = borderGrad; tCtx.strokeRect(15, 15, width - 30, height - 30);
           
-          tCtx.lineWidth = 4;
-          tCtx.strokeStyle = borderGrad;
-          tCtx.strokeRect(15, 15, width - 30, height - 30);
-          
-          // Esquinas decorativas
+          // Esquinas
           tCtx.fillStyle = borderGrad;
-          tCtx.fillRect(15, 15, 40, 4); // Top Left H
-          tCtx.fillRect(15, 15, 4, 40); // Top Left V
-          tCtx.fillRect(width-55, 15, 40, 4); // Top Right H
-          tCtx.fillRect(width-19, 15, 4, 40); // Top Right V
-          tCtx.fillRect(15, height-19, 40, 4); // Bot Left H
-          tCtx.fillRect(15, height-55, 4, 40); // Bot Left V
-          tCtx.fillRect(width-55, height-19, 40, 4); // Bot Right H
-          tCtx.fillRect(width-19, height-55, 4, 40); // Bot Right V
+          tCtx.fillRect(15, 15, 40, 4); tCtx.fillRect(15, 15, 4, 40);
+          tCtx.fillRect(width-55, 15, 40, 4); tCtx.fillRect(width-19, 15, 4, 40);
+          tCtx.fillRect(15, height-19, 40, 4); tCtx.fillRect(15, height-55, 4, 40);
+          tCtx.fillRect(width-55, height-19, 40, 4); tCtx.fillRect(width-19, height-55, 4, 40);
 
-          // --- 3. LÍNEA DE CORTE (Perforada) ---
-          tCtx.beginPath();
-          tCtx.setLineDash([10, 10]);
-          tCtx.moveTo(600, 15);
-          tCtx.lineTo(600, height - 15);
-          tCtx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
-          tCtx.stroke();
-          tCtx.setLineDash([]); // Reset dash
+          // Línea de corte
+          tCtx.beginPath(); tCtx.setLineDash([10, 10]); tCtx.moveTo(600, 15); tCtx.lineTo(600, height - 15);
+          tCtx.strokeStyle = 'rgba(212, 175, 55, 0.5)'; tCtx.stroke(); tCtx.setLineDash([]);
 
-          // --- 4. TEXTOS (Parte Izquierda) ---
-          tCtx.textAlign = 'left';
+          // --- ZONA IZQUIERDA: FOTO Y TEXTOS ---
           
-          // "VIAJE DE S3X0" (Marca de agua gigante fondo)
-          tCtx.save();
-          tCtx.translate(300, 160);
-          tCtx.rotate(-Math.PI / 12);
-          tCtx.font = 'bold 80px Montserrat';
-          tCtx.fillStyle = 'rgba(255, 255, 255, 0.03)';
-          tCtx.textAlign = 'center';
-          tCtx.fillText('S3X0 AWARDS', 0, 0);
-          tCtx.restore();
+          // 1. DIBUJAR FOTO DEL USUARIO (Izquierda)
+          const photoX = 50;
+          const photoY = 65;
+          const photoSize = 150;
+          
+          // Marco para la foto
+          tCtx.lineWidth = 3;
+          tCtx.strokeStyle = '#d4af37';
+          tCtx.strokeRect(photoX - 5, photoY - 5, photoSize + 10, photoSize + 10);
+          
+          // Foto (recortada en cuadrado por si acaso)
+          // Usamos drawImage con 9 argumentos para hacer "object-cover"
+          const aspectRatio = userImg.width / userImg.height;
+          let sourceWidth = userImg.width;
+          let sourceHeight = userImg.height;
+          let sourceX = 0;
+          let sourceY = 0;
+          if (aspectRatio > 1) { sourceWidth = userImg.height; sourceX = (userImg.width - sourceWidth) / 2; } 
+          else { sourceHeight = userImg.width; sourceY = (userImg.height - sourceHeight) / 2; }
+          tCtx.drawImage(userImg, sourceX, sourceY, sourceWidth, sourceHeight, photoX, photoY, photoSize, photoSize);
+
+          // 2. TEXTOS (A la derecha de la foto)
+          const textStartX = 230; // Donde empieza el texto ahora
+          tCtx.textAlign = 'left';
 
           // Header
-          tCtx.font = 'bold 16px Montserrat';
-          tCtx.fillStyle = '#d4af37';
-          tCtx.fillText('★ OFFICIAL INVITATION', 50, 60);
+          tCtx.font = 'bold 14px Montserrat'; tCtx.fillStyle = '#d4af37';
+          tCtx.fillText('★ OFFICIAL INVITATION', textStartX, 70);
 
           // Título Evento
-          tCtx.font = 'bold 32px Playfair Display';
-          tCtx.fillStyle = '#ffffff';
-          tCtx.fillText('VIAJE DE S3X0', 50, 100);
-          tCtx.fillStyle = '#d4af37'; // Cambio a dorado
-          tCtx.fillText('AWARDS 2025', 290, 100);
+          tCtx.font = 'bold 28px Playfair Display'; tCtx.fillStyle = '#ffffff';
+          tCtx.fillText('VIAJE DE S3X0', textStartX, 110);
+          tCtx.fillStyle = '#d4af37';
+          tCtx.fillText('AWARDS 2025', textStartX + 235, 110);
 
-          // Nombre del Usuario (CON EFECTO ORO)
-          tCtx.font = 'bold 50px Montserrat';
-          const nameGrad = tCtx.createLinearGradient(50, 0, 500, 0);
-          nameGrad.addColorStop(0, '#bf953f');
-          nameGrad.addColorStop(0.5, '#fcf6ba');
-          nameGrad.addColorStop(1, '#bf953f');
+          // Nombre del Usuario (GRANDE)
+          tCtx.font = 'bold 42px Montserrat';
+          const nameGrad = tCtx.createLinearGradient(textStartX, 0, textStartX + 300, 0);
+          nameGrad.addColorStop(0, '#bf953f'); nameGrad.addColorStop(0.5, '#fcf6ba'); nameGrad.addColorStop(1, '#bf953f');
           tCtx.fillStyle = nameGrad;
-          tCtx.fillText(nameInput, 50, 180);
+          // Ajustamos tamaño fuente si el nombre es muy largo
+          if(displayName.length > 12) tCtx.font = 'bold 32px Montserrat';
+          tCtx.fillText(displayName, textStartX, 170);
 
           // Subtítulo
-          tCtx.font = '14px Montserrat';
-          tCtx.fillStyle = '#aaaaaa';
-          tCtx.fillText('CATEGORÍA: INVITADO DE HONOR', 50, 210);
-          tCtx.fillText('CÓDIGO DE VESTIMENTA: ETIQUETA', 50, 230);
+          tCtx.font = '12px Montserrat'; tCtx.fillStyle = '#aaaaaa';
+          tCtx.fillText('CATEGORÍA: INVITADO DE HONOR', textStartX, 200);
+          tCtx.fillText('CÓDIGO DE VESTIMENTA: ETIQUETA', textStartX, 220);
           
           // Footer Location
-          tCtx.font = 'italic 12px Montserrat';
-          tCtx.fillStyle = '#666';
-          tCtx.fillText('📍 Ubicación Secreta  |  📅 Dic 2025', 50, 275);
+          tCtx.font = 'italic 11px Montserrat'; tCtx.fillStyle = '#666';
+          tCtx.fillText('📍 Ubicación Secreta  |  📅 Dic 2025', textStartX, 260);
 
-          // --- 5. LATERAL DERECHO (El Stub) ---
-          
-          // "ADMIT ONE" Vertical
-          tCtx.save();
-          tCtx.translate(630, 250);
-          tCtx.rotate(-Math.PI / 2);
-          tCtx.font = 'bold 24px Montserrat';
-          tCtx.fillStyle = 'rgba(212, 175, 55, 0.3)';
-          tCtx.fillText('ADMIT ONE', 0, 0);
-          tCtx.restore();
+          // --- ZONA DERECHA (Stub) - IGUAL QUE ANTES ---
+          tCtx.drawImage(qrImg, 660, 50, 120, 120);
+          tCtx.lineWidth = 2; tCtx.strokeStyle = '#d4af37'; tCtx.strokeRect(655, 45, 130, 130);
+          const barcodeX = 660; const barcodeY = 200; const barcodeW = 120; const barcodeH = 60;
+          tCtx.fillStyle = 'white'; tCtx.fillRect(barcodeX - 5, barcodeY - 5, barcodeW + 10, barcodeH + 10);
+          tCtx.fillStyle = 'black';
+          let currentX = barcodeX; while(currentX < barcodeX + barcodeW) { let width = Math.floor(Math.random() * 4) + 1; if(currentX + width > barcodeX + barcodeW) break; tCtx.fillRect(currentX, barcodeY, width, barcodeH); currentX += width + Math.floor(Math.random() * 3) + 1; }
+          tCtx.font = '10px monospace'; tCtx.fillStyle = 'black'; tCtx.textAlign = 'center';
+          tCtx.fillText('VIP-' + displayName.substring(0,3) + '-S3X0', barcodeX + barcodeW/2, barcodeY + barcodeH + 12);
 
-          // QR Code (Imagen Real)
-          const qrImg = new Image();
-          qrImg.src = qrBase64;
-          qrImg.onload = function() {
-              // Dibujamos el QR
-              tCtx.drawImage(qrImg, 660, 50, 120, 120);
-              
-              // Borde del QR
-              tCtx.lineWidth = 2;
-              tCtx.strokeStyle = '#d4af37';
-              tCtx.strokeRect(655, 45, 130, 130);
-
-              // Generar CÓDIGO DE BARRAS (Líneas verticales aleatorias)
-              const barcodeX = 660;
-              const barcodeY = 200;
-              const barcodeW = 120;
-              const barcodeH = 60;
-              
-              tCtx.fillStyle = 'white'; // Fondo blanco para el barcode
-              tCtx.fillRect(barcodeX - 5, barcodeY - 5, barcodeW + 10, barcodeH + 10);
-              
-              tCtx.fillStyle = 'black';
-              let currentX = barcodeX;
-              while(currentX < barcodeX + barcodeW) {
-                  let width = Math.floor(Math.random() * 4) + 1; // Ancho línea 1-4px
-                  if(currentX + width > barcodeX + barcodeW) break;
-                  tCtx.fillRect(currentX, barcodeY, width, barcodeH);
-                  currentX += width + Math.floor(Math.random() * 3) + 1; // Espacio 1-3px
-              }
-              
-              // Texto debajo del barcode
-              tCtx.font = '10px monospace';
-              tCtx.fillStyle = 'black';
-              tCtx.textAlign = 'center';
-              tCtx.fillText('VIP-8392-S3X0', barcodeX + barcodeW/2, barcodeY + barcodeH + 12);
-
-              // --- FINALIZAR ---
-              imgElement.src = tCanvas.toDataURL('image/png');
-              downloadLink.href = tCanvas.toDataURL('image/png');
-              
-              formDiv.classList.add('hidden');
-              resultDiv.classList.remove('hidden');
-              fireConfetti();
-          };
+          // MOSTRAR RESULTADO
+          document.getElementById('final-ticket-img').src = tCanvas.toDataURL('image/png');
+          document.getElementById('download-link').href = tCanvas.toDataURL('image/png');
+          document.getElementById('vip-form').classList.add('hidden');
+          document.getElementById('ticket-result').classList.remove('hidden');
+          fireConfetti();
       }
 
       initParticles();
