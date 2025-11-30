@@ -963,6 +963,72 @@
           };
       }
 
+        // --- FUNCIONES AUXILIARES PARA DIBUJAR ICONOS EN CANVAS ---
+        function drawCalendarIcon(ctx, x, y, size, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // Cuerpo del calendario
+            ctx.beginPath();
+            // Rectangulo redondeado
+            const r = 2; // radio borde
+            const w = size;
+            const h = size;
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.stroke();
+
+            // Líneas superiores (grapas)
+            ctx.beginPath();
+            ctx.moveTo(x + w * 0.25, y - 3);
+            ctx.lineTo(x + w * 0.25, y + 3);
+            ctx.moveTo(x + w * 0.75, y - 3);
+            ctx.lineTo(x + w * 0.75, y + 3);
+            ctx.stroke();
+
+            // Línea horizontal interior
+            ctx.beginPath();
+            ctx.moveTo(x, y + h * 0.35);
+            ctx.lineTo(x + w, y + h * 0.35);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawMapPinIcon(ctx, x, y, size, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            
+            const r = size / 2; // Radio de la cabeza
+            const cx = x + r;   // Centro X
+            const cy = y + r;   // Centro Y
+
+            ctx.beginPath();
+            // Forma de gota
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.moveTo(cx, cy + r);
+            ctx.lineTo(cx, y + size * 1.3); // La punta del pin
+            
+            // El agujero del centro
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(cx, cy, r * 0.3, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
       // Función auxiliar para dibujar el ticket final (V3: SIN LÍNEA DISCONTINUA)
       function drawFinalTicket(userImg, qrImg, displayName) {
           const tCanvas = document.createElement('canvas');
@@ -1033,11 +1099,30 @@
           if (displayName.length > 15) tCtx.font = '900 40px Montserrat';
           tCtx.fillText(displayName, textLeftMargin, 185);
 
-          // Detalles inferiores
-          tCtx.font = '600 14px Montserrat';
-          tCtx.fillStyle = '#cccccc';
-          tCtx.fillText('Fecha: 19 de Diciembre de 2025', textLeftMargin, 235);
-          tCtx.fillText('Ubicación: Por determinar', textLeftMargin, 260);
+          // DETALLES CON ICONOS
+          
+          const iconSize = 16;
+          const textOffsetX = 25; // Espacio para el icono + margen
+          const goldColor = '#d4af37';
+          const detailsColor = '#cccccc';
+          const detailsFont = '600 14px Montserrat';
+
+          // 1. FECHA
+          // Dibujamos icono Calendario
+          drawCalendarIcon(tCtx, textLeftMargin, 222, iconSize, goldColor);
+          
+          // Dibujamos Texto Fecha
+          tCtx.font = detailsFont;
+          tCtx.fillStyle = detailsColor;
+          // Ajustamos posición para alinear con el icono
+          tCtx.fillText('19 DE DICIEMBRE, 2025', textLeftMargin + textOffsetX, 235);
+
+          // 2. UBICACIÓN
+          // Dibujamos icono Pin
+          drawMapPinIcon(tCtx, textLeftMargin, 247, iconSize, goldColor);
+          
+          // Dibujamos Texto Ubicación
+          tCtx.fillText('UBICACIÓN SECRETA', textLeftMargin + textOffsetX, 260);
 
           // Footer
           tCtx.font = 'italic 400 11px Montserrat';
