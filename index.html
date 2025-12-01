@@ -180,6 +180,7 @@
             <a href="#rules" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Cronograma</a>
             <a href="#nominees" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Candidatos</a>
             <a href="#group-photo" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Recuerdos</a>
+            <a href="#quotes" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Muro de la Fama</a>
             
             <button id="music-btn-desktop" onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center gap-[2px] rounded-full border border-gold/50 text-gold hover:bg-gold/10 transition-all hover-trigger" title="Reproducir/Pausar Música">
                 <span class="equalizer-bar h-2"></span>
@@ -207,6 +208,7 @@
             <a href="#rules" class="text-white font-display uppercase text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Cronograma</a>
             <a href="#nominees" class="text-white font-display uppercase text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Candidatos</a>
             <a href="#group-photo" class="text-white font-display uppercase text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Recuerdos</a>
+            <a href="#quotes" class="text-white font-display uppercase text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Muro de la Fama</a>
             
             <button id="music-btn-mobile" onclick="toggleMusic()" class="w-14 h-14 flex items-center justify-center gap-[3px] rounded-full border border-gold/50 text-gold hover:bg-gold/10 transition-all" title="Reproducir/Pausar Música">
                 <span class="equalizer-bar h-3"></span>
@@ -687,6 +689,125 @@
                     <img src="fotos/footer10.jpg" class="snap-center h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] md:hover:scale-[1.02] transition-transform duration-500">
                     <img src="fotos/footer11.jpg" class="snap-center h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] md:hover:scale-[1.02] transition-transform duration-500">
                     <img src="fotos/footer12.jpg" class="snap-center h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] md:hover:scale-[1.02] transition-transform duration-500">
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="quotes" class="py-24 px-6 bg-transparent relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto relative z-10">
+            
+            <div class="text-center mb-16 reveal">
+                <i data-lucide="quote" class="w-10 h-10 text-gold mx-auto mb-6 opacity-80"></i>
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-white uppercase tracking-wider">
+                    Muro de la <span class="text-gold">Fama</span>
+                </h2>
+                <p class="text-neutral-400 mt-4 text-sm tracking-widest uppercase">Frases que pasaron a la historia</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="group relative reveal">
+                    <div class="absolute inset-0 bg-gold/10 blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                    <div class="glass-panel p-8 rounded-xl h-full flex flex-col relative border border-white/5 group-hover:border-gold/30 transition-colors">
+                        <span class="text-6xl font-serif text-gold/20 absolute top-4 left-4">“</span>
+                        <p class="text-white text-lg font-display italic leading-relaxed mb-6 mt-8 flex-1 flex items-center justify-center text-center">
+                            "Por fin en casa"
+                        </p>
+                        <div class="mt-auto flex items-center justify-center gap-3">
+                            <img src="fotos/pablog.jpg" class="w-10 h-10 rounded-full object-cover border border-gold/50 grayscale group-hover:grayscale-0 transition-all">
+                            <div class="text-left">
+                                <p class="text-gold text-xs font-bold uppercase tracking-wider">Pablo García</p>
+                                <p class="text-neutral-500 text-[10px] uppercase">Asturias 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative reveal transition-delay-100">
+                    <div class="absolute inset-0 bg-gold/10 blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                    <div class="glass-panel p-8 rounded-xl h-full flex flex-col relative border border-white/5 group-hover:border-gold/30 transition-colors">
+                        <span class="text-6xl font-serif text-gold/20 absolute top-4 left-4">“</span>
+                        <p class="text-white text-lg font-display italic leading-relaxed mb-6 mt-8 flex-1 flex items-center justify-center text-center">
+                            "El imperativo categórico me impide beberme ese chupito, pero la presión social es un constructo más fuerte."
+                        </p>
+                        <div class="mt-auto flex items-center justify-center gap-3">
+                            <img src="fotos/joseluis.jpg" class="w-10 h-10 rounded-full object-cover border border-gold/50 grayscale group-hover:grayscale-0 transition-all">
+                            <div class="text-left">
+                                <p class="text-gold text-xs font-bold uppercase tracking-wider">José Luis</p>
+                                <p class="text-neutral-500 text-[10px] uppercase">A las 03:00 AM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative reveal transition-delay-200">
+                    <div class="absolute inset-0 bg-gold/10 blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                    <div class="glass-panel p-8 rounded-xl h-full flex flex-col relative border border-white/5 group-hover:border-gold/30 transition-colors">
+                        <span class="text-6xl font-serif text-gold/20 absolute top-4 left-4">“</span>
+                        <p class="text-white text-lg font-display italic leading-relaxed mb-6 mt-8 flex-1 flex items-center justify-center text-center">
+                            "En realidad, si lo piensas, organizar el viaje con una IA es lo más eficiente económicamente."
+                        </p>
+                        <div class="mt-auto flex items-center justify-center gap-3">
+                            <img src="fotos/nicolas.jpg" class="w-10 h-10 rounded-full object-cover border border-gold/50 grayscale group-hover:grayscale-0 transition-all">
+                            <div class="text-left">
+                                <p class="text-gold text-xs font-bold uppercase tracking-wider">Nicolás</p>
+                                <p class="text-neutral-500 text-[10px] uppercase">Justificando gastos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative reveal">
+                    <div class="absolute inset-0 bg-gold/10 blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                    <div class="glass-panel p-8 rounded-xl h-full flex flex-col relative border border-white/5 group-hover:border-gold/30 transition-colors">
+                        <span class="text-6xl font-serif text-gold/20 absolute top-4 left-4">“</span>
+                        <p class="text-white text-lg font-display italic leading-relaxed mb-6 mt-8 flex-1 flex items-center justify-center text-center">
+                            "Yo no grito, es que vosotros escucháis flojo. Y ponme otra cerveza."
+                        </p>
+                        <div class="mt-auto flex items-center justify-center gap-3">
+                            <img src="fotos/lucia.jpg" class="w-10 h-10 rounded-full object-cover border border-gold/50 grayscale group-hover:grayscale-0 transition-all">
+                            <div class="text-left">
+                                <p class="text-gold text-xs font-bold uppercase tracking-wider">Lucía</p>
+                                <p class="text-neutral-500 text-[10px] uppercase">En cualquier bar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="group relative reveal transition-delay-100">
+                    <div class="absolute inset-0 bg-gold/10 blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                    <div class="glass-panel p-8 rounded-xl h-full flex flex-col relative border border-white/5 group-hover:border-gold/30 transition-colors">
+                        <span class="text-6xl font-serif text-gold/20 absolute top-4 left-4">“</span>
+                        <p class="text-white text-lg font-display italic leading-relaxed mb-6 mt-8 flex-1 flex items-center justify-center text-center">
+                            "Estoy a 5 minutos."
+                        </p>
+                        <div class="mt-auto flex items-center justify-center gap-3">
+                            <img src="fotos/adriana.jpg" class="w-10 h-10 rounded-full object-cover border border-gold/50 grayscale group-hover:grayscale-0 transition-all">
+                            <div class="text-left">
+                                <p class="text-gold text-xs font-bold uppercase tracking-wider">Adriana</p>
+                                <p class="text-neutral-500 text-[10px] uppercase">Narrador: Estaba a 40 min.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative reveal transition-delay-200">
+                    <div class="absolute inset-0 bg-gold/10 blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                    <div class="glass-panel p-8 rounded-xl h-full flex flex-col relative border border-white/5 group-hover:border-gold/30 transition-colors">
+                        <span class="text-6xl font-serif text-gold/20 absolute top-4 left-4">“</span>
+                        <p class="text-white text-lg font-display italic leading-relaxed mb-6 mt-8 flex-1 flex items-center justify-center text-center">
+                            "Esto son factos, le pese a quien le pese."
+                        </p>
+                        <div class="mt-auto flex items-center justify-center gap-3">
+                            <img src="fotos/pablod.jpg" class="w-10 h-10 rounded-full object-cover border border-gold/50 grayscale group-hover:grayscale-0 transition-all">
+                            <div class="text-left">
+                                <p class="text-gold text-xs font-bold uppercase tracking-wider">Pablo Dolz</p>
+                                <p class="text-neutral-500 text-[10px] uppercase">Soltando verdades</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
