@@ -78,23 +78,19 @@
             -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
         }
 
-        /* Contenedor del Carrusel */
+        /* --- 2. CONFIGURACIÓN DEL CARRUSEL (Modo Infinito Manual) --- */
         .animate-scroll-memories {
             display: flex;
             gap: 1.5rem;
             
-            /* Habilitar scroll horizontal manual (Touch y Trackpad) */
             overflow-x: auto; 
             width: 100%;
             
-            /* Efecto imán (Snap) para centrar fotos al soltar */
+            /* Snap para que las fotos se centren, pero SIN smooth para el reset */
             scroll-snap-type: x mandatory; 
-            scroll-behavior: smooth;
             
-            /* Espaciado para evitar cortes en sombras */
             padding: 20px 0;
             
-            /* Ocultar barra de scroll (Firefox, IE, Edge) */
             scrollbar-width: none; 
             -ms-overflow-style: none;
         }
@@ -660,29 +656,39 @@
         <div class="max-w-5xl mx-auto relative z-10 text-center mb-16 reveal">
             <i data-lucide="image" class="w-8 h-8 text-gold mx-auto mb-6 opacity-80"></i>
             <h2 class="text-3xl md:text-5xl font-display font-bold text-white uppercase tracking-wider">
-                <span class="text-gold">Memories</span>
+                <span class="text-gold">Recuerdos</span>
             </h2>
             <p class="text-neutral-400 mt-4 text-sm tracking-widest uppercase">Momentos que definen nuestra historia</p>
             <p class="text-gold/50 text-[10px] mt-2 animate-pulse md:hidden">← DESLIZA CON EL DEDO →</p>
-            <p class="text-gold/50 text-[10px] mt-2 animate-pulse hidden md:block">← ARRASTRA CON EL RATÓN →</p>
+            <p class="text-gold/50 text-[10px] mt-2 animate-pulse hidden md:block">← DESLIZA PARA VER MÁS →</p>
         </div>
 
-        <div class="w-full relative fade-mask group overflow-x-auto cursor-grab active:cursor-grabbing">
+        <div id="infinite-gallery" class="w-full relative fade-mask group overflow-x-auto cursor-grab active:cursor-grabbing">
             
             <div class="animate-scroll-memories py-4 px-4 md:px-0">
                 
-                <div class="flex gap-6 shrink-0">
+                <div id="set-1" class="flex gap-6 shrink-0">
                     <img src="fotos/footer1.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
-                    
                     <img src="fotos/footer2.jpeg" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
                     <img src="fotos/footer3.jpeg" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
-                    
                     <img src="fotos/footer4.jpg" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
-                    
                     <img src="fotos/footer5.jpeg" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
-                    
                     <img src="fotos/footer6.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
-                    
+                    <img src="fotos/footer7.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer8.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer9.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer10.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer11.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer12.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                </div>
+
+                <div id="set-2" class="flex gap-6 shrink-0">
+                    <img src="fotos/footer1.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer2.jpeg" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer3.jpeg" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer4.jpg" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer5.jpeg" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
+                    <img src="fotos/footer6.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
                     <img src="fotos/footer7.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
                     <img src="fotos/footer8.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
                     <img src="fotos/footer9.JPG" class="h-[300px] md:h-[500px] w-auto object-cover rounded-xl border border-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-[1.02] snap-center">
