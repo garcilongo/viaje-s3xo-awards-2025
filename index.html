@@ -334,17 +334,19 @@
                 </div>
 
                 <div id="phase-2" class="relative flex flex-col md:flex-row items-center mb-20 reveal group transition-all duration-500 opacity-50">
-                     <div class="md:w-1/2 flex justify-end px-4 md:pr-12 md:text-right order-2 md:order-1 pl-16">
+                    <div class="md:w-1/2 flex justify-end px-4 md:pr-12 md:text-right order-2 md:order-1 pl-16">
                         <div class="phase-card glass-panel p-6 rounded-xl border border-white/5 relative transition-colors duration-500">
                              <div class="badge-container absolute -top-3 right-4 md:right-auto md:-right-3 hidden">
                                 <div class="bg-gold text-black text-[10px] font-bold px-3 py-1 rounded-full shadow-[0_0_10px_#d4af37] animate-pulse">EN CURSO</div>
                             </div>
-                            <h3 class="phase-title text-xl font-display font-bold text-white">Fase 2: Primera Votación</h3>
-                            <p class="text-neutral-400 text-sm mt-2">Votación inicial de los aspirantes a llevarse el oro en cada categoría establecida.</p>
+                            <h3 class="phase-title text-2xl font-display font-bold text-white mb-2">Fase 2: Propuesta de Nominados</h3>
+                            <p class="text-neutral-300 text-sm leading-relaxed">
+                                Tu turno para proponer los candidatos que merezcan ganar en cada categoría establecida.
+                            </p>
                         </div>
                     </div>
-                    <div class="phase-icon absolute left-4 md:left-1/2 -translate-x-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-black border border-neutral-600 z-20">
-                         <div class="dot w-2 h-2 bg-neutral-500 rounded-full"></div>
+                    <div class="phase-icon absolute left-4 md:left-1/2 -translate-x-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-black border border-neutral-600 z-20 order-1 md:order-2">
+                        <div class="dot w-2 h-2 bg-neutral-500 rounded-full"></div>
                     </div>
                     <div class="md:w-1/2 order-3"></div>
                 </div>
@@ -359,10 +361,26 @@
                              <div class="badge-container absolute -top-3 left-4 md:left-auto md:-left-3 hidden">
                                 <div class="bg-gold text-black text-[10px] font-bold px-3 py-1 rounded-full shadow-[0_0_10px_#d4af37] animate-pulse">EN CURSO</div>
                             </div>
-                            <h3 class="phase-title text-xl font-display font-bold text-white">Fase 3: La Gran Final</h3>
+                            <h3 class="phase-title text-xl font-display font-bold text-white">Fase 3: Primera Votación</h3>
+                            <p class="text-neutral-400 text-sm mt-2">Presentación oficial de los aspirantes establecidos a llevarse el oro en cada categoría.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="phase-4" class="relative flex flex-col md:flex-row items-center mb-20 reveal group transition-all duration-500 opacity-50">
+                     <div class="md:w-1/2 flex justify-end px-4 md:pr-12 md:text-right order-2 md:order-1 pl-16">
+                        <div class="phase-card glass-panel p-6 rounded-xl border border-white/5 relative transition-colors duration-500">
+                             <div class="badge-container absolute -top-3 right-4 md:right-auto md:-right-3 hidden">
+                                <div class="bg-gold text-black text-[10px] font-bold px-3 py-1 rounded-full shadow-[0_0_10px_#d4af37] animate-pulse">EN CURSO</div>
+                            </div>
+                            <h3 class="phase-title text-xl font-display font-bold text-white">Fase 4: La Gran Final</h3>
                             <p class="text-neutral-400 text-sm mt-2">Escrutinio final entre los finalistas definitivos de cada categoría.</p>
                         </div>
                     </div>
+                    <div class="phase-icon absolute left-4 md:left-1/2 -translate-x-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-black border border-neutral-600 z-20 order-1 md:order-2">
+                         <div class="dot w-2 h-2 bg-neutral-500 rounded-full"></div>
+                    </div>
+                    <div class="md:w-1/2 order-3"></div>
                 </div>
 
                 <div class="relative pt-12 text-center reveal">
@@ -1387,42 +1405,58 @@
         
         // ¡CAMBIA ESTE NÚMERO PARA ACTUALIZAR TODA LA WEB!
         // 0 = Fase Categorías
-        // 1 = Fase Candidatos
-        // 2 = Fase Votación Global
-        // 3 = Gran Final
-        const CURRENT_PHASE = 1; 
+        // 1 = Fase Elección Categorías
+        // 2 = Fase Propuesta Nominados (NUEVA)
+        // 3 = Fase Votación Global
+        // 4 = Gran Final
+        const CURRENT_PHASE = 1; // Ajusta esto según en qué fase estéis realmente
 
-        // Configuración de textos y enlaces para la sección de votación (#active-phase)
         const phasesConfig = [
             {
                 // FASE 0
-                title: "Propón tus Categorías",
+                title: "Propuesta de Categorías",
                 desc: "¿Crees que falta algún premio esencial? Ayúdanos a definir las categorías en las que competirán los nominados.",
                 formTitle: "Formulario Fase 0: Propuestas",
                 link: "https://forms.gle/iPWTAhVhqNSc3BV98"
             },
             {
                 // FASE 1
-                title: "Elección de Candidatos",
+                title: "Elección de Categorías",
                 desc: "Es el momento de seleccionar las 15 mejores categorías. Tu voz define cuáles serán las mejores.",
                 formTitle: "Formulario Fase 1: Elección de Categorías",
                 link: "https://forms.gle/eineCZ4xCKbtrgua8" 
             },
             {
                 // FASE 2
-                title: "Votación Global",
-                desc: "Los categorías oficiales están sobre la mesa. La democracia comienza ahora: elige sabiamente a tus favoritos para cada una.",
-                formTitle: "Formulario Fase 2: Primera Votación",
-                link: "https://forms.gle/TU_ENLACE_FASE_2_AQUI" // <--- PON AQUÍ TU LINK DE LA FASE 2
+                title: "Propuesta de Nominados",
+                desc: "Ahora que tenemos categorías, necesitamos candidatos. Propón ejemplos y personas para cada premio.",
+                formTitle: "Formulario Fase 2: Nominaciones",
+                link: "#" // <-- PON AQUÍ EL LINK CUANDO LO TENGAS
             },
             {
                 // FASE 3
+                title: "Votación Global",
+                desc: "Los categorías oficiales están sobre la mesa. La democracia comienza ahora: elige sabiamente a tus favoritos.",
+                formTitle: "Formulario Fase 3: Primera Votación",
+                link: "#" // <-- PON AQUÍ EL LINK CUANDO LO TENGAS
+            },
+            {
+                // FASE 4
                 title: "La Gran Final",
                 desc: "Escrutinio final entre los finalistas de cada categoría. Solo uno se alzará con la gloria suprema.",
-                formTitle: "Formulario Fase 3: Votación Final",
-                link: "https://forms.gle/TU_ENLACE_FASE_2_AQUI" // <--- PON AQUÍ TU LINK DE LA FASE 3
+                formTitle: "Formulario Fase 4: Votación Final",
+                link: "#" // <-- PON AQUÍ EL LINK CUANDO LO TENGAS
             }
         ];
+
+        function updatePhaseSystem() {
+            // 1. ACTUALIZAR CRONOGRAMA
+            // IMPORTANTE: Ahora el bucle va hasta 4 porque hemos añadido una fase
+            for (let i = 0; i <= 4; i++) { 
+                const phaseEl = document.getElementById(`phase-${i}`);
+                if (!phaseEl) continue;
+                
+                // ... (El resto de la función se queda igual) ...
 
         function updatePhaseSystem() {
             // 1. ACTUALIZAR CRONOGRAMA
