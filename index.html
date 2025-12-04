@@ -892,7 +892,7 @@
                     
                     <div>
                         <p class="text-white font-display font-bold text-sm uppercase tracking-wider">
-                            © 2025 Comité Organizador
+                            © 2025 Comité de Niños Indios Asalariados
                         </p>
                         <p class="text-neutral-500 text-[10px] uppercase tracking-widest mt-1">
                             Todos los derechos reservados
@@ -1104,10 +1104,10 @@
       }
 
       // ===========================
-      // 8. GENERADOR DE TICKET VIP (PERSONALIZADO CON FOTO)
+      // 8. GENERADOR DE TICKET VIP (ACTUALIZADO CON QR REAL)
       // ===========================
       
-      // Base de datos de VIPs (Nombres normalizados sin tildes -> Ruta foto)
+      // Base de datos de VIPs
       const vipData = {
           'carlos': 'fotos/carlos.jpg',
           'adriana': 'fotos/adriana.jpg',
@@ -1116,15 +1116,14 @@
           'pablo garcia': 'fotos/pablog.jpg',
           'pablo dolz': 'fotos/pablod.jpg',
           'lucia': 'fotos/lucia.jpg'
-          // Se pueden añadir variaciones si quieres: 'pablo g': 'fotos/pablog.jpg'
       };
 
-      // Función auxiliar para quitar tildes y pasar a minúsculas
       function normalizeText(text) {
           return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
       }
 
-      const qrBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAABTlJREFUeJztWk1y3CAMRSS5/6W70227zYtJgATIT1L5E89Wl40hgQA5Pj4+Pj4+Pj4+Pj4+Pj4+Pr4F/H1/+/v7D/w6Pj8/r/9f+B74/v5+X79//x4/f/48fv/+/Xq9Xv8/f/4cv379On7+/Hm9/v79e3z9+vV6/fbt2/X68/Pzen358uV6/fXr1/H58+fr9f379+P169fX6/v376/XN2/eXOfw7du34/nz59fr27dvx+vXr6/X169fjxcvXlzn8Pz58+v19evX1+s8h/Mc1vO4zuF4PL7O4TyH8xyeP39+ncN5Duc5PHz48P8T+B/8/wa2b9++XQ/8PIfrHJ7ncJ7DdQ7ncJ7Deg7ncJ7Deg7rOZzncJ7Deg7ncJ7Deg7PczjP4TyH9RzOc3iew3kO5zms53Cew3kO1zl8/vz5fxv4H/z/BtZzWM/hPIfrHK5zOM/hPIfrHM5zOM/hPIfrHM5zOM/hPIfrHM5zOM/hPIfrHM5zOM/hOofzHM5zOM/hPIfrHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+f4P1HK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHK5zOM/hOofzHP4F/A/+fwO/fv16vb58+fL/E/gf/P8Gnj9/fr2+ffv2+vr16/HixYvrHJ7ncJ7DeQ7rOVzncJ7DeQ7nOazncJ7DeQ7rOVzncJ7DeQ7nOazncJ7DeQ7rOVzncJ7DeQ7nOazncJ7D+X/x+Pj4+Pj4+Pj4+Pj4+Pj4+PjW8Q/rG0qCT9+44QAAAABJRU5ErkJggg==";
+      // CAMBIO IMPORTANTE: AHORA USAMOS LA IMAGEN DE TU CARPETA
+      const qrPath = "fotos/qr.png"; 
 
       function generateTicket() {
           const nameInputRaw = document.getElementById('vip-name').value;
@@ -1137,11 +1136,9 @@
           const imgElement = document.getElementById('final-ticket-img');
           const downloadLink = document.getElementById('download-link');
 
-          // Reset errores
           errorPass.classList.add('hidden');
           errorName.classList.add('hidden');
 
-          // 1. Verificación de Contraseña
           if (passInput !== "viajedesexo") {
               errorPass.classList.remove('hidden');
               formDiv.classList.add('animate-pulse'); 
@@ -1149,38 +1146,144 @@
               return;
           }
 
-          // 2. Verificación de Nombre en la Lista Blanca
           const normalizedName = normalizeText(nameInputRaw);
           const userPhotoPath = vipData[normalizedName];
 
           if (!userPhotoPath) {
-              // Si no está en la lista, denegar acceso
               errorName.classList.remove('hidden');
               formDiv.classList.add('animate-pulse');
               setTimeout(() => formDiv.classList.remove('animate-pulse'), 500);
               return;
           }
 
-          // === TODO CORRECTO: PROCEDEMOS A GENERAR EL TICKET ===
-          // ACTUALIZAR MENSAJE DE BIENVENIDA CON EL NOMBRE REAL
           document.getElementById('vip-welcome-msg').innerText = `¡BIENVENIDO, ${nameInputRaw.toUpperCase()}!`;
           
-          // Cargamos primero la foto del usuario
+          // Cargar Foto Usuario
           const userImg = new Image();
           userImg.src = userPhotoPath;
           
           userImg.onload = function() {
-              // Una vez cargada la foto, cargamos el QR y dibujamos todo
+              // Cargar Foto QR desde la carpeta
               const qrImg = new Image();
-              qrImg.src = qrBase64;
+              qrImg.src = qrPath; // Usamos la variable nueva
+              
               qrImg.onload = function() {
                   drawFinalTicket(userImg, qrImg, nameInputRaw.toUpperCase());
+              }
+              // Si falla el QR, dibuja sin él para que no se rompa
+              qrImg.onerror = function() {
+                  console.log("No se encontró fotos/qr.png, generando sin QR.");
+                  drawFinalTicket(userImg, null, nameInputRaw.toUpperCase());
               }
           };
           
           userImg.onerror = function() {
               alert("Error al cargar la foto del candidato. Inténtalo de nuevo.");
           };
+      }
+
+      // --- FUNCIONES DE DIBUJO (MANTENER LAS QUE YA TIENES: drawCalendarIcon, drawMapPinIcon) ---
+      // (No necesitas cambiarlas, asegúrate de que sigan ahí)
+
+      // Función auxiliar para dibujar el ticket final
+      function drawFinalTicket(userImg, qrImg, displayName) {
+          const tCanvas = document.createElement('canvas');
+          const tCtx = tCanvas.getContext('2d');
+          const width = 850;
+          const height = 350;
+          tCanvas.width = width;
+          tCanvas.height = height;
+
+          // --- 1. FONDO ---
+          tCtx.fillStyle = '#0F0F0F';
+          tCtx.fillRect(0, 0, width, height);
+          for (let i = 0; i < 8000; i++) {
+              tCtx.fillStyle = `rgba(255, 215, 0, ${Math.random() * 0.04})`; 
+              tCtx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5);
+          }
+
+          // Marco
+          const borderGrad = tCtx.createLinearGradient(0, 0, width, height);
+          borderGrad.addColorStop(0, '#aa771c'); borderGrad.addColorStop(0.3, '#fbf5b7'); borderGrad.addColorStop(0.7, '#d4af37'); borderGrad.addColorStop(1, '#aa771c');
+          tCtx.lineWidth = 3; tCtx.strokeStyle = borderGrad;
+          tCtx.strokeRect(12, 12, width - 24, height - 24);
+
+          const splitX = 550; 
+
+          // --- 3. PANEL IZQUIERDO ---
+          const textLeftMargin = 60;
+          tCtx.textAlign = 'left';
+
+          // Marca de agua
+          tCtx.save(); tCtx.translate(280, 175); tCtx.rotate(-Math.PI / 16);
+          tCtx.font = '900 100px Montserrat'; tCtx.fillStyle = 'rgba(255, 255, 255, 0.02)'; tCtx.textAlign = 'center'; tCtx.fillText('VIP ACCESS', 0, 0); tCtx.restore();
+
+          // Textos
+          tCtx.font = '700 12px Montserrat'; tCtx.fillStyle = '#d4af37'; tCtx.fillText('★ INVITADO DE HONOR', textLeftMargin, 60);
+          tCtx.font = '900 36px Playfair Display'; tCtx.fillStyle = '#ffffff'; tCtx.fillText('VIAJE DE S3X0', textLeftMargin, 105);
+          tCtx.fillStyle = '#d4af37'; tCtx.fillText('AWARDS 2025', textLeftMargin + 270, 105);
+
+          // Nombre
+          tCtx.font = '900 52px Montserrat';
+          const nameGrad = tCtx.createLinearGradient(textLeftMargin, 0, textLeftMargin + 400, 0);
+          nameGrad.addColorStop(0, '#bf953f'); nameGrad.addColorStop(0.5, '#fffacd'); nameGrad.addColorStop(1, '#bf953f');
+          tCtx.fillStyle = nameGrad;
+          if (displayName.length > 15) tCtx.font = '900 40px Montserrat';
+          tCtx.fillText(displayName, textLeftMargin, 185);
+
+          // Iconos y Fecha/Lugar (Tu código anterior de iconos va aquí)
+          const iconSize = 16; const textOffsetX = 25; const goldColor = '#d4af37'; const detailsColor = '#cccccc'; const detailsFont = '600 14px Montserrat';
+          
+          if(typeof drawCalendarIcon === "function") {
+             drawCalendarIcon(tCtx, textLeftMargin, 222, iconSize, goldColor);
+             drawMapPinIcon(tCtx, textLeftMargin, 247, iconSize, goldColor);
+          }
+          
+          tCtx.font = detailsFont; tCtx.fillStyle = detailsColor;
+          tCtx.fillText('19 DE DICIEMBRE, 2025', textLeftMargin + textOffsetX, 235);
+          tCtx.fillText('UBICACIÓN SECRETA', textLeftMargin + textOffsetX, 260);
+
+          tCtx.font = 'italic 400 11px Montserrat'; tCtx.fillStyle = '#888888';
+          tCtx.fillText('Este pase es personal e intransferible.', textLeftMargin, 310);
+
+          // --- 4. PANEL DERECHO ---
+          const rightPanelCenter = splitX + (width - splitX) / 2;
+          
+          // FOTO USUARIO
+          const photoSize = 130; const photoY = 40;     
+          tCtx.save(); tCtx.shadowColor = 'rgba(212, 175, 55, 0.5)'; tCtx.shadowBlur = 20; tCtx.lineWidth = 4; tCtx.strokeStyle = borderGrad;
+          tCtx.strokeRect(rightPanelCenter - (photoSize/2), photoY, photoSize, photoSize); tCtx.restore();
+
+          const aspectRatio = userImg.width / userImg.height;
+          let sourceWidth = userImg.width; let sourceHeight = userImg.height; let sourceX = 0; let sourceY = 0;
+          if (aspectRatio > 1) { sourceWidth = userImg.height; sourceX = (userImg.width - sourceWidth) / 2; } else { sourceHeight = userImg.width; sourceY = (userImg.height - sourceHeight) / 2; }
+          tCtx.drawImage(userImg, sourceX, sourceY, sourceWidth, sourceHeight, rightPanelCenter - (photoSize/2) + 2, photoY + 2, photoSize - 4, photoSize - 4);
+
+          // === AQUI SE DIBUJA EL QR ===
+          // Sustituimos el código de barras por el QR imagen
+          if (qrImg) {
+              const qrSize = 90; // Tamaño del QR
+              const qrX = rightPanelCenter - (qrSize / 2);
+              const qrY = photoY + photoSize + 30;
+
+              // Fondo blanco para el QR para que se lea bien
+              tCtx.fillStyle = '#ffffff';
+              tCtx.fillRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10);
+              
+              // Dibujar imagen QR
+              tCtx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+          }
+
+          // ID Texto
+          tCtx.textAlign = 'center'; tCtx.font = '700 11px monospace'; tCtx.fillStyle = '#d4af37';
+          tCtx.fillText(`VIP ID: ${displayName.toUpperCase()}`, rightPanelCenter, 320);
+
+          // Renderizar
+          document.getElementById('final-ticket-img').src = tCanvas.toDataURL('image/png');
+          document.getElementById('download-link').href = tCanvas.toDataURL('image/png');
+          document.getElementById('vip-form').classList.add('hidden');
+          document.getElementById('ticket-result').classList.remove('hidden');
+          fireConfetti();
       }
 
         // --- FUNCIONES AUXILIARES PARA DIBUJAR ICONOS EN CANVAS ---
