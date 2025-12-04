@@ -864,31 +864,6 @@
         </div>
     </section>
 
-    <section id="active-phase" class="py-24 px-6 bg-transparent relative">
-        <div class="absolute inset-0 bg-gold/5 blur-[100px] rounded-full opacity-20 pointer-events-none"></div>
-        <div class="max-w-4xl mx-auto text-center relative z-10 reveal">
-             <div class="inline-block border border-gold px-4 py-1 rounded-full mb-6">
-                <span id="active-badge" class="text-gold text-xs font-bold tracking-widest uppercase animate-pulse">● Zona de Votación Activa</span>
-             </div>
-             
-             <h2 id="active-title" class="text-4xl md:text-6xl font-display font-bold mb-6 text-white uppercase transition-all duration-500">
-                 </h2>
-             <p id="active-desc" class="text-neutral-300 text-lg mb-10 max-w-2xl mx-auto font-light leading-relaxed transition-all duration-500">
-                 </p>
-
-             <div class="glass-panel p-8 md:p-12 rounded-xl border border-gold/30 shadow-[0_0_50px_rgba(212,175,55,0.1)] mt-12">
-                <i data-lucide="clipboard-edit" class="w-12 h-12 text-gold mx-auto mb-6"></i>
-                <h3 id="active-form-title" class="text-2xl font-display font-bold text-white mb-2">
-                    </h3>
-                <p class="text-neutral-400 mb-8 text-sm">El siguiente enlace te llevará al formulario oficial totalmente seguro.</p>
-                
-                <a id="active-link" href="#" target="_blank" class="btn-gold px-8 py-4 rounded-sm text-sm uppercase tracking-widest inline-flex items-center gap-2 hover-trigger">
-                    ACCEDER A LA VOTACIÓN <i data-lucide="external-link" class="w-4 h-4"></i>
-                </a>
-             </div>
-        </div>
-    </section>
-
     <section id="quiniela" class="py-24 relative bg-transparent overflow-hidden border-t border-white/5">
         
         <div class="absolute bottom-0 left-0 w-full h-[300px] bg-gradient-to-t from-red-900/10 to-transparent pointer-events-none"></div>
@@ -921,7 +896,7 @@
         // DATOS INICIALES (Votos simulados para que haya datos)
         const quinielaData = [
             { 
-                id: 1, title: "Más Tocapelotas", icon: "siren", 
+                id: 1, title: "Más Tocapelotas", icon: "smile", 
                 candidates: [
                     { name: "Pablo García", votes: 50 },
                     { name: "Nicolás", votes: 15 },
@@ -955,7 +930,7 @@
                 ] 
             },
             { 
-                id: 4, title: "Premio al Más Desaparecido", icon: "ghost", 
+                id: 4, title: "Premio al Más Desaparecido", icon: "cloud", 
                 candidates: [
                     { name: "Pablo García", votes: 5 },
                     { name: "Nicolás", votes: 30 },
@@ -979,7 +954,7 @@
                 ] 
             },
             { 
-                id: 6, title: "Fantasmada del Año", icon: "sparkles", 
+                id: 6, title: "Fantasmada del Año", icon: "ghost", 
                 candidates: [
                     { name: "Iré a Asturias", votes: 50 },
                     { name: "Este verano me saco el carnet", votes: 20 },
@@ -1059,7 +1034,7 @@
                 ] 
             },
             { 
-                id: 13, title: "Jaimitada del Año", icon: "clown", 
+                id: 13, title: "Jaimitada del Año", icon: "smile-plus", 
                 candidates: [
                     { name: "Pablo g luna se queda con nuestro dinero", votes: 50 },
                     { name: "Nico y Adriana se lían", votes: 15 },
@@ -1259,6 +1234,33 @@
 
         document.addEventListener('DOMContentLoaded', renderQuiniela);
     </script>
+
+    <section id="active-phase" class="py-24 px-6 bg-transparent relative">
+        <div class="absolute inset-0 bg-gold/5 blur-[100px] rounded-full opacity-20 pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto text-center relative z-10 reveal">
+             <div class="inline-block border border-gold px-4 py-1 rounded-full mb-6">
+                <span id="active-badge" class="text-gold text-xs font-bold tracking-widest uppercase animate-pulse">● Zona de Votación Activa</span>
+             </div>
+             
+             <h2 id="active-title" class="text-4xl md:text-6xl font-display font-bold mb-6 text-white uppercase transition-all duration-500">
+                 </h2>
+             <p id="active-desc" class="text-neutral-300 text-lg mb-10 max-w-2xl mx-auto font-light leading-relaxed transition-all duration-500">
+                 </p>
+
+             <div class="glass-panel p-8 md:p-12 rounded-xl border border-gold/30 shadow-[0_0_50px_rgba(212,175,55,0.1)] mt-12">
+                <i data-lucide="clipboard-edit" class="w-12 h-12 text-gold mx-auto mb-6"></i>
+                <h3 id="active-form-title" class="text-2xl font-display font-bold text-white mb-2">
+                    </h3>
+                <p class="text-neutral-400 mb-8 text-sm">El siguiente enlace te llevará al formulario oficial totalmente seguro.</p>
+                
+                <a id="active-link" href="#" target="_blank" class="btn-gold px-8 py-4 rounded-sm text-sm uppercase tracking-widest inline-flex items-center gap-2 hover-trigger">
+                    ACCEDER A LA VOTACIÓN <i data-lucide="external-link" class="w-4 h-4"></i>
+                </a>
+             </div>
+        </div>
+    </section>
+
+    
 
     <section id="vip-access" class="py-24 px-6 bg-transparent relative border-t border-gold/10">
         <div class="max-w-3xl mx-auto text-center relative z-10 reveal">
