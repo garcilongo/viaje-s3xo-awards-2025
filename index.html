@@ -184,6 +184,8 @@
             <a href="#nominees" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Candidatos</a>
             <a href="#group-photo" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Recuerdos</a>
             <a href="#quotes" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Muro de la Fama</a>
+            <a href="#quiniela" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-gold transition-colors hover-trigger">Apuestas</a>
+
             
             <button id="music-btn-desktop" onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center gap-[2px] rounded-full border border-gold/50 text-gold hover:bg-gold/10 transition-all hover-trigger" title="Reproducir/Pausar Música">
                 <span class="equalizer-bar h-2"></span>
@@ -887,6 +889,377 @@
         </div>
     </section>
 
+    <section id="quiniela" class="py-24 relative bg-transparent overflow-hidden border-t border-white/5">
+        
+        <div class="absolute bottom-0 left-0 w-full h-[300px] bg-gradient-to-t from-red-900/10 to-transparent pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10 px-4 md:px-6">
+            
+            <div class="text-center mb-10 reveal">
+                <div class="inline-block p-3 rounded-full bg-gold/10 border border-gold/30 mb-6 shadow-[0_0_30px_rgba(212,175,55,0.1)]">
+                    <i data-lucide="trophy" class="w-8 h-8 text-gold"></i>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-white uppercase tracking-wider mb-4">
+                    Apuestas <span class="text-red-500">En Vivo</span>
+                </h2>
+                <p class="text-neutral-400 text-sm tracking-widest uppercase max-w-2xl mx-auto">
+                    Elige a tus ganadores. La matemática no miente (nosotros tampoco).
+                </p>
+            </div>
+
+            <div class="w-full">
+                 <div id="quiniela-track" class="flex overflow-x-auto gap-6 pb-8 px-1 md:px-0 cursor-grab active:cursor-grabbing scrollbar-hide snap-x snap-mandatory">
+                     </div>
+            </div>
+            
+            <p class="md:hidden text-neutral-600 text-[10px] text-center mt-2 animate-pulse uppercase tracking-[0.2em]">← Desliza para ver más →</p>
+
+        </div>
+    </section>
+
+    <script>
+        // DATOS INICIALES (Votos simulados para que haya datos)
+        const quinielaData = [
+            { 
+                id: 1, title: "Más Tocapelotas", icon: "siren", 
+                candidates: [
+                    { name: "Pablo García", votes: 50 },
+                    { name: "Nicolás", votes: 15 },
+                    { name: "Lucía", votes: 10 },
+                    { name: "José Luis", votes: 10 },
+                    { name: "Adriana", votes: 5 },
+                    { name: "Lucía", votes: 6 },
+                    { name: "Pablo Dolz", votes: 4 }
+                ] 
+            },
+            { 
+                id: 2, title: "Más Gracioso", icon: "laugh", 
+                candidates: [
+                    { name: "Pablo García", votes: 60 },
+                    { name: "Nicolás", votes: 15 },
+                    { name: "Lucía", votes: 5 },
+                    { name: "José Luis", votes: 5 },
+                    { name: "Adriana", votes: 5 },
+                    { name: "Lucía", votes: 6 },
+                    { name: "Pablo Dolz", votes: 4 }
+                ] 
+            },
+            { 
+                id: 3, title: "Mejor Frase del Año", icon: "quote", 
+                candidates: [
+                    { name: "Por fin en casa", votes: 30 },
+                    { name: "Se caga la perra", votes: 20 },
+                    { name: "Es que José Luis es súper virgen", votes: 15 },
+                    { name: "¿Qué es lo correcto?", votes: 30 },
+                    { name: "Otra", votes: 5 }
+                ] 
+            },
+            { 
+                id: 4, title: "Premio al Más Desaparecido", icon: "ghost", 
+                candidates: [
+                    { name: "Pablo García", votes: 5 },
+                    { name: "Nicolás", votes: 30 },
+                    { name: "Lucía", votes: 5 },
+                    { name: "José Luis", votes: 5 },
+                    { name: "Adriana", votes: 5 },
+                    { name: "Carlos", votes: 50 },
+                    { name: "Pablo Dolz", votes: 5 }
+                ] 
+            },
+            { 
+                id: 5, title: "Premio al Que Más Come", icon: "utensils", 
+                candidates: [
+                    { name: "Pablo García", votes: 20 },
+                    { name: "Nicolás", votes: 20 },
+                    { name: "Lucía", votes: 10 },
+                    { name: "José Luis", votes: 10 },
+                    { name: "Adriana", votes: 15 },
+                    { name: "Carlos", votes: 5 },
+                    { name: "Pablo Dolz", votes: 20 }
+                ] 
+            },
+            { 
+                id: 6, title: "Fantasmada del Año", icon: "sparkles", 
+                candidates: [
+                    { name: "Iré a Asturias", votes: 50 },
+                    { name: "Este verano me saco el carnet", votes: 20 },
+                    { name: "Programo bien", votes: 10 },
+                    { name: "Nico y yo sólo hemos hablado", votes: 10 },
+                    { name: "¿Quién es Adriana?", votes: 5 },
+                    { name: "Otra", votes: 5 }
+                ] 
+            },
+            { 
+                id: 7, title: "Pareja del Año", icon: "heart", 
+                candidates: [
+                    { name: "Nico y Adriana ", votes: 90 },
+                    { name: "Nico y Joselu", votes: 2 },
+                    { name: "Nico y Pablo g luna", votes: 2 },
+                    { name: "Adriana y Lucía", votes: 3 },
+                    { name: "Carlos y Joselu", votes: 2 },
+                    { name: "Pablo dolz y pablo g luna", votes: 3 }
+                ] 
+            },
+            { 
+                id: 8, title: "Mejor Culo del Grupo", icon: "apple", 
+                candidates: [
+                    { name: "Pablo García", votes: 50 },
+                    { name: "Nicolás", votes: 40 },
+                    { name: "Lucía", votes: 1 },
+                    { name: "José Luis", votes: 2 },
+                    { name: "Adriana", votes: 3 },
+                    { name: "Carlos", votes: 2 },
+                    { name: "Pablo Dolz", votes: 2 }
+                ] 
+            },
+            { 
+                id: 9, title: "Plot Twist del Año", icon: "zap", 
+                candidates: [
+                    { name: "No voy a Asturias", votes: 30 },
+                    { name: "NO voy a la Velada", votes: 10 },
+                    { name: "Este horario de bus está mal", votes: 10 },
+                    { name: "Nico y Adriana se lían", votes: 40 },
+                    { name: "Pablo tocó a una mujer (quería ir al baño y quería pasar)", votes: 5 },
+                    { name: "Otra", votes: 5 }
+                ] 
+            },
+            { 
+                id: 10, title: "Mejor Foto del Año", icon: "camera", 
+                candidates: [
+                    { name: "Pablo g luna en el banco gay", votes: 60 },
+                    { name: "Nico con el kalimocho roto fregando", votes: 15 },
+                    { name: "Pablo g luna durmiendo con la percha", votes: 10 },
+                    { name: "Joseluinchi de excursión (cualquiera)", votes: 10 },
+                    { name: "Lucía y Adriana en la cocina", votes: 5 },
+                    { name: "Otra", votes: 6 }
+                ] 
+            },
+            { 
+                id: 11, title: "Premio al Más Cagón", icon: "baby", 
+                candidates: [
+                    { name: "Pablo García", votes: 20 },
+                    { name: "Nicolás", votes: 25 },
+                    { name: "Lucía", votes: 2 },
+                    { name: "José Luis", votes: 3 },
+                    { name: "Adriana", votes: 5 },
+                    { name: "Carlos", votes: 10 },
+                    { name: "Pablo Dolz", votes: 35 }
+                ] 
+            },
+            { 
+                id: 12, title: "Premio al Que Más Bebe", icon: "beer", 
+                candidates: [
+                    { name: "Pablo García", votes: 20 },
+                    { name: "Nicolás", votes: 20 },
+                    { name: "Lucía", votes: 20 },
+                    { name: "José Luis", votes: 10 },
+                    { name: "Adriana", votes: 10 },
+                    { name: "Carlos", votes: 10 },
+                    { name: "Pablo Dolz", votes: 10 }
+                ] 
+            },
+            { 
+                id: 13, title: "Jaimitada del Año", icon: "clown", 
+                candidates: [
+                    { name: "Pablo g luna se queda con nuestro dinero", votes: 50 },
+                    { name: "Nico y Adriana se lían", votes: 15 },
+                    { name: "Lucía escuchando con el vaso", votes: 20 },
+                    { name: "Abuela Petri pregunta que si ligamos en Gijón", votes: 15 },
+                    { name: "Otra", votes: 5 }
+                ] 
+            },
+            { 
+                id: 14, title: "Mejor Vídeo del Año", icon: "video", 
+                candidates: [
+                    { name: "Yendo de fiesta el jueves de Asturias", votes: 20 },
+                    { name: "Joseluinchi de excursión (cualquiera)", votes: 20 },
+                    { name: "Pablo g luna giñando el ojo", votes: 35 },
+                    { name: "A Nico se le caen 5 móviles por apilarlos", votes: 20 },
+                    { name: "Otro", votes: 5 }
+                ] 
+            },
+            { 
+                id: 15, title: "Mejor Evento (Sin Contar VS Awards 2025)", icon: "party-popper", 
+                candidates: [
+                    { name: "Asturias 2025", votes: 50 },
+                    { name: "Velada del año 2025", votes: 15 },
+                    { name: "Madrid", votes: 10 },
+                    { name: "Universidad", votes: 10 },
+                    { name: "Otro", votes: 15 }
+                ] 
+            }
+        ];
+
+        // ALGORITMO PARA QUE SUME 100% SIEMPRE
+        // Método del Resto Mayor (Largest Remainder Method)
+        function calculatePerfectPercentages(candidates) {
+            const totalVotes = candidates.reduce((sum, c) => sum + c.votes, 0);
+            if (totalVotes === 0) return candidates.map(() => 0);
+
+            // 1. Calcular porcentajes crudos con decimales
+            const rawPercentages = candidates.map(c => (c.votes / totalVotes) * 100);
+            
+            // 2. Obtener la parte entera (floor)
+            const flooredPercentages = rawPercentages.map(p => Math.floor(p));
+            
+            // 3. Calcular la suma de las partes enteras
+            const sum = flooredPercentages.reduce((a, b) => a + b, 0);
+            
+            // 4. Calcular cuánto falta para llegar a 100
+            let remainder = 100 - sum;
+
+            // 5. Calcular los decimales que hemos quitado para saber quién se merece el punto extra
+            const decimalParts = rawPercentages.map((p, index) => ({
+                index: index,
+                value: p - Math.floor(p)
+            }));
+
+            // 6. Ordenar de mayor decimal a menor
+            decimalParts.sort((a, b) => b.value - a.value);
+
+            // 7. Repartir el resto (1 punto a cada uno de los primeros 'remainder' candidatos)
+            for (let i = 0; i < remainder; i++) {
+                flooredPercentages[decimalParts[i].index] += 1;
+            }
+
+            return flooredPercentages;
+        }
+
+        const track = document.getElementById('quiniela-track');
+
+        function renderQuiniela() {
+            track.innerHTML = '';
+            
+            quinielaData.forEach(cat => {
+                const card = document.createElement('div');
+                
+                // AJUSTE DE TAMAÑO PARA EVITAR CORTES
+                // Mobile: w-full (ocupa todo el ancho, se ve entera).
+                // Desktop: calc(50% - 12px) -> Como el gap es 24px (gap-6), restamos 12px a cada una para que sumen el 100% exacto del contenedor.
+                card.className = "glass-panel p-6 rounded-2xl border border-white/5 hover:border-gold/30 transition-all group relative overflow-hidden min-w-full md:min-w-[calc(50%-12px)] snap-start shrink-0 flex flex-col justify-between";
+                
+                // Calcular porcentajes perfectos
+                const perfectPercents = calculatePerfectPercentages(cat.candidates);
+
+                let candidatesHTML = '';
+                cat.candidates.forEach((cand, index) => {
+                    const percent = perfectPercents[index];
+                    
+                    candidatesHTML += `
+                        <button onclick="voteReal(${cat.id}, ${index}, this)" class="vote-btn w-full text-left p-4 rounded-lg bg-black/50 border border-white/10 hover:border-gold/50 transition-all mb-3 relative overflow-hidden group/btn">
+                            <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-gold/10 to-gold/30 w-0 transition-all duration-700 ease-out progress-bar" style="width: 0%" data-width="${percent}%"></div>
+                            
+                            <div class="relative z-10 flex justify-between items-center">
+                                <span class="text-sm font-bold text-neutral-300 group-hover/btn:text-white uppercase tracking-wider truncate mr-2">${cand.name}</span>
+                                <span class="text-xs font-bold text-gold opacity-0 percent-tag transition-opacity duration-500 min-w-[30px] text-right">${percent}%</span>
+                            </div>
+                        </button>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="relative z-10 w-full">
+                        <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                            <div class="p-2 bg-gradient-to-br from-gold/20 to-black rounded-lg text-gold border border-gold/20 shrink-0">
+                                <i data-lucide="${cat.icon}" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-lg md:text-xl font-display font-bold text-white uppercase tracking-widest truncate">${cat.title}</h3>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            ${candidatesHTML}
+                        </div>
+                    </div>
+                `;
+                track.appendChild(card);
+            });
+            
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // LÓGICA DE VOTO
+        function voteReal(catId, candidateIndex, btnElement) {
+            // Prevenir doble voto visual en el momento
+            if(btnElement.classList.contains('voted')) return;
+
+            // 1. Actualizar datos (Sumar voto)
+            const category = quinielaData.find(c => c.id === catId);
+            category.candidates[candidateIndex].votes += 1;
+            
+            // 2. Recalcular porcentajes perfectos
+            const newPercents = calculatePerfectPercentages(category.candidates);
+
+            // 3. Efectos Visuales
+            const parent = btnElement.closest('.glass-panel');
+            const allBtns = parent.querySelectorAll('.vote-btn');
+            
+            // Sacudida
+            parent.classList.add('animate-[shake_0.4s_cubic-bezier(.36,.07,.19,.97)_both]');
+            setTimeout(() => parent.classList.remove('animate-[shake_0.4s_cubic-bezier(.36,.07,.19,.97)_both]'), 400);
+
+            // Actualizar interfaz
+            allBtns.forEach((b, idx) => {
+                b.classList.add('pointer-events-none'); // Bloquear
+                
+                if(b === btnElement) {
+                    b.classList.add('border-gold', 'bg-gold/5', 'voted');
+                    b.querySelector('span').classList.add('text-gold');
+                    b.querySelector('span').classList.remove('text-neutral-300');
+                } else {
+                    b.classList.add('opacity-40', 'grayscale');
+                }
+
+                // Actualizar barras y texto
+                const bar = b.querySelector('.progress-bar');
+                const tag = b.querySelector('.percent-tag');
+                
+                bar.style.width = newPercents[idx] + '%';
+                tag.innerText = newPercents[idx] + '%';
+                tag.classList.remove('opacity-0');
+            });
+
+            // 4. FUEGO / EXPLOSIÓN
+            const rect = btnElement.getBoundingClientRect();
+            // Calcular centro del botón para lanzar fuegos
+            const originX = (rect.left + rect.width / 2) / window.innerWidth;
+            const originY = (rect.top + rect.height / 2) / window.innerHeight;
+
+            fireExplosion(originX, originY);
+        }
+
+        function fireExplosion(x, y) {
+            // Chispas de fuego
+            const fireColors = ['#ff4500', '#ffa500', '#ffd700', '#ffffff'];
+            
+            confetti({
+                particleCount: 50,
+                spread: 80,
+                origin: { x: x, y: y },
+                colors: fireColors,
+                startVelocity: 35,
+                gravity: 0.6,
+                scalar: 0.8,
+                drift: 0,
+                ticks: 100
+            });
+            
+            // Humo / Ascuas (segunda ráfaga)
+            setTimeout(() => {
+                confetti({
+                    particleCount: 20,
+                    spread: 100,
+                    origin: { x: x, y: y },
+                    colors: ['#444444', '#888888'],
+                    startVelocity: 20,
+                    gravity: 0.4,
+                    scalar: 0.6,
+                    shapes: ['circle']
+                });
+            }, 100);
+        }
+
+        document.addEventListener('DOMContentLoaded', renderQuiniela);
+    </script>
+
     <section id="vip-access" class="py-24 px-6 bg-transparent relative border-t border-gold/10">
         <div class="max-w-3xl mx-auto text-center relative z-10 reveal">
              <div class="mb-8">
@@ -952,6 +1325,7 @@
                         <a href="#nominees" class="text-neutral-400 hover:text-gold transition-colors text-xs uppercase tracking-wider hover:translate-x-1 duration-300">Candidatos</a>
                         <a href="#group-photo" class="text-neutral-400 hover:text-gold transition-colors text-xs uppercase tracking-wider hover:translate-x-1 duration-300">Galería de Recuerdos</a>
                         <a href="#quotes" class="text-neutral-400 hover:text-gold transition-colors text-xs uppercase tracking-wider hover:translate-x-1 duration-300">Muro de la Fama</a>
+                        <a href="#quiniela" class="text-neutral-400 hover:text-gold transition-colors text-xs uppercase tracking-wider hover:translate-x-1 duration-300">Apuestas</a>
                         <a href="#active-phase" onclick="fireConfetti()" class="text-gold font-bold hover:text-white transition-colors text-xs uppercase tracking-wider hover:translate-x-1 duration-300 flex items-center gap-2">
                             <i data-lucide="star" class="w-3 h-3"></i> Votar Ahora
                         </a>
