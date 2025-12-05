@@ -69,23 +69,40 @@
             position: absolute; inset: 0; width: 100%; height: 100%;
             -webkit-backface-visibility: hidden; backface-visibility: hidden; 
             border-radius: 16px; overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.1);
             transition: opacity 0.1s ease-in-out;
         }
 
-        .front { z-index: 2; opacity: 1; pointer-events: auto; background: radial-gradient(circle at center, #1a1a1a, #000); border: 2px solid #d4af37; }
+        /* --- DISEÑO DEL SOBRE (FRONT) --- */
+        .front { 
+            z-index: 2; opacity: 1; pointer-events: auto; 
+            background: radial-gradient(circle at center, #1a1100 0%, #050300 40%, #000000 100%);
+            border: 3px double #d4af37;
+            box-shadow: 
+                inset 0 0 60px rgba(212, 175, 55, 0.2), 
+                0 0 0 2px #000, 
+                0 0 0 5px #aa771c, 
+                0 0 50px rgba(212, 175, 55, 0.3); 
+        }
         .back { z-index: 1; opacity: 0; pointer-events: none; background: #000; border: 2px solid #d4af37; }
 
         .card-container.is-revealed .front { opacity: 0; pointer-events: none; z-index: 1; }
         .card-container.is-revealed .back { opacity: 1; pointer-events: auto; z-index: 2; }
 
-        .front::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        /* --- TEXTURA ORNAMENTAL --- */
+        .front::before { 
+            content: ''; position: absolute; inset: 0; 
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.12'%3E%3Cpath d='M40 0L80 40 40 80 0 40zM40 10L70 40 40 70 10 40zM40 20L60 40 40 60 20 40zM40 30L50 40 40 50 30 40z'/%3E%3Cpath d='M0 0h10v10H0zM70 0h10v10H70zM0 70h10v10H0zM70 70h10v10H70z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+            opacity: 0.8;
+        }
 
         #flash-overlay { position: absolute; inset: 0; background: white; opacity: 0; z-index: 100; pointer-events: none; mix-blend-mode: screen; }
         .trigger-flash #flash-overlay { animation: flash 0.7s ease-out forwards; }
 
+        /* Capa de oscuridad (Ajustada opacidad a 0.8 para no agobiar) */
         #blackout-layer {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.92); 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); 
             z-index: 50; 
             opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
@@ -102,6 +119,16 @@
         }
         .light-left { left: -10%; transform: rotate(25deg); animation: sway 6s ease-in-out infinite alternate; }
         .light-right { right: -10%; transform: rotate(-25deg); animation: sway 7s ease-in-out infinite alternate-reverse; }
+
+        /* Focos Pasivos */
+        .passive-spot {
+            position: absolute; width: 60%; height: 200%; top: -50%;
+            background: radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.3) 0%, transparent 60%);
+            filter: blur(50px); pointer-events: none; z-index: 30;
+            mix-blend-mode: screen; opacity: 0.7;
+        }
+        .spot-left { left: -20%; transform: rotate(20deg); }
+        .spot-right { right: -20%; transform: rotate(-20deg); }
 
         .header-logo-container { cursor: pointer; transition: transform 0.3s ease; }
         .header-logo-container:hover { transform: scale(1.05); }
@@ -139,6 +166,7 @@
             </button>
         </div>
     </div>
+
     <div id="custom-cursor"></div><div id="cursor-dot"></div>
     
     <audio id="audio-gala" src="fotos/victoria.mp3" preload="auto"></audio>
@@ -150,9 +178,6 @@
     <div id="blackout-layer"></div>
 
     <section id="screen-intro" class="screen-section active flex flex-col items-center justify-center">
-        <div class="stage-light light-left"></div>
-        <div class="stage-light light-right"></div>
-
         <div class="relative z-10 text-center animate-zoom-in">
             <div class="relative mb-10 group cursor-pointer hover:scale-105 transition-transform duration-500">
                 <img src="fotos/logo.png" class="relative w-56 h-56 md:w-80 md:h-80 object-contain mx-auto drop-shadow-[0_0_60px_rgba(212,175,55,0.6)] animate-float">
@@ -170,7 +195,6 @@
     </section>
 
     <section id="screen-candidates" class="screen-section flex flex-col items-center justify-center p-8">
-        
         <div class="w-full max-w-[90%] flex flex-col md:flex-row items-center gap-16 relative z-10 h-[80vh]">
             
             <div class="w-full md:w-5/12 h-[60vh] relative rounded-lg overflow-hidden border border-gold/20 shadow-[0_0_60px_rgba(0,0,0,0.8)] group transition-all duration-700">
@@ -215,8 +239,8 @@
         
         <div class="flex-1 flex flex-col items-center justify-center relative z-10 px-4">
             
-            <div class="stage-light light-left"></div>
-            <div class="stage-light light-right"></div>
+            <div class="passive-spot spot-left"></div>
+            <div class="passive-spot spot-right"></div>
 
             <div class="mb-10 text-center max-w-6xl mt-4 animate-zoom-in relative z-40">
                 <h2 id="cat-title" class="text-4xl md:text-6xl lg:text-7xl font-display font-black uppercase text-gold-epic drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-all duration-500 leading-tight">
@@ -230,7 +254,7 @@
                     <div id="flash-overlay"></div>
 
                     <div id="card-front" class="front flex flex-col items-center justify-center animate-pulse-glow">
-                        <div class="relative z-10 border-2 border-gold rounded-full p-8 bg-black/40 backdrop-blur-md mb-8 group-hover:scale-110 transition-transform duration-500 shadow-[0_0_40px_rgba(212,175,55,0.2)]">
+                        <div class="relative z-10 border-2 border-gold rounded-full p-8 bg-[#1a1100]/80 backdrop-blur-md mb-8 group-hover:scale-110 transition-transform duration-500 shadow-[0_0_60px_rgba(212,175,55,0.5)]">
                             <i data-lucide="star" class="w-16 h-16 text-gold fill-gold/20"></i>
                         </div>
                         <p class="text-gold-epic font-display text-4xl font-bold uppercase tracking-[0.2em] drop-shadow-lg">Confidencial</p>
@@ -240,7 +264,7 @@
                     </div>
 
                     <div class="back flex flex-col shadow-[0_0_100px_rgba(212,175,55,0.4)]">
-                        <div id="media-container" class="relative flex-1 bg-neutral-900 overflow-hidden opacity-0 transition-opacity duration-300 delay-500"> 
+                        <div id="media-container" class="relative flex-1 bg-neutral-900 overflow-hidden opacity-0 transition-opacity duration-500"> 
                             <img id="win-img" src="" class="absolute inset-0 w-full h-full object-cover hidden scale-110">
                             <video id="win-vid" src="" class="absolute inset-0 w-full h-full object-cover hidden" loop muted playsinline></video>
                             
@@ -289,8 +313,6 @@
     </section>
 
     <section id="screen-closing" class="screen-section flex flex-col items-center justify-start pt-24 md:justify-center text-center p-8">
-        <div class="stage-light light-left"></div>
-        <div class="stage-light light-right"></div>
         
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.15)_0%,transparent_70%)] animate-pulse-glow"></div>
 
@@ -300,16 +322,12 @@
                 ¡GRACIAS POR<br><span class="text-gold-epic">VENIR!</span>
             </h1>
             
-            <div class="relative group transform hover:scale-105 transition-transform duration-700 mb-10 w-full max-w-xl">
+            <div class="relative group transform hover:scale-105 transition-transform duration-700 w-full max-w-xl">
                  <div class="absolute inset-0 bg-gold blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
-                 <img src="fotos/grupo.jpg" class="relative rounded-lg border-2 border-gold/50 shadow-[0_0_60px_rgba(0,0,0,0.8)] w-full h-auto max-h-[45vh] object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                 <img src="fotos/grupo.jpg" class="relative rounded-lg border-2 border-gold/50 shadow-[0_0_60px_rgba(0,0,0,0.8)] w-full h-auto max-h-[45vh] object-cover transition-all duration-700">
             </div>
 
-            <button onclick="location.reload()" class="btn-epic px-6 py-3 rounded-full uppercase text-[10px] font-bold flex items-center gap-2 bg-black/50 hover:bg-gold/20 border-gold/30 mb-4">
-                <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reiniciar
-            </button>
-            
-            <p class="text-neutral-500 text-[10px] uppercase tracking-[0.3em] font-bold">Viaje de S3X0 Awards ® 2025</p>
+            <p class="text-neutral-500 text-[10px] uppercase tracking-[0.3em] font-bold mt-8">Viaje de S3X0 Awards ® 2025</p>
         </div>
     </section>
 
@@ -319,44 +337,36 @@
         // 1. DATOS GANADORES
         const winnersData = [
             { cat: "Más tocapelotas del grupo",           name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg" },
-            { cat: "Persona más graciosa del grupo",      name: "PABLO GARCÍA",         type: "img",   media: "fotos/joseluis.jpg" },
-            { cat: "Frase mítica del año",                name: "FRASE",            type: "img",   media: "fotos/carlos.jpg" }, 
+            { cat: "Persona más graciosa del grupo",      name: "JOSÉ LUIS",         type: "img",   media: "fotos/joseluis.jpg" },
+            { cat: "Frase mítica del año",                name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg" }, 
             { cat: "Premio al más desaparecido",          name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg" },
             { cat: "Premio al que más come",              name: "PABLO DOLZ",        type: "img",   media: "fotos/pablod.jpg" },
-            { cat: "Fantasmada del año",                  name: "FANTASMADA",           type: "img",   media: "fotos/nicolas.jpg" },
+            { cat: "Fantasmada del año",                  name: "NICOLÁS",           type: "img",   media: "fotos/nicolas.jpg" },
             { cat: "Pareja del año",                      name: "NICO Y ADRIANA",    type: "img",   media: "fotos/nicolas.jpg" }, 
             { cat: "Mejor culo del grupo",                name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg" },
-            { cat: "Plot twist del año",                  name: "PLOT TWIST",           type: "img",   media: "fotos/adriana.jpg" },
-            { cat: "Mejor foto del año",                  name: "FOTO",     type: "img",   media: "fotos/foto_ganadora.jpg" }, 
-            { cat: "Premio al más cagón",                 name: "PABLO DOLZ",           type: "img",   media: "fotos/nicolas.jpg" },
+            { cat: "Plot twist del año",                  name: "ADRIANA",           type: "img",   media: "fotos/adriana.jpg" },
+            { cat: "Mejor foto del año",                  name: "FOTO GANADORA",     type: "img",   media: "fotos/foto_ganadora.jpg" }, 
+            { cat: "Premio al más cagón",                 name: "NICOLÁS",           type: "img",   media: "fotos/nicolas.jpg" },
             { cat: "Premio al que más bebe",              name: "LUCÍA",             type: "img",   media: "fotos/lucia.jpg" },
             { cat: "Jaimitada del año",                   name: "MOMENTO JAIMITADA", type: "video", media: "fotos/video_ganador.mp4" }, 
             { cat: "Mejor vídeo del año",                 name: "VIDEO CAÍDA",       type: "video", media: "fotos/video_ganador.mp4" },
             { cat: "Mejor evento del año",                name: "ASTURIAS 2025",     type: "img",   media: "fotos/grupo.jpg" }
         ];
 
-        // 2. NAVEGACIÓN ENTRE PANTALLAS (ACTUALIZADA)
+        // 2. NAVEGACIÓN
         function goToScreen(id) {
-            // Gestión de Audios
             const audioGala = document.getElementById('audio-gala');
             const audioBye = document.getElementById('audio-despedida');
 
-            // 1. Pausar todo primero
             audioGala.pause();
             audioBye.pause();
 
-            // 2. Lógica específica según la pantalla
             if (id === 'screen-closing') {
                 audioBye.currentTime = 0;
                 audioBye.volume = 1.0;
                 audioBye.play().catch(e => console.log("Audio despedida bloqueado", e));
             } 
-            else if (id === 'screen-awards' && isRevealed) {
-                // Si volvemos a premios y ya estaba revelado, quizás quieras reanudar la música de tensión o dejarlo en silencio.
-                // Por defecto lo dejamos en silencio hasta que se pulse "Revelar" de nuevo.
-            }
 
-            // Transición visual
             document.querySelectorAll('.screen-section').forEach(el => {
                 el.classList.remove('active');
             });
@@ -368,7 +378,6 @@
             const menu = document.getElementById('nav-menu');
             if (menu.classList.contains('hidden')) {
                 menu.classList.remove('hidden');
-                // Pequeña animación de entrada
                 menu.classList.add('animate-zoom-in');
             } else {
                 menu.classList.add('hidden');
@@ -376,7 +385,7 @@
             }
         }
 
-        // 3. LOGICA CANDIDATOS
+        // 3. CANDIDATOS
         const candidates = [
             { name: "Carlos", desc: "EL FENÓMENO, conocido por desaparecer en verano. Su superpoder es repartir salami por Albacete.", photo: "fotos/carlos.jpg", stats: [60, 30, 60, 70, 80] },
             { name: "Adriana", desc: "La reina de la física y los animes. Si hay una tarta de queso cerca, ella ya está saltando. Probablemente llegue tarde a la gala.", photo: "fotos/adriana.jpg", stats: [90, 30, 50, 60, 40] },
@@ -407,7 +416,7 @@
         function prevCandidate() { candIdx = (candIdx - 1 + candidates.length) % candidates.length; updateCand(); }
         updateCand();
 
-        // 4. LÓGICA PREMIOS (CORREGIDA - SIN LAG)
+        // 4. LÓGICA PREMIOS
         let currentCatIdx = 0;
         let isRevealed = false;
         let isAnimationInProgress = false; 
@@ -430,21 +439,17 @@
         };
 
         function updateAwardUI() {
-            // DETENER TODO
             isRevealed = false;
             isAnimationInProgress = false;
             clearTimeout(safetyTimer);
 
-            // LIMPIEZA VISUAL
             ui.body.classList.remove('blackout-active'); 
             ui.card.classList.remove('is-revealed', 'trigger-flash');
             ui.front.classList.remove('animate-shake-hard');
             
-            // RESET AUDIO
             ui.audioGala.pause(); 
             ui.audioGala.currentTime = 0;
             
-            // LIMPIAR MEDIOS (IMPORTANTE PARA EVITAR SPOILERS VISUALES)
             ui.winImg.src = "";
             ui.winVid.src = "";
             ui.winImg.classList.add('hidden');
@@ -452,12 +457,10 @@
             ui.mediaContainer.classList.remove('opacity-100');
             ui.mediaContainer.classList.add('opacity-0');
 
-            // --- NAVEGACIÓN ---
             const btnNext = document.getElementById('btn-next');
             const btnClosing = document.getElementById('btn-closing');
             const btnPrev = document.getElementById('btn-prev');
 
-            // 1. Botón Anterior
             if (currentCatIdx === 0) {
                 btnPrev.classList.remove('opacity-100', 'pointer-events-auto');
                 btnPrev.classList.add('opacity-0', 'pointer-events-none');
@@ -466,20 +469,15 @@
                 btnPrev.classList.remove('opacity-0', 'pointer-events-none');
             }
 
-            // 2. Lógica Botón Siguiente vs Despedida
             if (currentCatIdx === winnersData.length - 1) {
-                // Estamos en la última categoría: Ocultar Siguiente, Mostrar Despedida
                 btnNext.classList.add('hidden');
                 btnClosing.classList.remove('hidden');
             } else {
-                // No es la última: Mostrar Siguiente, Ocultar Despedida
                 btnNext.classList.remove('hidden');
                 btnClosing.classList.add('hidden');
             }
 
-            // TEXTOS
             const data = winnersData[currentCatIdx];
-            // Pequeño delay para textos para suavizar la transición
             setTimeout(() => {
                 ui.title.innerText = data.cat;
                 ui.counter.innerHTML = `${currentCatIdx + 1} <span class="text-neutral-600 text-sm">/ ${winnersData.length}</span>`;
@@ -487,81 +485,58 @@
             }, 100);
         }
 
-        // FUNCIÓN: PRECARGAR IMAGEN/VIDEO DURANTE EL REDOBLE
         function preloadWinnerMedia() {
             const data = winnersData[currentCatIdx];
-            
             if(data.type === 'video') {
                 ui.winImg.classList.add('hidden');
                 ui.winVid.classList.remove('hidden');
                 ui.winVid.src = data.media;
-                ui.winVid.load(); // Forzar carga
+                ui.winVid.load();
             } else {
                 ui.winVid.classList.add('hidden');
                 ui.winImg.classList.remove('hidden');
                 ui.winImg.src = data.media;
-                // La imagen se empieza a cargar aquí, 2.5s antes de mostrarse
             }
         }
 
-        // FUNCIÓN CENTRAL DE REVELACIÓN
         function executeRevealAction() {
             if (isRevealed) return;
-
-            // 1. Limpiar tensión
             ui.front.classList.remove('animate-shake-hard');
-            
-            // 2. DISPARAR FLASH
             ui.card.classList.add('trigger-flash');
 
-            // 3. CAMBIO VISUAL INSTANTÁNEO BAJO EL FLASH
             setTimeout(() => {
-                // Hacer visible el contenedor de la imagen YA (ya debería estar cargada)
                 ui.mediaContainer.classList.remove('opacity-0');
                 ui.mediaContainer.classList.add('opacity-100');
-
-                // Quitar oscuridad
-                ui.body.classList.remove('blackout-active');
-
-                // Swap de capas
+                ui.body.classList.remove('blackout-active'); // Esto apaga la oscuridad
                 ui.card.classList.add('is-revealed');
-                
-                // Reproducir video si es video
                 if(!ui.winVid.classList.contains('hidden')) ui.winVid.play();
-                
-                // Efectos
                 launchFireworks();
                 confetti({ particleCount: 300, spread: 150, origin: { y: 0.6 }, colors: ['#d4af37', '#ffffff', '#000000'], gravity: 0.8 });
                 isRevealed = true;
                 isAnimationInProgress = false;
-
-            }, 250); // Sincronizado con el pico blanco del flash
+            }, 250);
         }
 
         function revealWinner() {
             if(isRevealed || isAnimationInProgress) return;
             isAnimationInProgress = true;
             
-            // 1. CARGAR IMAGEN EN SEGUNDO PLANO AHORA MISMO
             preloadWinnerMedia();
 
-            // 2. INICIAR TENSIÓN
+            // Activar Blackout y temblor
             ui.body.classList.add('blackout-active'); 
             ui.front.classList.add('animate-shake-hard');
 
-            // 3. REPRODUCIR AUDIO
             ui.audioGala.volume = 1.0;
             ui.audioGala.currentTime = 0;
             const playPromise = ui.audioGala.play();
 
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    // Temporizador 3.25s
                     safetyTimer = setTimeout(() => {
                         executeRevealAction();
                     }, 3250); 
                 }).catch(error => {
-                    console.log("Audio bloqueado, fallback manual.");
                     setTimeout(() => executeRevealAction(), 3250);
                 });
             } else {
@@ -597,7 +572,7 @@
         
         updateAwardUI();
 
-        // 5. FONDO
+        // 5. FONDO PARTÍCULAS
         const canvas = document.getElementById('constellation-bg');
         const ctx = canvas.getContext('2d');
         let particlesArray;
