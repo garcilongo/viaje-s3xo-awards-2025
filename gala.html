@@ -493,7 +493,7 @@
                 for (let b = a; b < particlesArray.length; b++) {
                     let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
                     if (distance < (canvas.width/7) * (canvas.height/7)) {
-                        let opacityValue = 1 - (distance/20000);
+                        let opacityValue = 1 - (distance/10000);
                         ctx.strokeStyle = 'rgba(212, 175, 55,' + opacityValue + ')';
                         ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
                     }
