@@ -9,7 +9,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;700;900;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -26,7 +26,7 @@
                 'pulse-glow': 'pulseGlow 2s infinite',
                 'zoom-in': 'zoomIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
                 'spotlight': 'spotlightMove 5s ease-in-out infinite alternate',
-                'shine': 'shine 3s linear infinite',
+                'shine-gold': 'shineGold 4s linear infinite',
             },
             keyframes: {
                 'shake-hard': {
@@ -38,7 +38,11 @@
                 pulseGlow: { '0%, 100%': { filter: 'drop-shadow(0 0 15px rgba(212, 175, 55, 0.3))' }, '50%': { filter: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.7))' } },
                 zoomIn: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
                 spotlightMove: { '0%': { transform: 'rotate(-15deg) scale(1.2)', opacity: '0.4' }, '100%': { transform: 'rotate(15deg) scale(1.2)', opacity: '0.8' } },
-                shine: { '0%': { backgroundPosition: '200% center' }, '100%': { backgroundPosition: '-200% center' } }
+                shineGold: { 
+                    '0%': { backgroundPosition: '0% 50%' },
+                    '50%': { backgroundPosition: '100% 50%' },
+                    '100%': { backgroundPosition: '0% 50%' }
+                }
             }
           }
         }
@@ -71,10 +75,15 @@
         }
         .screen-section.active { opacity: 1; pointer-events: auto; z-index: 10; transform: scale(1); visibility: visible; filter: blur(0); }
 
-        /* TEXTO DORADO PREMIUM */
-        .text-gold-gradient {
-            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-            -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 4s linear infinite;
+        /* TEXTO DORADO ÉPICO (TÍTULOS) */
+        .text-gold-epic {
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c, #bf953f);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shineGold 5s linear infinite;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
         }
 
         /* TARJETA 3D */
@@ -141,7 +150,8 @@
 <body class="text-white h-screen w-screen flex flex-col font-sans overflow-hidden">
 
     <div id="custom-cursor"></div><div id="cursor-dot"></div>
-    <audio id="audio-drumroll" src="redoble.mp3" preload="auto"></audio>
+    <audio id="audio-drumroll" src="fotos/redoble.mp3" preload="auto"></audio>
+    <audio id="audio-victory" src="fotos/victoria.mp3" preload="auto"></audio>
     
     <canvas id="constellation-bg" class="fixed inset-0 pointer-events-none z-0"></canvas>
     <div class="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_100%)] opacity-80"></div>
@@ -166,7 +176,7 @@
             
             <h2 class="text-gold tracking-[0.6em] text-sm font-bold mb-4 uppercase opacity-80">Ceremonia Oficial</h2>
             <h1 class="text-6xl md:text-8xl lg:text-9xl font-display font-black text-white uppercase tracking-tighter leading-none mb-12 drop-shadow-2xl">
-                VIAJE DE S3X0<br><span class="text-gold-gradient">AWARDS 2025</span>
+                VIAJE DE S3X0<br><span class="text-gold-epic">AWARDS 2025</span>
             </h1>
 
             <button onclick="goToScreen('screen-candidates')" class="btn-epic px-12 py-5 rounded-sm text-sm font-bold uppercase tracking-[0.2em] flex items-center gap-3 mx-auto">
@@ -228,7 +238,7 @@
         <div class="flex-1 flex flex-col items-center justify-center relative z-10 px-4">
             
             <div class="mb-14 text-center max-w-6xl mt-8 animate-zoom-in">
-                <h2 id="cat-title" class="text-4xl md:text-6xl lg:text-7xl font-display font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-neutral-500 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-all duration-500 leading-tight">
+                <h2 id="cat-title" class="text-4xl md:text-6xl lg:text-7xl font-display font-black uppercase text-gold-epic drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-all duration-500 leading-tight">
                     </h2>
             </div>
 
@@ -361,7 +371,7 @@
         function prevCandidate() { candIdx = (candIdx - 1 + candidates.length) % candidates.length; updateCand(); }
         updateCand();
 
-        // 4. LÓGICA PREMIOS (ANTI SPOILER)
+        // 4. LÓGICA PREMIOS (ANTI SPOILER + FUEGOS)
         let currentCatIdx = 0;
         let isRevealed = false;
 
@@ -375,7 +385,8 @@
             winImg: document.getElementById('win-img'),
             winVid: document.getElementById('win-vid'),
             btnNext: document.getElementById('btn-next'),
-            audio: document.getElementById('audio-drumroll'),
+            audioDrum: document.getElementById('audio-drumroll'),
+            audioVictory: document.getElementById('audio-victory'),
             mediaContainer: document.getElementById('media-container')
         };
 
@@ -388,9 +399,13 @@
             ui.lights.classList.remove('opacity-100'); 
             ui.btnNext.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
             ui.btnNext.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10');
-            ui.winVid.pause(); ui.audio.pause(); ui.audio.currentTime = 0;
             
-            // OCULTAR MEDIA HASTA EL REVEAL
+            // Pausar audios
+            ui.winVid.pause(); 
+            ui.audioDrum.pause(); ui.audioDrum.currentTime = 0;
+            ui.audioVictory.pause(); ui.audioVictory.currentTime = 0;
+            
+            // OCULTAR MEDIA HASTA EL REVEAL (CRITICO)
             ui.mediaContainer.classList.remove('opacity-100');
             ui.mediaContainer.classList.add('opacity-0');
 
@@ -399,7 +414,7 @@
             ui.counter.innerHTML = `${currentCatIdx + 1} <span class="text-neutral-600 text-sm">/ ${winnersData.length}</span>`;
             ui.winName.innerText = data.name;
 
-            // Precarga pero oculto
+            // Cargar contenido pero mantener oculto
             if(data.type === 'video') {
                 ui.winImg.classList.add('hidden');
                 ui.winVid.classList.remove('hidden');
@@ -415,25 +430,32 @@
             if(isRevealed) return;
             
             // 1. Audio + Temblor + Luces
-            ui.audio.volume = 1.0;
-            ui.audio.play().catch(e => console.log("Click para audio"));
+            ui.audioDrum.volume = 1.0;
+            ui.audioDrum.play().catch(e => console.log("Click para audio"));
             ui.front.classList.add('animate-shake-hard');
             ui.lights.classList.add('opacity-100'); 
 
             // 2. Drop (3.5s)
             setTimeout(() => {
                 ui.front.classList.remove('animate-shake-hard');
-                ui.audio.pause();
+                ui.audioDrum.pause();
                 
+                // MÚSICA DE VICTORIA
+                ui.audioVictory.volume = 0.8;
+                ui.audioVictory.play().catch(e => console.log("Audio victoria error"));
+
                 // FLIP
                 ui.card.classList.add('flipped');
+                
+                // FUEGOS ARTIFICIALES
+                launchFireworks();
                 
                 // MOSTRAR IMAGEN (Con delay para que no se vea en el giro)
                 setTimeout(() => {
                     ui.mediaContainer.classList.remove('opacity-0');
                     ui.mediaContainer.classList.add('opacity-100');
                     if(!ui.winVid.classList.contains('hidden')) ui.winVid.play();
-                }, 300); // 300ms de seguridad mientras gira
+                }, 600); // 600ms de seguridad
                 
                 confetti({ particleCount: 300, spread: 150, origin: { y: 0.6 }, colors: ['#d4af37', '#ffffff', '#000000'], gravity: 0.8 });
                 isRevealed = true;
@@ -443,6 +465,24 @@
                     ui.btnNext.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
                 }, 1000);
             }, 3500); 
+        }
+
+        // FUNCIÓN FUEGOS ARTIFICIALES
+        function launchFireworks() {
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                // Cohetes laterales
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         }
 
         function changeCat(dir) {
@@ -520,7 +560,7 @@
                 for (let b = a; b < particlesArray.length; b++) {
                     let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
                     if (distance < (canvas.width/7) * (canvas.height/7)) {
-                        let opacityValue = 1 - (distance/10000);
+                        let opacityValue = 1 - (distance/20000);
                         ctx.strokeStyle = 'rgba(212, 175, 55,' + opacityValue + ')';
                         ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
                     }
