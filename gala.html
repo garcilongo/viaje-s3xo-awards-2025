@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GALA EN DIRECTO | VS AWARDS 2025</title>
+    <title>🔴 GALA EN DIRECTO | VS AWARDS 2025</title>
     
     <link rel="icon" type="image/png" href="fotos/logo.png" />
     
@@ -141,7 +141,7 @@
 <body class="text-white h-screen w-screen flex flex-col font-sans overflow-hidden">
 
     <div id="custom-cursor"></div><div id="cursor-dot"></div>
-    <audio id="audio-drumroll" src="fotos/redoble.mp3" preload="auto"></audio>
+    <audio id="audio-drumroll" src="redoble.mp3" preload="auto"></audio>
     
     <canvas id="constellation-bg" class="fixed inset-0 pointer-events-none z-0"></canvas>
     <div class="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_100%)] opacity-80"></div>
@@ -520,7 +520,7 @@
                 for (let b = a; b < particlesArray.length; b++) {
                     let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
                     if (distance < (canvas.width/7) * (canvas.height/7)) {
-                        let opacityValue = 1 - (distance/20000);
+                        let opacityValue = 1 - (distance/10000);
                         ctx.strokeStyle = 'rgba(212, 175, 55,' + opacityValue + ')';
                         ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
                     }
