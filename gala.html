@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔴 GALA EN DIRECTO | VS AWARDS 2025</title>
+    <title>GALA EN DIRECTO | VS AWARDS 2025</title>
     
     <link rel="icon" type="image/png" href="fotos/logo.png" />
     
@@ -25,11 +25,10 @@
                 'float': 'float 6s ease-in-out infinite',
                 'pulse-glow': 'pulseGlow 2s infinite',
                 'zoom-in': 'zoomIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
-                'spotlight': 'spotlightMove 4s ease-in-out infinite alternate',
                 'shine-gold': 'shineGold 4s linear infinite',
                 'flash': 'flashEffect 0.6s ease-out forwards',
                 'fade-out': 'fadeOut 0.5s ease-out forwards',
-                'pulse-tension': 'pulseTension 0.8s ease-in-out infinite alternate',
+                'sway': 'sway 8s ease-in-out infinite alternate',
             },
             keyframes: {
                 'shake-hard': {
@@ -43,7 +42,7 @@
                 shineGold: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } },
                 flashEffect: { '0%': { opacity: 0 }, '50%': { opacity: 1, background: 'white' }, '100%': { opacity: 0 } },
                 fadeOut: { '0%': { opacity: 1 }, '100%': { opacity: 0 } },
-                pulseTension: { '0%': { opacity: 0.7, transform: 'scale(1)' }, '100%': { opacity: 1, transform: 'scale(1.02)' } }
+                sway: { '0%': { transform: 'rotate(-5deg)' }, '100%': { transform: 'rotate(5deg)' } }
             }
           }
         }
@@ -65,7 +64,7 @@
         .text-gold-epic { background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c, #bf953f); background-size: 300% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shineGold 5s linear infinite; text-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
 
         /* TARJETA SIN GIRO 3D - SISTEMA DE CAPAS */
-        .card-container { position: relative; width: 100%; height: 100%; z-index: 60; }
+        .card-container { position: relative; width: 100%; height: 100%; z-index: 60; /* Z-Index alto para sobresalir del blackout */ }
         .front, .back { 
             position: absolute; inset: 0; width: 100%; height: 100%;
             -webkit-backface-visibility: hidden; backface-visibility: hidden; 
@@ -98,29 +97,18 @@
         .blackout-active #blackout-layer { opacity: 1; }
 
         /* BOTONES ÉPICOS */
-        .btn-epic { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0)); backdrop-filter: blur(10px); border: 1px solid rgba(212,175,55,0.3); color: #d4af37; transition: all 0.3s ease; }
+        .btn-epic { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0)); backdrop-filter: blur(10px); border: 1px solid rgba(212,175,55,0.3); color: #d4af37; transition: all 0.3s ease; cursor: pointer; }
         .btn-epic:hover { background: #d4af37; color: #000; border-color: #d4af37; box-shadow: 0 0 30px rgba(212,175,55,0.5); transform: translateY(-2px); }
 
-        /* FOCOS */
-        .spotlight-beam {
-            position: absolute; width: 80%; height: 200vh;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, transparent 60%);
-            filter: blur(50px); pointer-events: none; opacity: 0;
-            z-index: 55; transition: opacity 0.5s ease; mix-blend-mode: screen;
+        /* FOCOS DE TEATRO (STAGE LIGHTS) */
+        .stage-light {
+            position: absolute; width: 40%; height: 150%; top: -30%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, transparent 80%);
+            filter: blur(40px); pointer-events: none; z-index: 40;
+            transform-origin: top center; mix-blend-mode: screen;
         }
-        .spotlight-left {
-            top: -50%; left: -40%;
-            transform-origin: 0% 0%; transform: rotate(30deg);
-        }
-        .spotlight-right {
-            top: -50%; right: -40%;
-            transform-origin: 100% 0%; transform: rotate(-30deg);
-        }
-        
-        .blackout-active .spotlight-beam {
-            opacity: 1;
-            animation: pulse-tension 0.8s ease-in-out infinite alternate;
-        }
+        .light-left { left: -10%; transform: rotate(25deg); animation: sway 6s ease-in-out infinite alternate; }
+        .light-right { right: -10%; transform: rotate(-25deg); animation: sway 7s ease-in-out infinite alternate-reverse; }
 
         /* HEADER LOGO */
         .header-logo-container { cursor: pointer; transition: transform 0.3s ease; }
@@ -147,6 +135,9 @@
     </div>
 
     <section id="screen-intro" class="screen-section active flex flex-col items-center justify-center">
+        <div class="stage-light light-left"></div>
+        <div class="stage-light light-right"></div>
+
         <div class="relative z-10 text-center animate-zoom-in">
             <div class="relative mb-10 group cursor-pointer hover:scale-105 transition-transform duration-500">
                 <img src="fotos/logo.png" class="relative w-56 h-56 md:w-80 md:h-80 object-contain mx-auto drop-shadow-[0_0_60px_rgba(212,175,55,0.6)] animate-float">
@@ -215,18 +206,16 @@
 
         <div class="flex-1 flex flex-col items-center justify-center relative z-10 px-4">
             
-            <div class="mb-14 text-center max-w-6xl mt-8 animate-zoom-in relative z-40">
+            <div class="stage-light light-left"></div>
+            <div class="stage-light light-right"></div>
+
+            <div class="mb-10 text-center max-w-6xl mt-4 animate-zoom-in relative z-40">
                 <h2 id="cat-title" class="text-4xl md:text-6xl lg:text-7xl font-display font-black uppercase text-gold-epic drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-all duration-500 leading-tight">
                     </h2>
             </div>
 
-            <div class="w-full max-w-[500px] md:max-w-[700px] aspect-[4/5] md:aspect-[16/10] relative mb-4">
+            <div class="w-full max-w-[1000px] aspect-video relative mb-4">
                 
-                <div id="reveal-lights" class="absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none z-50">
-                     <div class="spotlight-beam spotlight-left"></div>
-                     <div class="spotlight-beam spotlight-right"></div>
-                </div>
-
                 <div id="main-card" class="card-container cursor-pointer group" onclick="revealWinner()">
                     
                     <div id="flash-overlay"></div>
@@ -253,7 +242,7 @@
                         <div class="absolute bottom-0 w-full flex flex-col items-center justify-end p-8 z-20">
                             <div class="flex items-center gap-3 mb-2">
                                 <div class="h-px w-10 bg-gold"></div>
-                                <span class="text-gold text-[10px] uppercase tracking-[0.4em] font-bold">El ganador es</span>
+                                <span class="text-gold text-[10px] uppercase tracking-[0.4em] font-bold">The Winner Is</span>
                                 <div class="h-px w-10 bg-gold"></div>
                             </div>
                             <h3 id="win-name" class="text-4xl md:text-5xl lg:text-6xl font-display font-black uppercase text-white drop-shadow-[0_5px_10px_rgba(0,0,0,1)] leading-none text-center">
@@ -308,7 +297,7 @@
             { cat: "Mejor evento del año",                name: "ASTURIAS 2025",     type: "img",   media: "fotos/grupo.jpg" }
         ];
 
-        // 2. NAVEGACIÓN
+        // 2. NAVEGACIÓN ENTRE PANTALLAS
         function goToScreen(id) {
             document.querySelectorAll('.screen-section').forEach(el => {
                 el.classList.remove('active');
@@ -317,7 +306,7 @@
             setTimeout(() => target.classList.add('active'), 100);
         }
 
-        // 3. CANDIDATOS
+        // 3. LOGICA CANDIDATOS
         const candidates = [
             { name: "Carlos", desc: "EL FENÓMENO, conocido por desaparecer en verano. Su superpoder es repartir salami por Albacete.", photo: "fotos/carlos.jpg", stats: [60, 30, 60, 70, 80] },
             { name: "Adriana", desc: "La reina de la física y los animes. Si hay una tarta de queso cerca, ella ya está saltando. Probablemente llegue tarde a la gala.", photo: "fotos/adriana.jpg", stats: [90, 30, 50, 60, 40] },
@@ -333,6 +322,7 @@
             const c = candidates[candIdx];
             const infoElements = [document.getElementById('cand-name'), document.getElementById('cand-desc')];
             infoElements.forEach(el => el.style.opacity = '0');
+            
             setTimeout(() => {
                 document.getElementById('cand-img').src = c.photo;
                 document.getElementById('cand-name').innerText = c.name;
@@ -358,7 +348,6 @@
             counter: document.getElementById('counter'),
             card: document.getElementById('main-card'),
             front: document.getElementById('card-front'),
-            lights: document.getElementById('reveal-lights'),
             winName: document.getElementById('win-name'),
             winImg: document.getElementById('win-img'),
             winVid: document.getElementById('win-vid'),
@@ -380,10 +369,6 @@
             ui.body.classList.remove('blackout-active'); 
             ui.card.classList.remove('is-revealed', 'trigger-flash');
             ui.front.classList.remove('animate-shake-hard');
-            ui.lights.classList.remove('opacity-100');
-            
-            ui.btnNext.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-            ui.btnNext.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10');
             
             // RESET AUDIO
             ui.audioGala.pause(); 
@@ -451,7 +436,6 @@
 
                 // Quitar oscuridad
                 ui.body.classList.remove('blackout-active');
-                ui.lights.classList.remove('opacity-100');
 
                 // Swap de capas
                 ui.card.classList.add('is-revealed');
@@ -465,11 +449,6 @@
                 isRevealed = true;
                 isAnimationInProgress = false;
 
-                // Botón Siguiente
-                setTimeout(() => {
-                    ui.btnNext.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
-                    ui.btnNext.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                }, 1000);
             }, 250); // Sincronizado con el pico blanco del flash
         }
 
@@ -482,7 +461,6 @@
 
             // 2. INICIAR TENSIÓN
             ui.body.classList.add('blackout-active'); 
-            ui.lights.classList.add('opacity-100'); 
             ui.front.classList.add('animate-shake-hard');
 
             // 3. REPRODUCIR AUDIO
