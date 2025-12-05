@@ -6,11 +6,10 @@
     <title>GALA EN DIRECTO | VIAJE DE S3X0 AWARDS</title>
     
     <link rel="icon" type="image/png" href="fotos/logo.png" />
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;700;900;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -19,17 +18,13 @@
       tailwind.config = {
         theme: {
           extend: {
-            colors: {
-              gold: { DEFAULT: '#d4af37', light: '#fedc56', dark: '#aa771c' },
-            },
-            fontFamily: {
-              sans: ['Montserrat', 'sans-serif'],
-              display: ['Playfair Display', 'serif'],
-            },
+            colors: { gold: { DEFAULT: '#d4af37', light: '#fedc56', dark: '#aa771c' } },
+            fontFamily: { sans: ['Montserrat', 'sans-serif'], display: ['Playfair Display', 'serif'] },
             animation: {
                 'shake-hard': 'shake-hard 0.5s cubic-bezier(.36,.07,.19,.97) both infinite',
                 'float': 'float 6s ease-in-out infinite',
-                'fade-in': 'fadeIn 1s ease-out forwards',
+                'pulse-glow': 'pulseGlow 2s infinite',
+                'zoom-in': 'zoomIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards'
             },
             keyframes: {
                 'shake-hard': {
@@ -37,8 +32,9 @@
                     '10%, 30%, 50%, 70%, 90%': { transform: 'translate3d(-2px, 2px, 0) rotate(-1deg)' },
                     '20%, 40%, 60%, 80%': { transform: 'translate3d(2px, -2px, 0) rotate(1deg)' }
                 },
-                float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-                fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }
+                float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-15px)' } },
+                pulseGlow: { '0%, 100%': { boxShadow: '0 0 20px rgba(212, 175, 55, 0.2)' }, '50%': { boxShadow: '0 0 50px rgba(212, 175, 55, 0.6)' } },
+                zoomIn: { '0%': { transform: 'scale(0.8)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } }
             }
           }
         }
@@ -46,240 +42,175 @@
     </script>
 
     <style>
-        /* CURSOR */
         body { cursor: none; overflow-x: hidden; } 
+        
+        /* CURSOR */
         #custom-cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-            border: 1px solid #d4af37; background-color: rgba(212, 175, 55, 0.2); 
+            border: 2px solid #d4af37; background-color: rgba(0,0,0,0.1); 
             border-radius: 50%; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); transition: transform 0.1s ease, width 0.3s, height 0.3s;
+            transform: translate(-50%, -50%); transition: transform 0.15s ease-out;
+            box-shadow: 0 0 10px #d4af37;
         }
-        #custom-cursor.hovered { width: 50px; height: 50px; background-color: rgba(212, 175, 55, 0.2); border-color: #fedc56; }
         #cursor-dot {
-            position: fixed; top: 0; left: 0; width: 4px; height: 4px;
-            background-color: #d4af37; border-radius: 50%; pointer-events: none; z-index: 10000;
+            position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+            background-color: #fedc56; border-radius: 50%; pointer-events: none; z-index: 10000;
             transform: translate(-50%, -50%);
         }
 
         /* TRANSICIONES DE PANTALLA */
         .screen-section {
             position: fixed; inset: 0; width: 100%; height: 100%;
-            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out, visibility 0.8s;
+            transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
             opacity: 0; pointer-events: none; z-index: 0; visibility: hidden;
-            overflow-y: auto; 
+            background: #050505;
         }
-        .screen-section.active {
-            opacity: 1; pointer-events: auto; z-index: 10; transform: scale(1); visibility: visible;
-        }
-        .screen-section.hidden-left { opacity: 0; transform: translateX(-50px); }
-        .screen-section.hidden-right { opacity: 0; transform: translateX(50px); }
+        .screen-section.active { opacity: 1; pointer-events: auto; z-index: 10; transform: scale(1); visibility: visible; }
+        .screen-section.hidden-left { opacity: 0; transform: translateX(-100px) scale(0.95); }
 
-        /* TARJETA 3D GIGANTE */
-        .perspective-container { perspective: 2500px; }
+        /* TARJETA 3D (SISTEMA DE GIRO) */
+        .perspective-container { perspective: 2000px; }
         .card-flip { 
             position: relative; width: 100%; height: 100%; 
-            transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+            transition: transform 0.8s cubic-bezier(0.7, -0.4, 0.4, 1.4); 
             transform-style: preserve-3d; 
         }
         .card-flip.flipped { transform: rotateY(180deg); }
-        
         .front, .back { 
             position: absolute; inset: 0; 
             -webkit-backface-visibility: hidden; backface-visibility: hidden; 
-            border-radius: 1.5rem;
-            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.9);
+            border-radius: 20px; overflow: hidden;
         }
-        .front { overflow: hidden; } 
-        .back { transform: rotateY(180deg); background: #121212; overflow: hidden; }
 
-        /* ESTILO SOBRE ELEGANTE */
-        .envelope-texture {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        /* DISEÑO DE LA "PLACA" (FRENTE) */
+        .front {
+            background: linear-gradient(145deg, #111, #000);
+            border: 1px solid rgba(212,175,55,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .luxury-pattern {
+            background-image: radial-gradient(circle at center, #d4af37 1px, transparent 1px);
+            background-size: 30px 30px; opacity: 0.1;
+        }
+
+        /* DISEÑO DEL GANADOR (DORSO) */
+        .back { 
+            transform: rotateY(180deg); background: #000; 
             border: 2px solid #d4af37;
-        }
-
-        /* SELLO DE LACRE */
-        .wax-seal {
-            background: radial-gradient(circle at 30% 30%, #d62828, #9d0208);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.2), inset 0 -4px 10px rgba(0,0,0,0.4);
-            border: 4px solid #6a040f;
+            box-shadow: 0 0 100px rgba(212,175,55,0.2);
         }
         
-        .winner-text-gradient {
-            background: linear-gradient(to bottom, #ffffff 0%, #d4af37 60%, #aa771c 100%);
+        .winner-text {
+            background: linear-gradient(to bottom, #fff 20%, #d4af37 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(212,175,55,0.5));
         }
     </style>
 </head>
-<body class="bg-black text-white h-screen w-screen flex flex-col relative selection:bg-gold selection:text-black overflow-hidden font-sans">
+<body class="text-white h-screen w-screen flex flex-col font-sans overflow-hidden">
 
-    <div id="custom-cursor"></div>
-    <div id="cursor-dot"></div>
-
+    <div id="custom-cursor"></div><div id="cursor-dot"></div>
     <audio id="audio-drumroll" src="redoble.mp3" preload="auto"></audio>
-    <audio id="audio-victory" src="" preload="auto"></audio>
-
+    
     <canvas id="constellation-bg" class="fixed inset-0 pointer-events-none z-0"></canvas>
-    <div class="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_100%)] opacity-80"></div>
+    <div class="fixed inset-0 z-0 bg-gradient-to-t from-black via-transparent to-black opacity-90 pointer-events-none"></div>
 
-    <section id="screen-intro" class="screen-section active flex flex-col items-center justify-center p-8">
-        <div class="max-w-7xl w-full flex flex-col items-center text-center relative z-10 min-h-screen justify-center">
-            
-            <div class="mb-8 animate-float">
-                <img src="fotos/logo.png" class="w-32 h-32 md:w-48 md:h-48 object-contain mx-auto drop-shadow-[0_0_30px_rgba(212,175,55,0.6)]">
-            </div>
-            
-            <h2 class="text-gold tracking-[0.5em] uppercase text-sm md:text-xl font-bold mb-4 animate-fade-in">La Gran Gala</h2>
-            <h1 class="text-5xl md:text-8xl lg:text-9xl font-display font-bold text-white uppercase tracking-tighter leading-none mb-12 animate-fade-in" style="animation-delay: 0.2s">
-                Viaje de S3X0<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gold via-white to-gold">Awards 2025</span>
+    <section id="screen-intro" class="screen-section active flex flex-col items-center justify-center">
+        <div class="relative z-10 text-center animate-zoom-in">
+            <img src="fotos/logo.png" class="w-40 h-40 md:w-56 md:h-56 object-contain mx-auto mb-8 drop-shadow-[0_0_50px_rgba(212,175,55,0.4)] animate-float">
+            <h2 class="text-gold tracking-[0.6em] text-sm md:text-xl font-bold mb-2 uppercase">Gala Oficial</h2>
+            <h1 class="text-5xl md:text-8xl font-display font-black text-white uppercase tracking-tighter leading-none mb-12">
+                VIAJE DE S3X0<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-[#fedc56] to-[#aa771c]">AWARDS 2025</span>
             </h1>
-
-            <button onclick="goToScreen('screen-candidates')" class="group relative px-10 py-4 bg-transparent overflow-hidden rounded-full border border-gold/50 text-gold font-bold uppercase tracking-[0.2em] transition-all hover:border-gold hover:text-black hover:scale-105 animate-fade-in mb-8" style="animation-delay: 0.6s">
-                <span class="relative z-10 flex items-center gap-3">
-                    Comenzar Gala <i data-lucide="chevron-right" class="w-5 h-5"></i>
-                </span>
-                <div class="absolute inset-0 bg-gold transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+            <button onclick="goToScreen('screen-candidates')" class="group relative px-12 py-5 bg-black border border-gold/40 hover:border-gold text-gold font-bold uppercase tracking-[0.2em] rounded-sm transition-all hover:shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+                <span class="relative z-10 flex items-center gap-3">Entrar <i data-lucide="chevron-right"></i></span>
+                <div class="absolute inset-0 bg-gold/10 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
             </button>
         </div>
     </section>
 
-    <section id="screen-candidates" class="screen-section flex flex-col items-center justify-center p-6 md:p-12">
-        
+    <section id="screen-candidates" class="screen-section flex flex-col items-center justify-center p-8">
         <div class="absolute top-8 left-8 flex items-center gap-4 z-20 opacity-50">
-            <img src="fotos/logo.png" class="w-10 h-10 object-contain">
-            <span class="text-xs uppercase tracking-widest text-white/50">Candidatos 2025</span>
+            <img src="fotos/logo.png" class="w-8 h-8 opacity-80"> <span class="text-[10px] uppercase tracking-widest text-white/50">Candidatos</span>
         </div>
+        <button onclick="goToScreen('screen-intro')" class="absolute top-8 right-8 z-30 opacity-40 hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-8 h-8 text-white"></i></button>
 
-        <button onclick="goToScreen('screen-intro')" class="absolute top-8 right-8 z-30 opacity-50 hover:opacity-100 text-white flex items-center gap-2 text-xs uppercase tracking-widest transition-opacity">
-            <i data-lucide="home" class="w-4 h-4"></i> Inicio
-        </button>
-
-        <div class="w-full max-w-7xl flex flex-col md:flex-row items-center gap-12 h-full min-h-[80vh] justify-center relative z-10 mt-16 md:mt-0">
-            <div class="w-full md:w-1/2 h-[50vh] md:h-[70vh] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
-                <img id="cand-img" src="" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
-                <div class="absolute bottom-6 left-6 md:hidden">
-                    <h2 id="cand-name-mobile" class="text-4xl font-display font-bold text-white uppercase">Nombre</h2>
-                </div>
+        <div class="w-full max-w-7xl flex flex-col md:flex-row items-center gap-12 relative z-10 h-[80vh]">
+            <div class="w-full md:w-1/2 h-full relative rounded-xl overflow-hidden border border-white/10 shadow-2xl group">
+                <img id="cand-img" src="" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute bottom-8 left-8 md:hidden"><h2 id="cand-name-mobile" class="text-4xl font-display font-black uppercase"></h2></div>
             </div>
-
-            <div class="w-full md:w-1/2 flex flex-col justify-center text-left space-y-8 relative z-10 pb-20 md:pb-0">
-                <h2 id="cand-name" class="hidden md:block text-6xl lg:text-8xl font-display font-bold text-white uppercase leading-none tracking-tight">Nombre</h2>
-                <div class="space-y-4 border-l-2 border-gold/30 pl-6">
-                    <p id="cand-desc" class="text-neutral-300 text-lg md:text-xl font-light leading-relaxed italic">"..."</p>
+            <div class="w-full md:w-1/2 flex flex-col justify-center text-left relative z-10 pl-4 md:pl-0">
+                <h2 id="cand-name" class="hidden md:block text-7xl lg:text-9xl font-display font-black text-white uppercase leading-none tracking-tighter mb-6 opacity-90"></h2>
+                <div class="border-l-4 border-gold pl-6 mb-10"><p id="cand-desc" class="text-neutral-300 text-xl font-light italic leading-relaxed"></p></div>
+                <div class="grid grid-cols-2 gap-x-8 gap-y-6 mb-12">
+                    <div><p class="text-gold/60 text-[10px] uppercase tracking-widest mb-2">Nivel de Alcoholismo</p><div class="w-full h-1 bg-white/10"><div id="bar-1" class="h-full bg-gold transition-all duration-1000 w-0"></div></div></div>
+                    <div><p class="text-gold/60 text-[10px] uppercase tracking-widest mb-2">Liadas / Noche</p><div class="w-full h-1 bg-white/10"><div id="bar-2" class="h-full bg-gold transition-all duration-1000 w-0"></div></div></div>
+                    <div><p class="text-gold/60 text-[10px] uppercase tracking-widest mb-2">Aguante</p><div class="w-full h-1 bg-white/10"><div id="bar-3" class="h-full bg-gold transition-all duration-1000 w-0"></div></div></div>
+                    <div><p class="text-gold/60 text-[10px] uppercase tracking-widest mb-2">Carisma</p><div class="w-full h-1 bg-white/10"><div id="bar-4" class="h-full bg-gold transition-all duration-1000 w-0"></div></div></div>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4 mt-8">
-                    <div>
-                        <p class="text-gold/60 text-xs uppercase tracking-widest mb-1">Inteligencia</p>
-                        <div class="w-full h-1 bg-white/10 rounded-full"><div id="bar-1" class="h-full bg-gold rounded-full transition-all duration-1000" style="width: 0%"></div></div>
-                    </div>
-                    <div>
-                        <p class="text-gold/60 text-xs uppercase tracking-widest mb-1">Fuerza</p>
-                        <div class="w-full h-1 bg-white/10 rounded-full"><div id="bar-2" class="h-full bg-gold rounded-full transition-all duration-1000" style="width: 0%"></div></div>
-                    </div>
-                    <div>
-                        <p class="text-gold/60 text-xs uppercase tracking-widest mb-1">Resistencia</p>
-                        <div class="w-full h-1 bg-white/10 rounded-full"><div id="bar-3" class="h-full bg-gold rounded-full transition-all duration-1000" style="width: 0%"></div></div>
-                    </div>
-                    <div>
-                        <p class="text-gold/60 text-xs uppercase tracking-widest mb-1">Carisma</p>
-                        <div class="w-full h-1 bg-white/10 rounded-full"><div id="bar-4" class="h-full bg-gold rounded-full transition-all duration-1000" style="width: 0%"></div></div>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-6 mt-12 pt-8 border-t border-white/5 flex-wrap">
-                    <button onclick="prevCandidate()" class="p-4 rounded-full border border-neutral-700 hover:border-white text-white transition-all"><i data-lucide="arrow-left"></i></button>
-                    <span id="cand-counter" class="text-gold font-mono text-xl">1 / 7</span>
-                    <button onclick="nextCandidate()" class="p-4 rounded-full border border-neutral-700 hover:border-white text-white transition-all"><i data-lucide="arrow-right"></i></button>
-                    <div class="flex-1 min-w-[20px]"></div>
-                    <button onclick="goToScreen('screen-awards')" class="px-8 py-4 bg-gold text-black font-bold uppercase tracking-widest rounded-sm hover:bg-white transition-colors shadow-[0_0_20px_rgba(212,175,55,0.4)] flex items-center gap-2">
-                        <i data-lucide="trophy" class="w-5 h-5"></i> Ir a Premios
-                    </button>
+                <div class="flex items-center gap-6">
+                    <button onclick="prevCandidate()" class="p-3 rounded-full border border-neutral-800 hover:border-white text-neutral-500 hover:text-white transition-all"><i data-lucide="arrow-left"></i></button>
+                    <span id="cand-counter" class="text-gold font-mono text-lg"></span>
+                    <button onclick="nextCandidate()" class="p-3 rounded-full border border-neutral-800 hover:border-white text-neutral-500 hover:text-white transition-all"><i data-lucide="arrow-right"></i></button>
+                    <div class="flex-1"></div>
+                    <button onclick="goToScreen('screen-awards')" class="bg-white text-black px-8 py-3 font-bold uppercase tracking-widest hover:bg-gold transition-colors flex items-center gap-2">Premios <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="screen-awards" class="screen-section flex flex-col relative h-full w-full">
-        
-        <div class="absolute top-0 left-0 p-6 z-50">
-            <div class="flex items-center gap-3 group opacity-60 hover:opacity-100 transition-opacity">
-                <img src="fotos/logo.png" class="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]">
-                <div class="hidden md:block">
-                    <p class="text-gold/80 text-[8px] tracking-[0.3em] uppercase font-bold mb-0.5">Gala 2025</p>
-                    <h1 class="text-white font-display text-sm tracking-widest font-bold">VS <span class="text-gold">AWARDS</span></h1>
-                </div>
+    <section id="screen-awards" class="screen-section flex flex-col relative">
+        <div class="absolute top-0 left-0 w-full p-8 flex justify-between items-start z-50">
+            <div class="flex flex-col">
+                <span class="text-gold/60 text-[10px] uppercase tracking-[0.4em] mb-1">Categoría Actual</span>
+                <span id="counter" class="text-white/40 font-mono text-xs">1 / 15</span>
             </div>
+            <button onclick="goToScreen('screen-candidates')" class="opacity-50 hover:opacity-100 transition-opacity text-xs uppercase tracking-widest flex items-center gap-2">Volver <i data-lucide="corner-up-left" class="w-4 h-4"></i></button>
         </div>
 
-        <button onclick="goToScreen('screen-candidates')" class="absolute top-6 right-6 z-50 opacity-50 hover:opacity-100 text-white flex items-center gap-2 text-[10px] uppercase tracking-widest transition-opacity">
-            <i data-lucide="users" class="w-4 h-4"></i> Volver a Candidatos
-        </button>
-
-        <div class="absolute bottom-6 left-6 z-50">
-            <div class="inline-flex items-center gap-3 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-gold/20 hover:border-gold/50 transition-colors">
-                <span class="text-[9px] text-neutral-500 uppercase tracking-[0.2em]">Cat.</span>
-                <span id="counter" class="text-gold font-mono text-sm font-bold">1 / 15</span>
-            </div>
-        </div>
-
-        <main class="relative z-10 flex-1 flex flex-col items-center justify-center w-full h-full px-4">
+        <div class="flex-1 flex flex-col items-center justify-center relative z-10 px-4">
             
-            <div class="w-full max-w-7xl text-center mb-8 relative z-20 mt-24 md:mt-16 px-4">
-                <h2 id="category-title" class="text-3xl md:text-5xl lg:text-7xl font-display font-bold uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-gold/30 drop-shadow-2xl transition-all duration-700 leading-tight">
-                    Cargando...
-                </h2>
+            <div class="mb-10 text-center max-w-5xl mt-12">
+                <h2 id="cat-title" class="text-3xl md:text-5xl lg:text-6xl font-display font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-400 drop-shadow-2xl transition-all duration-500">
+                    </h2>
             </div>
 
-            <div class="perspective-container w-full max-w-[600px] md:max-w-[1000px] aspect-[4/5] md:aspect-[16/9] relative z-10 mb-20 md:mb-8">
-                <div id="main-card" class="card-flip cursor-pointer group" onclick="startRevealSequence()">
+            <div class="perspective-container w-full max-w-[500px] md:max-w-[800px] aspect-[4/5] md:aspect-[16/9] relative mb-12">
+                <div id="main-card" class="card-flip cursor-pointer group" onclick="revealWinner()">
                     
-                    <div id="card-front" class="front envelope-texture flex flex-col items-center justify-center relative transition-all duration-300 group-hover:shadow-[0_0_80px_rgba(212,175,55,0.3)]">
-                        <div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/black-linen.png')]"></div>
-                        <div class="absolute inset-4 border border-gold/30 rounded-xl pointer-events-none"></div>
-                        
-                        <div class="relative z-20 animate-float transform scale-125 p-6">
-                            <div class="wax-seal w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center relative">
-                                <i data-lucide="crown" class="w-16 h-16 text-[#590d22] drop-shadow-[0_2px_5px_rgba(0,0,0,0.5)] transform rotate-[-5deg]"></i>
-                            </div>
+                    <div id="card-front" class="front flex flex-col items-center justify-center animate-pulse-glow">
+                        <div class="absolute inset-0 luxury-pattern"></div>
+                        <div class="relative z-10 border-2 border-gold/50 rounded-full p-6 bg-black/50 backdrop-blur-sm mb-6 group-hover:scale-110 transition-transform duration-500">
+                            <i data-lucide="lock" class="w-12 h-12 text-gold"></i>
                         </div>
-                        <div class="text-center relative z-20 px-6 mt-8">
-                            <p class="text-gold font-display text-3xl md:text-5xl uppercase tracking-[0.3em] drop-shadow-lg">Confidencial</p>
-                            <p class="text-neutral-500 text-[10px] tracking-[0.4em] uppercase font-bold mt-4 group-hover:text-gold transition-colors">Tocar para abrir</p>
-                        </div>
+                        <p class="text-gold font-display text-2xl uppercase tracking-[0.3em]">Confidencial</p>
+                        <p class="text-neutral-600 text-[10px] uppercase tracking-[0.3em] mt-2 group-hover:text-white transition-colors">Click para revelar</p>
                     </div>
 
-                    <div class="back flex flex-col relative border-[3px] border-gold shadow-[0_0_150px_rgba(212,175,55,0.4)] bg-black">
-                        <div class="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
-                            <img id="winner-img" src="" class="absolute inset-0 w-full h-full object-cover hidden transition-transform duration-[20s] hover:scale-105">
-                            <video id="winner-video" src="" class="absolute inset-0 w-full h-full object-cover hidden" loop muted playsinline></video>
-                            
+                    <div class="back flex flex-col">
+                        <div class="relative flex-1 bg-neutral-900 overflow-hidden group-hover:scale-[1.02] transition-transform duration-[10s]">
+                            <img id="win-img" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+                            <video id="win-vid" src="" class="absolute inset-0 w-full h-full object-cover hidden" loop muted playsinline></video>
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
                         </div>
-
-                        <div class="absolute bottom-0 w-full flex flex-col justify-end p-8 md:p-12 text-center z-20">
-                            <div class="mb-6">
-                                <span class="bg-gold text-black text-[10px] md:text-xs font-bold px-6 py-2 rounded-full uppercase tracking-widest shadow-[0_0_20px_#d4af37] animate-pulse inline-block">
-                                    Ganador Oficial
-                                </span>
-                            </div>
-                            <h3 id="winner-name" class="text-4xl md:text-6xl lg:text-8xl font-display font-bold uppercase mb-2 leading-none winner-text-gradient drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)] break-words">
+                        <div class="relative h-[30%] bg-black border-t border-gold/30 flex flex-col items-center justify-center p-4 z-20">
+                            <span class="text-gold text-[10px] uppercase tracking-[0.4em] mb-2 font-bold">The Winner Is</span>
+                            <h3 id="win-name" class="text-4xl md:text-6xl font-display font-black uppercase winner-text leading-none text-center">
                                 </h3>
                         </div>
                     </div>
 
                 </div>
             </div>
-        </main>
 
-        <div class="absolute bottom-6 right-6 z-50 flex items-center gap-4">
-            <button id="btn-prev" onclick="changeCategory(-1)" class="opacity-0 pointer-events-none group flex items-center justify-center w-12 h-12 rounded-full border border-neutral-800 hover:border-gold/50 text-neutral-600 hover:text-gold transition-all duration-300">
-                <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            </button>
-            <button id="btn-next" onclick="changeCategory(1)" class="opacity-0 pointer-events-none transform translate-y-10 transition-all duration-500 flex items-center gap-3 bg-white text-black pl-8 pr-4 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-gold hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-                <span>Siguiente Categoría</span>
-                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </div>
+
+        <div class="absolute bottom-8 right-8 z-50 flex gap-4">
+            <button onclick="changeCat(-1)" class="w-12 h-12 rounded-full border border-white/10 hover:bg-white/10 flex items-center justify-center text-white transition-all"><i data-lucide="arrow-left"></i></button>
+            <button id="btn-next" onclick="changeCat(1)" class="opacity-0 pointer-events-none translate-y-4 transition-all duration-500 bg-gold text-black px-6 py-3 rounded-full font-bold uppercase text-xs tracking-widest flex items-center gap-2 hover:bg-white hover:scale-105">
+                Siguiente <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
         </div>
     </section>
@@ -287,37 +218,60 @@
     <script>
         lucide.createIcons();
 
-        // 1. NAVEGACIÓN ENTRE PANTALLAS
-        function goToScreen(screenId) {
+        // 1. DATOS DE GANADORES (Rellena esto manualmente)
+        // ---------------------------------------------------------
+        // TIPOS: 'img' (foto) o 'video' (vídeo .mp4)
+        // MEDIA: ruta del archivo dentro de la carpeta fotos/ o multimedia/
+        
+        const winnersData = [
+            { cat: "Más tocapelotas del grupo",           name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg" },
+            { cat: "Persona más graciosa del grupo",      name: "JOSÉ LUIS",         type: "img",   media: "fotos/joseluis.jpg" },
+            { cat: "Frase mítica del año",                name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg" }, // OJO: Pon una foto con la frase si quieres
+            { cat: "Premio al más desaparecido",          name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg" },
+            { cat: "Premio al que más come",              name: "PABLO DOLZ",        type: "img",   media: "fotos/pablod.jpg" },
+            { cat: "Fantasmada del año",                  name: "NICOLÁS",           type: "img",   media: "fotos/nicolas.jpg" },
+            { cat: "Pareja del año",                      name: "NICO Y ADRIANA",    type: "img",   media: "fotos/nicolas.jpg" }, // Pon una foto de los dos juntos
+            { cat: "Mejor culo del grupo",                name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg" },
+            { cat: "Plot twist del año",                  name: "ADRIANA",           type: "img",   media: "fotos/adriana.jpg" },
+            { cat: "Mejor foto del año",                  name: "FOTO GANADORA",     type: "img",   media: "fotos/foto_ganadora.jpg" }, // Sube esta foto a la carpeta
+            { cat: "Premio al más cagón",                 name: "NICOLÁS",           type: "img",   media: "fotos/nicolas.jpg" },
+            { cat: "Premio al que más bebe",              name: "LUCÍA",             type: "img",   media: "fotos/lucia.jpg" },
+            { cat: "Jaimitada del año",                   name: "MOMENTO JAIMITADA", type: "video", media: "fotos/video_ganador.mp4" }, // Si es video, cambia type a 'video'
+            { cat: "Mejor vídeo del año",                 name: "VIDEO CAÍDA",       type: "video", media: "fotos/video_ganador.mp4" },
+            { cat: "Mejor evento del año",                name: "ASTURIAS 2025",     type: "img",   media: "fotos/grupo.jpg" }
+        ];
+        // ---------------------------------------------------------
+
+        // 2. LÓGICA DE NAVEGACIÓN
+        function goToScreen(id) {
             document.querySelectorAll('.screen-section').forEach(el => {
                 el.classList.remove('active');
-                el.classList.add('hidden-left');
+                if(el.id !== id) el.classList.add('hidden-left');
             });
-            const target = document.getElementById(screenId);
-            target.classList.remove('hidden-left', 'hidden-right');
-            setTimeout(() => { target.classList.add('active'); target.scrollTop = 0; }, 50);
+            const target = document.getElementById(id);
+            target.classList.remove('hidden-left');
+            setTimeout(() => target.classList.add('active'), 50);
         }
 
-        // 2. CANDIDATOS (Reutilizamos stats del index)
+        // 3. CANDIDATOS (Esto sigue igual que en la web principal para rellenar)
         const candidates = [
             { name: "Carlos", desc: "El fenómeno de Albacete. Experto en desapariciones tácticas.", photo: "fotos/carlos.jpg", stats: [60, 30, 60, 70] },
-            { name: "Adriana", desc: "La reina de la física y el anime. Siempre llega tarde, pero llega.", photo: "fotos/adriana.jpg", stats: [90, 30, 50, 60] },
-            { name: "Nicolás", desc: "Organizador oficial del caos. Usa IA hasta para respirar.", photo: "fotos/nicolas.jpg", stats: [69, 69, 69, 69] },
+            { name: "Adriana", desc: "Reina de la física. Siempre llega tarde, pero llega.", photo: "fotos/adriana.jpg", stats: [90, 30, 50, 60] },
+            { name: "Nicolás", desc: "Organizador del caos. Usa IA hasta para respirar.", photo: "fotos/nicolas.jpg", stats: [69, 69, 69, 69] },
             { name: "José Luis", desc: "Filósofo de barra. Cuidado si le das dos cervezas.", photo: "fotos/joseluis.jpg", stats: [67, 67, 67, 67] },
             { name: "Lucía", desc: "Cierra bares y discusiones. No conoce el miedo.", photo: "fotos/lucia.jpg", stats: [60, 50, 40, 60] },
             { name: "Pablo Dolz", desc: "Máquina de factos. Cenicienta a las 00:00.", photo: "fotos/pablod.jpg", stats: [50, 60, 40, 50] },
             { name: "Pablo García", desc: "Risa sísmica. Se le oye antes de que llegue.", photo: "fotos/pablog.jpg", stats: [70, 60, 50, 80] }
         ];
 
-        let currentCandidateIndex = 0;
-        function updateCandidateUI() {
-            const c = candidates[currentCandidateIndex];
+        let candIdx = 0;
+        function updateCand() {
+            const c = candidates[candIdx];
+            document.getElementById('cand-img').src = c.photo;
             document.getElementById('cand-name').innerText = c.name;
             document.getElementById('cand-name-mobile').innerText = c.name;
             document.getElementById('cand-desc').innerText = `"${c.desc}"`;
-            document.getElementById('cand-img').src = c.photo;
-            document.getElementById('cand-counter').innerText = `${currentCandidateIndex + 1} / ${candidates.length}`;
-            // Stats animados
+            document.getElementById('cand-counter').innerText = `${candIdx+1} / ${candidates.length}`;
             setTimeout(() => {
                 document.getElementById('bar-1').style.width = c.stats[0] + '%';
                 document.getElementById('bar-2').style.width = c.stats[1] + '%';
@@ -325,277 +279,96 @@
                 document.getElementById('bar-4').style.width = c.stats[3] + '%';
             }, 100);
         }
-        function nextCandidate() {
-            currentCandidateIndex = (currentCandidateIndex < candidates.length - 1) ? currentCandidateIndex + 1 : 0;
-            updateCandidateUI();
-        }
-        function prevCandidate() {
-            currentCandidateIndex = (currentCandidateIndex > 0) ? currentCandidateIndex - 1 : candidates.length - 1;
-            updateCandidateUI();
-        }
-        updateCandidateUI();
+        function nextCandidate() { candIdx = (candIdx + 1) % candidates.length; updateCand(); }
+        function prevCandidate() { candIdx = (candIdx - 1 + candidates.length) % candidates.length; updateCand(); }
+        updateCand();
 
-        // 3. LOGICA GALA (CSV Y MULTIMEDIA)
-        
-        // --- IMPORTANTE: CONFIGURACIÓN ANTI-SPOILERS ---
-        // 1. Crea un Google Sheet. Columna A: Nombre Categoría (Exacto a la lista de abajo). Columna B: Nombre Ganador.
-        // 2. Archivo > Compartir > Publicar en la web > Formato CSV.
-        // 3. Pega el enlace aquí abajo.
-        const SHEET_CSV_URL = "PEGAR_AQUI_TU_ENLACE_CSV_DE_GOOGLE_SHEETS"; 
-        
-        // Lista de categorías (DEBE COINCIDIR EXACTO CON TU EXCEL)
-        const categoriesList = [
-            "Más tocapelotas del grupo",
-            "Persona más graciosa del grupo",
-            "Frase mítica del año",
-            "Premio al más desaparecido",
-            "Premio al que más come",
-            "Fantasmada del año",
-            "Pareja del año",
-            "Mejor culo del grupo",
-            "Plot twist del año",
-            "Mejor foto del año",
-            "Premio al más cagón",
-            "Premio al que más bebe",
-            "Momento más gracioso",
-            "Mejor vídeo del año",
-            "Mejor evento del año"
-        ];
+        // 4. LÓGICA DE PREMIOS (HARDCODED)
+        let currentCatIdx = 0;
+        let isRevealed = false;
 
-        // --- MAPA DE ARCHIVOS MULTIMEDIA ---
-        // Aquí es donde sucede la magia para que salga foto/video en vez de texto plano.
-        // La clave (izquierda) debe ser lo que escribas en el Excel como ganador (en minúsculas).
-        // El valor (derecha) es la ruta del archivo.
-        const mediaMap = {
-            "carlos": "fotos/carlos.jpg",
-            "adriana": "fotos/adriana.jpg",
-            "nicolas": "fotos/nicolas.jpg",
-            "jose luis": "fotos/joseluis.jpg",
-            "lucia": "fotos/lucia.jpg",
-            "pablo dolz": "fotos/pablod.jpg",
-            "pablo garcia": "fotos/pablog.jpg",
-            
-            // Ejemplos para cosas abstractas (Asegúrate de tener estos archivos en la carpeta fotos o multimedia)
-            "foto ganadora": "fotos/foto_ganadora.jpg", 
-            "video caida": "fotos/video_caida.mp4",
-            "momento bar": "fotos/momento_bar.mp4",
-            "frase del año": "fotos/frase_mitica_bg.jpg" // Puedes poner una foto de fondo para la frase
+        const ui = {
+            title: document.getElementById('cat-title'),
+            counter: document.getElementById('counter'),
+            card: document.getElementById('main-card'),
+            front: document.getElementById('card-front'),
+            winName: document.getElementById('win-name'),
+            winImg: document.getElementById('win-img'),
+            winVid: document.getElementById('win-vid'),
+            btnNext: document.getElementById('btn-next'),
+            audio: document.getElementById('audio-drumroll')
         };
 
-        let winnersData = {};
-        let currentIndex = 0;
-        let isRevealing = false;
+        function updateAwardUI() {
+            isRevealed = false;
+            ui.card.classList.remove('flipped');
+            ui.front.classList.remove('animate-shake-hard');
+            ui.btnNext.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+            ui.btnNext.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+            ui.winVid.pause(); ui.audio.pause(); ui.audio.currentTime = 0;
 
-        // Referencias DOM
-        const audioDrum = document.getElementById('audio-drumroll');
-        const audioVictory = document.getElementById('audio-victory');
-        const cardInner = document.getElementById('main-card');
-        const cardFront = document.getElementById('card-front');
-        const titleEl = document.getElementById('category-title');
-        const counterEl = document.getElementById('counter');
-        const winnerNameEl = document.getElementById('winner-name');
-        const imgEl = document.getElementById('winner-img');
-        const videoEl = document.getElementById('winner-video');
-        const btnNext = document.getElementById('btn-next');
-        const btnPrev = document.getElementById('btn-prev');
+            const data = winnersData[currentCatIdx];
+            ui.title.innerText = data.cat;
+            ui.counter.innerText = `${currentCatIdx + 1} / ${winnersData.length}`;
+            ui.winName.innerText = data.name;
 
-        // Cargar datos
-        async function fetchSheetData() {
-            try {
-                if(SHEET_CSV_URL.includes("PEGAR_AQUI")) throw new Error("URL no configurada");
-                const response = await fetch(SHEET_CSV_URL);
-                const text = await response.text();
-                // Parsear CSV simple
-                const rows = text.split('\n').slice(1); // Saltar cabecera
-                rows.forEach(row => {
-                    // Separar por comas (cuidado si el texto tiene comas, mejor usar textos simples)
-                    const cols = row.split(','); 
-                    if(cols.length >= 2) {
-                        const cat = cols[0].replace(/"/g, '').trim();
-                        const winner = cols[1].replace(/"/g, '').trim();
-                        winnersData[cat] = winner;
-                    }
-                });
-                console.log("Datos cargados:", winnersData);
-                updateGalaUI();
-            } catch (e) {
-                console.warn("Modo Demo Activado (Sin CSV):", e);
-                // Datos de prueba por si falla el CSV
-                winnersData = {
-                    "Más tocapelotas del grupo": "Pablo Garcia",
-                    "Mejor vídeo del año": "video caida"
-                };
-                updateGalaUI();
-            }
-        }
-
-        fetchSheetData();
-
-        function updateGalaUI() {
-            // Resetear estado
-            isRevealing = false;
-            cardInner.classList.remove('flipped');
-            cardFront.classList.remove('animate-shake-hard');
-            videoEl.pause(); 
-            audioDrum.pause(); audioDrum.currentTime = 0;
-            
-            // Botones navegación
-            btnNext.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-            btnNext.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10');
-            
-            if (currentIndex === 0) {
-                btnPrev.classList.remove('opacity-100', 'pointer-events-auto');
+            if(data.type === 'video') {
+                ui.winImg.classList.add('hidden');
+                ui.winVid.classList.remove('hidden');
+                ui.winVid.src = data.media;
             } else {
-                btnPrev.classList.add('opacity-100', 'pointer-events-auto');
+                ui.winVid.classList.add('hidden');
+                ui.winImg.classList.remove('hidden');
+                ui.winImg.src = data.media;
             }
-
-            // Título y contador
-            titleEl.innerHTML = categoriesList[currentIndex];
-            counterEl.innerText = `${currentIndex + 1} / ${categoriesList.length}`;
-
-            // PREPARAR GANADOR (Oculto en el reverso)
-            let currentCat = categoriesList[currentIndex];
-            let winnerName = winnersData[currentCat] || "???"; // Si no hay dato, sale ???
-            let mediaKey = winnerName.toLowerCase();
-            
-            // Buscar archivo multimedia
-            let mediaPath = mediaMap[mediaKey];
-            
-            // Fallback inteligente: Si el ganador es un nombre de persona conocido, usar su foto de perfil
-            if (!mediaPath && mediaMap[winnerName.toLowerCase()]) {
-                mediaPath = mediaMap[winnerName.toLowerCase()];
-            }
-            // Fallback por defecto si no hay nada
-            if (!mediaPath) mediaPath = "fotos/logo.png";
-
-            winnerNameEl.innerText = winnerName.toUpperCase();
-
-            // Decidir si mostramos FOTO o VIDEO
-            if (mediaPath.endsWith('.mp4') || mediaPath.endsWith('.mov')) {
-                imgEl.classList.add('hidden');
-                videoEl.classList.remove('hidden');
-                videoEl.src = mediaPath;
-            } else {
-                videoEl.classList.add('hidden');
-                imgEl.classList.remove('hidden');
-                imgEl.src = mediaPath;
-            }
-        }
-
-        function startRevealSequence() {
-            if (isRevealing || cardInner.classList.contains('flipped')) return;
-            isRevealing = true;
-            
-            // 1. Sonido Redoble
-            audioDrum.volume = 1.0; 
-            audioDrum.play().catch(e => console.log("Click para reproducir audio"));
-            
-            // 2. Animación temblor
-            cardFront.classList.add('animate-shake-hard'); 
-            
-            // 3. Esperar al drop (aprox 3.5 segundos en un redoble estándar)
-            setTimeout(() => { revealWinner(); }, 3500); 
         }
 
         function revealWinner() {
-            cardFront.classList.remove('animate-shake-hard');
-            audioDrum.pause();
-            
-            // Audio Victoria (opcional)
-            // audioVictory.play();
+            if(isRevealed) return;
+            // 1. Audio y Temblor
+            ui.audio.volume = 1.0;
+            ui.audio.play().catch(e => console.log("Click para audio"));
+            ui.front.classList.add('animate-shake-hard');
 
-            // FLIP
-            cardInner.classList.add('flipped');
-            
-            // Si es video, reproducir
-            if (!videoEl.classList.contains('hidden')) videoEl.play();
-            
-            // Confeti
-            launchConfetti();
-
-            // Mostrar botón siguiente
+            // 2. Esperar 3.5 segundos (drop del redoble)
             setTimeout(() => {
-                btnNext.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
-                btnNext.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
-            }, 1000);
+                ui.front.classList.remove('animate-shake-hard');
+                ui.audio.pause();
+                ui.card.classList.add('flipped');
+                
+                if(!ui.winVid.classList.contains('hidden')) ui.winVid.play();
+                
+                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#d4af37', '#fff'] });
+                isRevealed = true;
+                
+                setTimeout(() => {
+                    ui.btnNext.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    ui.btnNext.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }, 1000);
+            }, 3500); 
         }
 
-        function launchConfetti() {
-            var duration = 4 * 1000; var animationEnd = Date.now() + duration; var defaults = { startVelocity: 45, spread: 360, ticks: 60, zIndex: 99999 };
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-                var particleCount = 100 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: 0.5, y: 0.5 } }));
-            }, 250);
+        function changeCat(dir) {
+            const next = currentCatIdx + dir;
+            if(next >= 0 && next < winnersData.length) {
+                ui.title.classList.add('opacity-0', 'translate-y-[-20px]');
+                setTimeout(() => {
+                    currentCatIdx = next;
+                    updateAwardUI();
+                    ui.title.classList.remove('opacity-0', 'translate-y-[-20px]');
+                }, 400);
+            }
         }
+        
+        // Iniciar
+        updateAwardUI();
 
-        function changeCategory(dir) {
-            const newIndex = currentIndex + dir;
-            if (newIndex >= 0 && newIndex < categoriesList.length) {
-                // Transición suave
-                titleEl.classList.add('opacity-0', 'translate-y-[-20px]');
-                setTimeout(() => { 
-                    currentIndex = newIndex; 
-                    updateGalaUI(); 
-                    titleEl.classList.remove('opacity-0', 'translate-y-[-20px]');
-                }, 500);
-            }
-        }
-
-        // --- SISTEMA DE FONDO (Igual que index.html) ---
-        const canvas = document.getElementById('constellation-bg');
-        const ctx = canvas.getContext('2d');
-        let particlesArray;
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }
-        window.addEventListener('resize', resizeCanvas);
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
-                this.directionX = (Math.random() * 0.2) - 0.1; this.directionY = (Math.random() * 0.2) - 0.1;
-                this.size = Math.random() * 2; this.color = '#d4af37';
-            }
-            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); }
-            update() {
-                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-                this.x += this.directionX; this.y += this.directionY; this.draw();
-            }
-        }
-        function initParticles() {
-            particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 15000;
-            for (let i = 0; i < numberOfParticles; i++) particlesArray.push(new Particle());
-        }
-        function animateParticles() {
-            requestAnimationFrame(animateParticles);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update();
-            connectParticles();
-        }
-        function connectParticles() {
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
-                    if (distance < (canvas.width/9) * (canvas.height/9)) {
-                        ctx.strokeStyle = 'rgba(212, 175, 55,' + (1 - distance/25000) * 0.15 + ')';
-                        ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
-                    }
-                }
-            }
-        }
-        resizeCanvas(); animateParticles();
-
-        // Cursor lógica
+        // Cursor
         const cursor = document.getElementById('custom-cursor');
-        const cursorDot = document.getElementById('cursor-dot');
-        document.addEventListener('mousemove', (e) => {
-            cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
-            setTimeout(() => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; }, 50);
-        });
-        document.querySelectorAll('button, .card-flip').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        const dot = document.getElementById('cursor-dot');
+        document.addEventListener('mousemove', e => {
+            dot.style.left = e.clientX+'px'; dot.style.top = e.clientY+'px';
+            setTimeout(() => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; }, 40);
         });
     </script>
 </body>
