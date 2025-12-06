@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACCESO VIP</title>
+
+    <link rel="icon" type="image/png" href="fotos/logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              gold: { DEFAULT: '#d4af37', light: '#fedc56', dark: '#aa771c' },
+              nexus: { black: '#0a0a0a' }
+            },
+            fontFamily: {
+              sans: ['Montserrat', 'sans-serif'],
+              display: ['Playfair Display', 'serif'],
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+            },
+            keyframes: {
+              float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+        /* Cursor Personalizado */
+        body { background-color: #0a0a0a; color: #ffffff; cursor: none; overflow-x: hidden; }
+        @media (hover: none) and (pointer: coarse) {
+            body { cursor: auto !important; }
+            #custom-cursor, #cursor-dot { display: none !important; }
+        }
+        #custom-cursor {
+            position: fixed; top: 0; left: 0; width: 30px; height: 30px;
+            border: 1px solid #d4af37; background-color: rgba(212, 175, 55, 0.1); 
+            border-radius: 50%; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); transition: transform 0.1s ease;
+        }
+        #cursor-dot {
+            position: fixed; top: 0; left: 0; width: 4px; height: 4px;
+            background-color: #d4af37; border-radius: 50%; pointer-events: none; z-index: 10000;
+            transform: translate(-50%, -50%);
+        }
+        /* Efecto Cristal */
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(212,175,55,0.05);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <div id="custom-cursor"></div>
+    <div id="cursor-dot"></div>
+
+    <canvas id="constellation-bg" class="fixed inset-0 pointer-events-none z-0"></canvas>
+    <div class="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_100%)] opacity-80"></div>
+
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300 bg-black/80 backdrop-blur-md border-b border-white/5 py-4">
+        <div class="w-full px-6 md:px-12 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group cursor-pointer">
+                <img src="fotos/logo.png" alt="Logo" class="h-10 w-10 object-contain group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]">
+                <span class="font-display font-bold tracking-widest text-lg text-white">
+                  VIAJE DE S3X0 <span class="text-gold">AWARDS</span>
+                </span>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-2 px-4 py-1 rounded-full border border-gold/30 bg-gold/10">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-gold">Conexión Segura VIP</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-6 relative z-10 mt-20">
+        
+        <div class="glass-panel max-w-4xl w-full p-8 md:p-12 rounded-2xl text-center relative animate-zoom-in">
+            
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-black border border-gold px-6 py-2 rounded-sm shadow-[0_0_20px_#d4af37]">
+                <span class="text-gold text-xs font-black uppercase tracking-[0.3em]">Top Secret</span>
+            </div>
+
+            <div class="mb-10 mt-4">
+                <h1 class="text-4xl md:text-6xl font-display font-black text-white uppercase tracking-tighter leading-none mb-4 drop-shadow-2xl">
+                    Contenido <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gold via-yellow-200 to-gold">Desbloqueado</span>
+                </h1>
+                <p class="text-neutral-400 text-sm font-light italic">"Lo que pasa en el VIP, se queda en el VIP."</p>
+            </div>
+
+            <div class="relative group mx-auto max-w-2xl mb-10">
+                <div class="absolute -inset-1 bg-gradient-to-r from-gold via-white to-gold rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                <div class="relative rounded-lg overflow-hidden border border-white/10 bg-black">
+                    <img src="fotos/sorpresa.jpg" alt="Sorpresa VIP" class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105">
+                    
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <i data-lucide="eye" class="w-12 h-12 text-white/80"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <a href="index.html" class="px-8 py-3 rounded-sm border border-white/20 text-neutral-400 hover:text-white hover:border-white hover:bg-white/5 transition-all text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a la Gala
+                </a>
+                
+                <a href="fotos/sorpresa.jpg" download="Secreto_VIP_2025.jpg" class="px-8 py-3 rounded-sm bg-gradient-to-r from-[#bf953f] to-[#aa771c] text-black font-bold text-xs uppercase tracking-widest hover:scale-105 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-transform flex items-center gap-2">
+                    <i data-lucide="download" class="w-4 h-4"></i> Descargar Archivo
+                </a>
+            </div>
+
+        </div>
+
+        <div class="mt-12 text-center opacity-50">
+            <img src="fotos/logo.png" class="w-8 h-8 mx-auto mb-4 grayscale opacity-50">
+            <p class="text-[10px] text-neutral-600 uppercase tracking-[0.5em]">Viaje de Sexo Awards © 2025</p>
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // 1. CURSOR
+        const cursor = document.getElementById('custom-cursor');
+        const dot = document.getElementById('cursor-dot');
+        document.addEventListener('mousemove', e => {
+            dot.style.left = e.clientX+'px'; dot.style.top = e.clientY+'px';
+            setTimeout(() => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; }, 50);
+        });
+
+        // 2. FONDO DE CONSTELACIONES
+        const canvas = document.getElementById('constellation-bg');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.directionX = (Math.random() * 0.4) - 0.2;
+                this.directionY = (Math.random() * 0.4) - 0.2;
+                this.size = Math.random() * 2;
+                this.color = '#d4af37';
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                
+                // Interacción ratón
+                let dx = dot.getBoundingClientRect().left - this.x;
+                let dy = dot.getBoundingClientRect().top - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+                if (distance < 150) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (150 - distance) / 150;
+                    this.x -= Math.cos(angle) * force * 2;
+                    this.y -= Math.sin(angle) * force * 2;
+                }
+
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) particlesArray.push(new Particle());
+        }
+
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update();
+            connectParticles();
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        let opacity = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(212, 175, 55,' + opacity * 0.2 + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        resizeCanvas();
+        animateParticles();
+    </script>
+</body>
+</html>
