@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full w-full bg-[#050505]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GALA OFICIAL</title>
+    
+    <link rel="icon" type="image/png" href="fotos/logo.png" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { gold: { DEFAULT: '#d4af37', light: '#fedc56', dark: '#aa771c' }, nexus: { black: '#0a0a0a' } },
+            fontFamily: { sans: ['Montserrat', 'sans-serif'], display: ['Playfair Display', 'serif'] },
+            animation: {
+                'shake-hard': 'shake-hard 0.5s cubic-bezier(.36,.07,.19,.97) both infinite',
+                'float': 'float 6s ease-in-out infinite',
+                'pulse-glow': 'pulseGlow 2s infinite',
+                'zoom-in': 'zoomIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                'shine-gold': 'shineGold 4s linear infinite',
+                'flash': 'flashEffect 0.6s ease-out forwards',
+                'fade-out': 'fadeOut 0.5s ease-out forwards',
+                'sway': 'sway 8s ease-in-out infinite alternate',
+            },
+            keyframes: {
+                'shake-hard': {
+                    '0%, 100%': { transform: 'translate3d(0, 0, 0) rotate(0deg)' },
+                    '10%, 30%, 50%, 70%, 90%': { transform: 'translate3d(-2px, 2px, 0) rotate(-1deg)' },
+                    '20%, 40%, 60%, 80%': { transform: 'translate3d(2px, -2px, 0) rotate(1deg)' }
+                },
+                float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                pulseGlow: { '0%, 100%': { filter: 'drop-shadow(0 0 15px rgba(212, 175, 55, 0.3))' }, '50%': { filter: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.7))' } },
+                zoomIn: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                shineGold: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } },
+                flashEffect: { '0%': { opacity: 0 }, '50%': { opacity: 1, background: 'white' }, '100%': { opacity: 0 } },
+                fadeOut: { '0%': { opacity: 1 }, '100%': { opacity: 0 } },
+                sway: { '0%': { transform: 'rotate(-5deg)' }, '100%': { transform: 'rotate(5deg)' } }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+        body { cursor: none; overflow: hidden; background-color: #050505; }
+        
+        /* CURSOR */
+        #custom-cursor { position: fixed; top: 0; left: 0; width: 30px; height: 30px; border: 2px solid #d4af37; background-color: rgba(212,175,55,0.1); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s ease-out; mix-blend-mode: difference; }
+        #cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; background-color: #fedc56; border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); }
+
+        /* TRANSICIONES */
+        .screen-section { position: fixed; inset: 0; width: 100%; height: 100%; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s; opacity: 0; pointer-events: none; z-index: 0; visibility: hidden; filter: blur(20px); transform: scale(1.1); }
+        .screen-section.active { opacity: 1; pointer-events: auto; z-index: 10; transform: scale(1); visibility: visible; filter: blur(0); }
+
+        /* TEXTO DORADO ÉPICO */
+        .text-gold-epic { background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c, #bf953f); background-size: 300% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shineGold 5s linear infinite; text-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
+
+        /* TARJETA SIN GIRO 3D - SISTEMA DE CAPAS */
+        .card-container { position: relative; width: 100%; height: 100%; z-index: 60; }
+        .front, .back { 
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            -webkit-backface-visibility: hidden; backface-visibility: hidden; 
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.1);
+            transition: opacity 0.1s ease-in-out;
+        }
+
+        /* --- DISEÑO DEL SOBRE (FRONT) --- */
+        .front { 
+            z-index: 2; opacity: 1; pointer-events: auto; 
+            background: radial-gradient(circle at center, #1a1100 0%, #050300 40%, #000000 100%);
+            border: 3px double #d4af37;
+            box-shadow: 
+                inset 0 0 60px rgba(212, 175, 55, 0.2), 
+                0 0 0 2px #000, 
+                0 0 0 5px #aa771c, 
+                0 0 50px rgba(212, 175, 55, 0.3); 
+        }
+        .back { z-index: 1; opacity: 0; pointer-events: none; background: #000; border: 2px solid #d4af37; }
+
+        .card-container.is-revealed .front { opacity: 0; pointer-events: none; z-index: 1; }
+        .card-container.is-revealed .back { opacity: 1; pointer-events: auto; z-index: 2; }
+
+        /* --- TEXTURA ORNAMENTAL --- */
+        .front::before { 
+            content: ''; position: absolute; inset: 0; 
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.12'%3E%3Cpath d='M40 0L80 40 40 80 0 40zM40 10L70 40 40 70 10 40zM40 20L60 40 40 60 20 40zM40 30L50 40 40 50 30 40z'/%3E%3Cpath d='M0 0h10v10H0zM70 0h10v10H70zM0 70h10v10H0zM70 70h10v10H70z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+            opacity: 0.8;
+        }
+
+        #flash-overlay { position: absolute; inset: 0; background: white; opacity: 0; z-index: 100; pointer-events: none; mix-blend-mode: screen; }
+        .trigger-flash #flash-overlay { animation: flash 0.7s ease-out forwards; }
+
+        /* Capa de oscuridad (Ajustada opacidad a 0.8 para no agobiar) */
+        #blackout-layer {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); 
+            z-index: 50; 
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        .blackout-active #blackout-layer { opacity: 1; }
+
+        .btn-epic { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0)); backdrop-filter: blur(10px); border: 1px solid rgba(212,175,55,0.3); color: #d4af37; transition: all 0.3s ease; cursor: pointer; }
+        .btn-epic:hover { background: #d4af37; color: #000; border-color: #d4af37; box-shadow: 0 0 30px rgba(212,175,55,0.5); transform: translateY(-2px); }
+
+        .stage-light {
+            position: absolute; width: 40%; height: 150%; top: -30%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, transparent 80%);
+            filter: blur(40px); pointer-events: none; z-index: 40;
+            transform-origin: top center; mix-blend-mode: screen;
+        }
+        .light-left { left: -10%; transform: rotate(25deg); animation: sway 6s ease-in-out infinite alternate; }
+        .light-right { right: -10%; transform: rotate(-25deg); animation: sway 7s ease-in-out infinite alternate-reverse; }
+
+        /* Focos Pasivos */
+        .passive-spot {
+            position: absolute; width: 60%; height: 200%; top: -50%;
+            background: radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.3) 0%, transparent 60%);
+            filter: blur(50px); pointer-events: none; z-index: 30;
+            mix-blend-mode: screen; opacity: 0.7;
+        }
+        .spot-left { left: -20%; transform: rotate(20deg); }
+        .spot-right { right: -20%; transform: rotate(-20deg); }
+
+        .header-logo-container { cursor: pointer; transition: transform 0.3s ease; }
+        .header-logo-container:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body class="text-white h-screen w-screen flex flex-col font-sans overflow-hidden">
+
+    <div class="fixed top-6 left-6 z-50 pointer-events-auto">
+        <div class="flex items-center gap-3 group cursor-pointer" onclick="goToScreen('screen-intro')">
+            <div class="relative">
+                <div class="absolute inset-0 bg-gold blur-lg opacity-50 animate-pulse-slow group-hover:opacity-100 transition-opacity"></div>
+                <img src="fotos/logo.png" class="w-8 h-8 md:w-10 md:h-10 object-contain relative z-10 transition-transform duration-500 group-hover:scale-110">
+            </div>
+            <div class="flex flex-col">
+                <span class="text-white font-black uppercase leading-none tracking-wider text-xs md:text-sm group-hover:text-gold transition-colors">Viaje de S3X0</span>
+                <span class="text-gold font-bold uppercase text-[9px] md:text-[10px] tracking-[0.3em] leading-none self-start ml-[1px] mt-1">Awards 2025</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed top-6 right-6 z-50 flex flex-col items-end pointer-events-auto">
+        <button onclick="toggleMenu()" class="btn-epic p-2 md:p-3 rounded-full relative z-50 transform hover:scale-110 transition-transform">
+            <i data-lucide="menu" class="w-5 h-5 md:w-6 md:h-6"></i>
+        </button>
+        
+        <div id="nav-menu" class="hidden absolute top-14 right-0 bg-black/95 border border-gold/30 rounded-lg p-4 flex flex-col gap-4 min-w-[160px] backdrop-blur-xl shadow-[0_0_30px_rgba(212,175,55,0.2)] origin-top-right transition-all z-40">
+            <button onclick="goToScreen('screen-candidates'); toggleMenu()" class="text-right text-white hover:text-gold text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-end gap-2 group">
+                Candidatos <i data-lucide="users" class="w-3 h-3 group-hover:text-gold transition-colors"></i>
+            </button>
+            <button onclick="goToScreen('screen-awards'); toggleMenu()" class="text-right text-white hover:text-gold text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-end gap-2 group">
+                Premios <i data-lucide="trophy" class="w-3 h-3 group-hover:text-gold transition-colors"></i>
+            </button>
+            <button onclick="goToScreen('screen-closing'); toggleMenu()" class="text-right text-white hover:text-gold text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-end gap-2 group">
+                Despedida <i data-lucide="log-out" class="w-3 h-3 group-hover:text-gold transition-colors"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="custom-cursor"></div><div id="cursor-dot"></div>
+    
+    <audio id="audio-gala" src="fotos/victoria.mp3" preload="auto"></audio>
+    <audio id="audio-despedida" src="fotos/despedida.mp3" preload="auto" loop></audio>
+    <audio id="audio-ambiente" src="fotos/ambiente.mp3" preload="auto" loop></audio>
+    <audio id="audio-nominados" src="fotos/nominados.mp3" preload="auto" loop></audio>
+    <audio id="audio-fondo" src="fotos/fondo.mp3" preload="auto" loop></audio>
+    
+    <canvas id="constellation-bg" class="fixed inset-0 pointer-events-none z-0"></canvas>
+    <div class="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_100%)] opacity-80"></div>
+
+    <div id="blackout-layer"></div>
+
+    <section id="screen-intro" class="screen-section active flex flex-col items-center justify-center">
+        <div class="relative z-10 text-center animate-zoom-in">
+            <div class="relative mb-10 group cursor-pointer hover:scale-105 transition-transform duration-500">
+                <img src="fotos/logo.png" class="relative w-56 h-56 md:w-80 md:h-80 object-contain mx-auto drop-shadow-[0_0_60px_rgba(212,175,55,0.6)] animate-float">
+            </div>
+            
+            <h2 class="text-gold tracking-[0.6em] text-sm font-bold mb-4 uppercase opacity-80">Ceremonia Oficial</h2>
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-display font-black text-white uppercase tracking-tighter leading-none mb-12 drop-shadow-2xl">
+                VIAJE DE S3X0<br><span class="text-gold-epic">AWARDS 2025</span>
+            </h1>
+
+            <button onclick="goToScreen('screen-candidates')" class="btn-epic px-12 py-5 rounded-sm text-sm font-bold uppercase tracking-[0.2em] flex items-center gap-3 mx-auto">
+                Comenzar <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+            </button>
+        </div>
+    </section>
+
+    <section id="screen-candidates" class="screen-section flex flex-col items-center justify-center p-8">
+        <div class="w-full max-w-[90%] flex flex-col md:flex-row items-center gap-16 relative z-10 h-[80vh]">
+            
+            <div class="w-full md:w-5/12 h-[60vh] relative rounded-lg overflow-hidden border border-gold/20 shadow-[0_0_60px_rgba(0,0,0,0.8)] group transition-all duration-700">
+                <img id="cand-img" src="" class="w-full h-full object-cover transition-all duration-700 transform group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute bottom-8 left-8 md:hidden"><h2 id="cand-name-mobile" class="text-4xl font-display font-black uppercase"></h2></div>
+            </div>
+
+            <div class="w-full md:w-7/12 flex flex-col justify-center text-left relative z-10">
+                <h2 id="cand-name" class="hidden md:block text-7xl lg:text-9xl font-display font-black text-white uppercase leading-none tracking-tighter mb-8 drop-shadow-xl transition-opacity duration-500"></h2>
+                
+                <div class="border-l-4 border-gold pl-8 mb-12 relative">
+                    <div class="absolute -left-[5px] -top-2 w-2 h-2 bg-gold rounded-full"></div>
+                    <div class="absolute -left-[5px] -bottom-2 w-2 h-2 bg-gold rounded-full"></div>
+                    <p id="cand-desc" class="text-neutral-300 text-xl md:text-2xl font-light italic leading-relaxed transition-opacity duration-500"></p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-x-12 gap-y-6 mb-12">
+                    <div><div class="flex justify-between mb-2"><span class="text-gold text-xs font-bold uppercase tracking-widest">Inteligencia</span></div><div class="w-full h-2 bg-neutral-800 rounded-full overflow-hidden"><div id="bar-1" class="h-full bg-gold shadow-[0_0_15px_#d4af37] w-0 transition-all duration-1000"></div></div></div>
+                    <div><div class="flex justify-between mb-2"><span class="text-gold text-xs font-bold uppercase tracking-widest">Fuerza</span></div><div class="w-full h-2 bg-neutral-800 rounded-full overflow-hidden"><div id="bar-2" class="h-full bg-gold shadow-[0_0_15px_#d4af37] w-0 transition-all duration-1000"></div></div></div>
+                    <div><div class="flex justify-between mb-2"><span class="text-gold text-xs font-bold uppercase tracking-widest">Resistencia</span></div><div class="w-full h-2 bg-neutral-800 rounded-full overflow-hidden"><div id="bar-3" class="h-full bg-gold shadow-[0_0_15px_#d4af37] w-0 transition-all duration-1000"></div></div></div>
+                    <div><div class="flex justify-between mb-2"><span class="text-gold text-xs font-bold uppercase tracking-widest">Coraje</span></div><div class="w-full h-2 bg-neutral-800 rounded-full overflow-hidden"><div id="bar-4" class="h-full bg-gold shadow-[0_0_15px_#d4af37] w-0 transition-all duration-1000"></div></div></div>
+                    <div><div class="flex justify-between mb-2"><span class="text-gold text-xs font-bold uppercase tracking-widest">Carisma</span></div><div class="w-full h-2 bg-neutral-800 rounded-full overflow-hidden"><div id="bar-5" class="h-full bg-gold shadow-[0_0_15px_#d4af37] w-0 transition-all duration-1000"></div></div></div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <button onclick="prevCandidate()" class="btn-epic p-4 rounded-full"><i data-lucide="arrow-left"></i></button>
+                    <span id="cand-counter" class="text-gold font-mono text-xl font-bold px-4"></span>
+                    <button onclick="nextCandidate()" class="btn-epic p-4 rounded-full"><i data-lucide="arrow-right"></i></button>
+                    
+                    <div class="flex-1"></div>
+                    
+                    <button onclick="goToScreen('screen-awards')" class="btn-epic px-8 py-4 rounded-sm uppercase text-sm font-bold flex items-center gap-2">
+                        Entrega de Premios <i data-lucide="trophy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-awards" class="screen-section flex flex-col relative overflow-hidden">
+        
+        <div class="flex-1 flex flex-col items-center justify-center relative z-10 px-4">
+            
+            <div class="passive-spot spot-left"></div>
+            <div class="passive-spot spot-right"></div>
+
+            <div class="mb-10 text-center max-w-6xl mt-4 animate-zoom-in relative z-40">
+                <h2 id="cat-title" class="text-4xl md:text-6xl lg:text-7xl font-display font-black uppercase text-gold-epic drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-all duration-500 leading-tight">
+                    </h2>
+            </div>
+
+            <div class="w-full max-w-[1000px] aspect-video relative mb-4">
+                
+                <div id="main-card" class="card-container cursor-pointer group" onclick="revealWinner()">
+                    
+                    <div id="flash-overlay"></div>
+
+                    <div id="card-front" class="front flex flex-col items-center justify-center animate-pulse-glow">
+                        <div class="relative z-10 border-2 border-gold rounded-full p-8 bg-[#1a1100]/80 backdrop-blur-md mb-8 group-hover:scale-110 transition-transform duration-500 shadow-[0_0_60px_rgba(212,175,55,0.5)]">
+                            <i data-lucide="star" class="w-16 h-16 text-gold fill-gold/20"></i>
+                        </div>
+                        <p class="text-gold-epic font-display text-4xl font-bold uppercase tracking-[0.2em] drop-shadow-lg">Ganador/a</p>
+                        <div class="mt-8 px-6 py-2 border border-white/20 rounded-full bg-white/5 backdrop-blur">
+                            <p class="text-neutral-400 text-[10px] uppercase tracking-[0.3em] font-bold">Toca para revelar</p>
+                        </div>
+                    </div>
+
+                    <div class="back flex flex-col shadow-[0_0_100px_rgba(212,175,55,0.4)]">
+                        <div id="media-container" class="relative flex-1 bg-neutral-900 overflow-hidden opacity-0 transition-opacity duration-500"> 
+                            <img id="win-img" src="" class="absolute inset-0 w-full h-full object-cover hidden scale-110">
+                            <video id="win-vid" src="" class="absolute inset-0 w-full h-full object-cover hidden" loop muted playsinline></video>
+                            
+                            <div class="absolute inset-0 bg-[radial-gradient(transparent_0%,#000000_100%)] opacity-60"></div>
+                            <div class="absolute bottom-0 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+                        </div>
+
+                        <div class="absolute bottom-0 w-full flex flex-col items-center justify-end p-8 z-20">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="h-px w-10 bg-gold"></div>
+                                <span class="text-gold text-[10px] uppercase tracking-[0.4em] font-bold">El ganador es</span>
+                                <div class="h-px w-10 bg-gold"></div>
+                            </div>
+                            <h3 id="win-name" class="text-4xl md:text-5xl lg:text-6xl font-display font-black uppercase text-white drop-shadow-[0_5px_10px_rgba(0,0,0,1)] leading-none text-center">
+                                </h3>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="fixed bottom-8 left-8 z-50">
+             <div class="flex items-center gap-3">
+                 <div class="bg-black/50 backdrop-blur border border-white/10 px-4 py-3 rounded-lg flex flex-col items-start min-w-[120px]">
+                     <span class="text-neutral-500 text-[9px] uppercase tracking-widest font-bold mb-1">Categoría</span>
+                     <span id="counter" class="text-gold font-mono text-xl font-bold">01 <span class="text-neutral-600 text-sm">/ 15</span></span>
+                 </div>
+             </div>
+        </div>
+
+        <div class="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+             <button id="btn-prev" onclick="changeCat(-1)" class="opacity-0 pointer-events-none btn-epic w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 bg-black/50 border border-gold/30 hover:bg-gold/20">
+                 <i data-lucide="arrow-left" class="w-4 h-4 text-gold"></i>
+             </button>
+             
+             <button id="btn-next" onclick="changeCat(1)" class="btn-epic pl-6 pr-3 py-3 rounded-full uppercase text-[10px] font-bold flex items-center gap-3 bg-gold text-black border-none hover:text-black hover:scale-105 pointer-events-auto transition-transform">
+                 Siguiente <div class="bg-black text-gold rounded-full p-1"><i data-lucide="arrow-right" class="w-3 h-3"></i></div>
+             </button>
+
+             <button id="btn-closing" onclick="goToScreen('screen-closing')" class="hidden btn-epic pl-6 pr-3 py-3 rounded-full uppercase text-[10px] font-bold flex items-center gap-3 bg-white text-black border-none hover:bg-gold hover:text-black hover:scale-105 pointer-events-auto transition-transform shadow-[0_0_20px_rgba(255,255,255,0.5)]">
+                 Ir a Despedida <div class="bg-black text-white rounded-full p-1"><i data-lucide="party-popper" class="w-3 h-3"></i></div>
+             </button>
+        </div>
+    </section>
+
+    <section id="screen-closing" class="screen-section flex flex-col items-center justify-start pt-12 md:justify-center text-center p-8">
+        
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.15)_0%,transparent_70%)] animate-pulse-glow"></div>
+
+        <div class="relative z-10 animate-zoom-in w-full max-w-7xl flex flex-col items-center">
+            
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-display font-black text-white uppercase tracking-tighter leading-none mb-6 drop-shadow-2xl">
+                ¡GRACIAS POR <br><span class="text-gold-epic">TODO!</span>
+            </h1>
+            
+            <div class="relative group transform hover:scale-105 transition-transform duration-700 w-full max-w-5xl">
+                 <div class="absolute inset-0 bg-gold blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
+                 <img src="fotos/grupo2.JPG" class="relative rounded-lg border-2 border-gold/50 shadow-[0_0_60px_rgba(0,0,0,0.8)] w-full h-auto max-h-[70vh] object-cover transition-all duration-700">
+            </div>
+
+            <p class="text-neutral-500 text-[10px] uppercase tracking-[0.3em] font-bold mt-8">Viaje de S3X0 Awards ® 2025</p>
+        </div>
+    </section>
+
+    <script>
+        lucide.createIcons();
+
+        // 1. DATOS GANADORES
+        const winnersData = [
+            { cat: "Más tocapelotas del grupo",           name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg" },
+            { cat: "Persona más graciosa del grupo",      name: "JOSÉ LUIS",         type: "img",   media: "fotos/joseluis.jpg" },
+            { cat: "Frase mítica del año",                name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg" }, 
+            { cat: "Premio al más desaparecido",          name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg" },
+            { cat: "Premio al que más come",              name: "PABLO DOLZ",        type: "img",   media: "fotos/pablod.jpg" },
+            { cat: "Fantasmada del año",                  name: "NICOLÁS",           type: "img",   media: "fotos/nicolas.jpg" },
+            { cat: "Pareja del año",                      name: "NICO Y ADRIANA",    type: "img",   media: "fotos/nicolas.jpg" }, 
+            { cat: "Mejor culo del grupo",                name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg" },
+            { cat: "Plot twist del año",                  name: "ADRIANA",           type: "img",   media: "fotos/adriana.jpg" },
+            { cat: "Mejor foto del año",                  name: "FOTO GANADORA",     type: "img",   media: "fotos/foto_ganadora.jpg" }, 
+            { cat: "Premio al más cagón",                 name: "NICOLÁS",           type: "img",   media: "fotos/nicolas.jpg" },
+            { cat: "Premio al que más bebe",              name: "LUCÍA",             type: "img",   media: "fotos/lucia.jpg" },
+            { cat: "Jaimitada del año",                   name: "MOMENTO JAIMITADA", type: "video", media: "fotos/video_ganador.mp4" }, 
+            { cat: "Mejor vídeo del año",                 name: "VIDEO CAÍDA",       type: "video", media: "fotos/video_ganador.mp4" },
+            { cat: "Mejor evento del año",                name: "ASTURIAS 2025",     type: "img",   media: "fotos/grupo.jpg" }
+        ];
+
+        function goToScreen(id) {
+            const audioGala = document.getElementById('audio-gala');
+            const audioBye = document.getElementById('audio-despedida');
+            const audioAmbiente = document.getElementById('audio-ambiente');
+            const audioNominados = document.getElementById('audio-nominados');
+            const audioFondo = document.getElementById('audio-fondo'); // Referencia nueva
+
+            // 1. PAUSAR TODO
+            audioGala.pause();
+            audioBye.pause();
+            audioAmbiente.pause();
+            audioNominados.pause();
+            audioFondo.pause();
+
+            // Resetear tiempos para que empiecen de cero al cambiar de sección
+            audioBye.currentTime = 0;
+            audioAmbiente.currentTime = 0;
+            audioNominados.currentTime = 0;
+            // audioFondo.currentTime = 0; // Descomenta si quieres que empiece de 0 cada vez que entras a Premios
+
+            // 2. REPRODUCIR SEGÚN PANTALLA
+            if (id === 'screen-intro') {
+                audioAmbiente.play().catch(e => console.log(e));
+            } 
+            else if (id === 'screen-candidates') {
+                audioNominados.play().catch(e => console.log(e));
+            }
+            else if (id === 'screen-awards') {
+                // Al entrar a premios, suena el fondo
+                audioFondo.play().catch(e => console.log(e));
+            }
+            else if (id === 'screen-closing') {
+                audioBye.volume = 1.0;
+                audioBye.play().catch(e => console.log(e));
+            }
+
+            // 3. CAMBIO VISUAL
+            document.querySelectorAll('.screen-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            const target = document.getElementById(id);
+            if(target) setTimeout(() => target.classList.add('active'), 100);
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('nav-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('animate-zoom-in');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('animate-zoom-in');
+            }
+        }
+
+        // 3. CANDIDATOS
+        const candidates = [
+            { name: "Carlos", desc: "EL FENÓMENO, conocido por desaparecer en verano. Su superpoder es repartir salami por Albacete.", photo: "fotos/carlos.jpg", stats: [60, 30, 60, 70, 80] },
+            { name: "Adriana", desc: "La reina de la física y los animes. Si hay una tarta de queso cerca, ella ya está saltando. Probablemente llegue tarde a la gala.", photo: "fotos/adriana.jpg", stats: [90, 30, 50, 60, 40] },
+            { name: "José Luis", desc: "El filósofo del grupo cuando lleva dos cañas encima. Odia al Liverpool y le encanta Illojuan, algún día llegará a colaborar con él.", photo: "fotos/joseluis.jpg", stats: [67, 67, 67, 67, 67] },
+            { name: "Nicolás", desc: "Capaz de organizar un viaje entero con Gemini y acabar en una sidrería 5 minutos después. Un hombre de contrastes y con conocimiento financiero.", photo: "fotos/nicolas.jpg", stats: [69, 69, 69, 69, 69] },
+            { name: "Pablo García", desc: "Pablo G Luna. No se sabe si posee autismo o TDAH, pero siempre está ahí para tocar los huevos y para hacer reír a la gente. Su risa y su voz se escuchan a tres kilómetros de distancia.", photo: "fotos/pablog.jpg", stats: [70, 60, 50, 80, 85] },
+            { name: "Pablo Dolz", desc: "El alma de la fiesta... hasta las 12 de la noche. Tiene un doctorado en soltar factos y le mola el anime. Tiene buena sinergia con Adriana.", photo: "fotos/pablod.jpg", stats: [50, 60, 40, 50, 60] },
+            { name: "Lucía", desc: "Serena pero matona. Si hay una debate, ella lo gana por huevos. Si hay cerveza, ella es feliz, y si hay cubatas, cierra el bar con el dueño.", photo: "fotos/lucia.jpg", stats: [60, 50, 40, 60, 80] }
+        ];
+
+        let candIdx = 0;
+        function updateCand() {
+            const c = candidates[candIdx];
+            const infoElements = [document.getElementById('cand-name'), document.getElementById('cand-desc')];
+            infoElements.forEach(el => el.style.opacity = '0');
+            
+            setTimeout(() => {
+                document.getElementById('cand-img').src = c.photo;
+                document.getElementById('cand-name').innerText = c.name;
+                document.getElementById('cand-name-mobile').innerText = c.name;
+                document.getElementById('cand-desc').innerText = `"${c.desc}"`;
+                document.getElementById('cand-counter').innerText = `${candIdx+1} / ${candidates.length}`;
+                infoElements.forEach(el => el.style.opacity = '1');
+                for(let i=0; i<5; i++) document.getElementById(`bar-${i+1}`).style.width = c.stats[i] + '%';
+            }, 300);
+        }
+        function nextCandidate() { candIdx = (candIdx + 1) % candidates.length; updateCand(); }
+        function prevCandidate() { candIdx = (candIdx - 1 + candidates.length) % candidates.length; updateCand(); }
+        updateCand();
+
+        // 4. LÓGICA PREMIOS
+        let currentCatIdx = 0;
+        let isRevealed = false;
+        let isAnimationInProgress = false; 
+        let safetyTimer = null;
+
+        const ui = {
+            title: document.getElementById('cat-title'),
+            counter: document.getElementById('counter'),
+            card: document.getElementById('main-card'),
+            front: document.getElementById('card-front'),
+            winName: document.getElementById('win-name'),
+            winImg: document.getElementById('win-img'),
+            winVid: document.getElementById('win-vid'),
+            btnNext: document.getElementById('btn-next'),
+            btnPrev: document.getElementById('btn-prev'),
+            audioGala: document.getElementById('audio-gala'),
+            mediaContainer: document.getElementById('media-container'),
+            blackout: document.getElementById('blackout-layer'),
+            body: document.body
+        };
+
+        function updateAwardUI() {
+            isRevealed = false;
+            isAnimationInProgress = false;
+            clearTimeout(safetyTimer);
+
+            // --- GESTIÓN DE AUDIO AL CAMBIAR DE PREMIO ---
+            const audioGala = document.getElementById('audio-gala');
+            const audioFondo = document.getElementById('audio-fondo');
+
+            // Cortar victoria si estaba sonando
+            audioGala.pause();
+            audioGala.currentTime = 0;
+            audioGala.onended = null; // Importante: quitar el listener para evitar conflictos
+
+            // Asegurar que suena el fondo (si seguimos en la sección de premios)
+            if (document.getElementById('screen-awards').classList.contains('active')) {
+                audioFondo.play().catch(e => console.log(e));
+            }
+            // ---------------------------------------------
+
+            ui.body.classList.remove('blackout-active'); 
+            ui.card.classList.remove('is-revealed', 'trigger-flash');
+            ui.front.classList.remove('animate-shake-hard');
+            
+            // (El resto de tu función updateAwardUI sigue igual...)
+            ui.winImg.src = "";
+            ui.winVid.src = "";
+            ui.winImg.classList.add('hidden');
+            ui.winVid.classList.add('hidden');
+            ui.mediaContainer.classList.remove('opacity-100');
+            ui.mediaContainer.classList.add('opacity-0');
+
+            const btnNext = document.getElementById('btn-next');
+            const btnClosing = document.getElementById('btn-closing');
+            const btnPrev = document.getElementById('btn-prev');
+
+            if (currentCatIdx === 0) {
+                btnPrev.classList.remove('opacity-100', 'pointer-events-auto');
+                btnPrev.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                btnPrev.classList.add('opacity-100', 'pointer-events-auto');
+                btnPrev.classList.remove('opacity-0', 'pointer-events-none');
+            }
+
+            if (currentCatIdx === winnersData.length - 1) {
+                btnNext.classList.add('hidden');
+                btnClosing.classList.remove('hidden');
+            } else {
+                btnNext.classList.remove('hidden');
+                btnClosing.classList.add('hidden');
+            }
+
+            const data = winnersData[currentCatIdx];
+            setTimeout(() => {
+                ui.title.innerText = data.cat;
+                ui.counter.innerHTML = `${currentCatIdx + 1} <span class="text-neutral-600 text-sm">/ ${winnersData.length}</span>`;
+                ui.winName.innerText = data.name;
+            }, 100);
+        }
+
+        function preloadWinnerMedia() {
+            const data = winnersData[currentCatIdx];
+            if(data.type === 'video') {
+                ui.winImg.classList.add('hidden');
+                ui.winVid.classList.remove('hidden');
+                ui.winVid.src = data.media;
+                ui.winVid.load();
+            } else {
+                ui.winVid.classList.add('hidden');
+                ui.winImg.classList.remove('hidden');
+                ui.winImg.src = data.media;
+            }
+        }
+
+        function executeRevealAction() {
+            if (isRevealed) return;
+            ui.front.classList.remove('animate-shake-hard');
+            ui.card.classList.add('trigger-flash');
+
+            setTimeout(() => {
+                ui.mediaContainer.classList.remove('opacity-0');
+                ui.mediaContainer.classList.add('opacity-100');
+                ui.body.classList.remove('blackout-active'); // Esto apaga la oscuridad
+                ui.card.classList.add('is-revealed');
+                if(!ui.winVid.classList.contains('hidden')) ui.winVid.play();
+                launchFireworks();
+                confetti({ particleCount: 300, spread: 150, origin: { y: 0.6 }, colors: ['#d4af37', '#ffffff', '#000000'], gravity: 0.8 });
+                isRevealed = true;
+                isAnimationInProgress = false;
+            }, 250);
+        }
+
+        function revealWinner() {
+            if(isRevealed || isAnimationInProgress) return;
+            isAnimationInProgress = true;
+            
+            preloadWinnerMedia();
+
+            // --- LÓGICA DE AUDIO MEJORADA ---
+            const audioFondo = document.getElementById('audio-fondo');
+            const audioGala = document.getElementById('audio-gala');
+
+            // 1. Pausar música de fondo (se queda donde estaba)
+            audioFondo.pause();
+
+            // 2. Preparar audio victoria
+            audioGala.volume = 1.0;
+            audioGala.currentTime = 0;
+            
+            // 3. Cuando acabe la victoria, reanudar fondo
+            audioGala.onended = function() {
+                audioFondo.play();
+            };
+
+            // 4. Reproducir victoria
+            const playPromise = audioGala.play();
+            // ---------------------------------
+
+            // Activar Blackout y temblor (código existente...)
+            ui.body.classList.add('blackout-active'); 
+            ui.front.classList.add('animate-shake-hard');
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    safetyTimer = setTimeout(() => {
+                        executeRevealAction();
+                    }, 3250); 
+                }).catch(error => {
+                    setTimeout(() => executeRevealAction(), 3250);
+                });
+            } else {
+                setTimeout(() => executeRevealAction(), 3250);
+            }
+        }
+
+        function launchFireworks() {
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function changeCat(dir) {
+            const next = currentCatIdx + dir;
+            if(next >= 0 && next < winnersData.length) {
+                ui.title.classList.add('opacity-0', 'translate-y-[-20px]');
+                setTimeout(() => {
+                    currentCatIdx = next;
+                    updateAwardUI();
+                    ui.title.classList.remove('opacity-0', 'translate-y-[-20px]');
+                }, 500);
+            }
+        }
+        
+        updateAwardUI();
+
+        // 5. FONDO PARTÍCULAS
+        const canvas = document.getElementById('constellation-bg');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+        let mouse = { x: null, y: null, radius: 150 }
+        window.addEventListener('mousemove', function(event) { mouse.x = event.x; mouse.y = event.y; });
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }
+        window.addEventListener('resize', resizeCanvas);
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.directionX = (Math.random() * 0.5) - 0.25; this.directionY = (Math.random() * 0.5) - 0.25;
+                this.size = (Math.random() * 2) + 1; this.color = '#d4af37';
+            }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y; let distance = Math.sqrt(dx*dx + dy*dy);
+                if (distance < mouse.radius + this.size){
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 2;
+                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 2;
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 2;
+                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 2;
+                }
+                this.x += this.directionX; this.y += this.directionY; this.draw();
+            }
+        }
+        function initParticles() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) particlesArray.push(new Particle());
+        }
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update();
+            connectParticles();
+        }
+        function connectParticles() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        let opacityValue = 1 - (distance/10000);
+                        ctx.strokeStyle = 'rgba(212, 175, 55,' + opacityValue + ')';
+                        ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
+                    }
+                }
+            }
+        }
+        resizeCanvas(); animateParticles();
+
+        const cursor = document.getElementById('custom-cursor');
+        const dot = document.getElementById('cursor-dot');
+        document.addEventListener('mousemove', e => {
+            dot.style.left = e.clientX+'px'; dot.style.top = e.clientY+'px';
+            setTimeout(() => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; }, 40);
+        });
+
+        // Intentar reproducir música de ambiente al cargar la página
+        // Nota: Los navegadores suelen bloquear esto hasta que el usuario hace clic en algo.
+        document.addEventListener('DOMContentLoaded', () => {
+            const audioAmbiente = document.getElementById('audio-ambiente');
+            audioAmbiente.play().catch(() => {
+                // Si falla el autoplay, añadimos un listener para que suene al primer clic en cualquier sitio
+                document.body.addEventListener('click', () => {
+                    // Solo si seguimos en la intro y no está sonando ya
+                    if(document.getElementById('screen-intro').classList.contains('active') && audioAmbiente.paused) {
+                        audioAmbiente.play();
+                    }
+                }, { once: true });
+            });
+        });
+    </script>
+</body>
+</html>

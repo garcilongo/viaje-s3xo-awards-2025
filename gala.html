@@ -337,23 +337,23 @@
     <script>
         lucide.createIcons();
 
-        // 1. DATOS GANADORES
+        // 1. DATOS GANADORES (CON AUDIO ESPECÍFICO)
         const winnersData = [
-            { cat: "Más tocapelotas del grupo",           name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg" },
-            { cat: "Persona más graciosa del grupo",      name: "JOSÉ LUIS",         type: "img",   media: "fotos/joseluis.jpg" },
-            { cat: "Frase mítica del año",                name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg" }, 
-            { cat: "Premio al más desaparecido",          name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg" },
-            { cat: "Premio al que más come",              name: "PABLO DOLZ",        type: "img",   media: "fotos/pablod.jpg" },
-            { cat: "Fantasmada del año",                  name: "NICOLÁS",           type: "img",   media: "fotos/nicolas.jpg" },
-            { cat: "Pareja del año",                      name: "NICO Y ADRIANA",    type: "img",   media: "fotos/nicolas.jpg" }, 
-            { cat: "Mejor culo del grupo",                name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg" },
-            { cat: "Plot twist del año",                  name: "ADRIANA",           type: "img",   media: "fotos/adriana.jpg" },
-            { cat: "Mejor foto del año",                  name: "FOTO GANADORA",     type: "img",   media: "fotos/foto_ganadora.jpg" }, 
-            { cat: "Premio al más cagón",                 name: "NICOLÁS",           type: "img",   media: "fotos/nicolas.jpg" },
-            { cat: "Premio al que más bebe",              name: "LUCÍA",             type: "img",   media: "fotos/lucia.jpg" },
-            { cat: "Jaimitada del año",                   name: "MOMENTO JAIMITADA", type: "video", media: "fotos/video_ganador.mp4" }, 
-            { cat: "Mejor vídeo del año",                 name: "VIDEO CAÍDA",       type: "video", media: "fotos/video_ganador.mp4" },
-            { cat: "Mejor evento del año",                name: "ASTURIAS 2025",     type: "img",   media: "fotos/grupo.jpg" }
+            { cat: "Más tocapelotas del grupo",           name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg", audio: "fotos/victoria1.mp3" }, // Hecho
+            { cat: "Persona más graciosa del grupo",      name: "PABLO GARCÍA",         type: "img",   media: "fotos/joseluis.jpg", audio: "fotos/victoria2.mp3" }, // Hecho
+            { cat: "Frase mítica del año",                name: "@",            type: "img",   media: "fotos/carlos.jpg", audio: "fotos/victoria3.mp3" },  // Hecho
+            { cat: "Premio al más desaparecido",          name: "CARLOS",            type: "img",   media: "fotos/carlos.jpg", audio: "fotos/victoria4.mp3" }, // Hecho
+            { cat: "Premio al que más come",              name: "PABLO DOLZ",        type: "img",   media: "fotos/pablod.jpg", audio: "fotos/victoria5.mp3" }, // Hecho
+            { cat: "Fantasmada del año",                  name: "@",           type: "img",   media: "fotos/nicolas.jpg", audio: "fotos/victoria6.mp3" }, // Hecho
+            { cat: "Pareja del año",                      name: "NICO Y ADRIANA",    type: "img",   media: "fotos/nicolas.jpg", audio: "fotos/victoria7.mp3" }, // Hecho
+            { cat: "Mejor culo del grupo",                name: "PABLO GARCÍA",      type: "img",   media: "fotos/pablog.jpg", audio: "fotos/victoria8.mp3" }, // Hecho
+            { cat: "Plot twist del año",                  name: "ADRIANA Y NICO SE LÍAN",           type: "img",   media: "fotos/adriana.jpg", audio: "fotos/victoria9.mp3" },
+            { cat: "Mejor foto del año",                  name: "@",     type: "img",   media: "fotos/foto_ganadora.jpg", audio: "fotos/victoria10.mp3" }, 
+            { cat: "Premio al más cagón",                 name: "PABLO DOLZ",           type: "img",   media: "fotos/nicolas.jpg", audio: "fotos/victoria11.mp3" }, // Hecho
+            { cat: "Premio al que más bebe",              name: "LUCÍA",             type: "img",   media: "fotos/lucia.jpg", audio: "fotos/victoria12.mp3" }, // Hecho
+            { cat: "Jaimitada del año",                   name: "¿QUÉ ES LO CORRECTO?", type: "video", media: "fotos/video_ganador.mp4", audio: "fotos/victoria13.mp3" }, // Hecho
+            { cat: "Mejor vídeo del año",                 name: "@",       type: "video", media: "fotos/video_ganador.mp4", audio: "fotos/victoria14.mp3" },
+            { cat: "Mejor evento del año",                name: "ASTURIAS 2025",     type: "img",   media: "fotos/grupo.jpg", audio: "fotos/victoria15.mp3" } // Hecho
         ];
 
         function goToScreen(id) {
@@ -469,18 +469,18 @@
             isAnimationInProgress = false;
             clearTimeout(safetyTimer);
 
-            // --- GESTIÓN DE AUDIO AL CAMBIAR DE PREMIO ---
+            // --- GESTIÓN DE AUDIO AL CAMBIAR DE CATEGORÍA ---
             const audioGala = document.getElementById('audio-gala');
             const audioFondo = document.getElementById('audio-fondo');
 
-            // Cortar victoria si estaba sonando
+            // 1. Parar el audio de victoria específico de la categoría anterior
             audioGala.pause();
-            audioGala.currentTime = 0;
-            audioGala.onended = null; // Importante: quitar el listener para evitar conflictos
+            audioGala.currentTime = 0; // Rebobinar
 
-            // Asegurar que suena el fondo (si seguimos en la sección de premios)
+            // 2. Reactivar música de fondo (Solo si estamos en la pantalla de premios)
             if (document.getElementById('screen-awards').classList.contains('active')) {
-                audioFondo.play().catch(e => console.log(e));
+                audioFondo.volume = 1.0; // Aseguramos volumen
+                audioFondo.play().catch(e => console.log("Error al reanudar fondo:", e));
             }
             // ---------------------------------------------
 
@@ -488,7 +488,7 @@
             ui.card.classList.remove('is-revealed', 'trigger-flash');
             ui.front.classList.remove('animate-shake-hard');
             
-            // (El resto de tu función updateAwardUI sigue igual...)
+            // Limpieza visual
             ui.winImg.src = "";
             ui.winVid.src = "";
             ui.winImg.classList.add('hidden');
@@ -496,6 +496,7 @@
             ui.mediaContainer.classList.remove('opacity-100');
             ui.mediaContainer.classList.add('opacity-0');
 
+            // Gestión de botones Anterior/Siguiente
             const btnNext = document.getElementById('btn-next');
             const btnClosing = document.getElementById('btn-closing');
             const btnPrev = document.getElementById('btn-prev');
@@ -516,6 +517,7 @@
                 btnClosing.classList.add('hidden');
             }
 
+            // Actualizar textos
             const data = winnersData[currentCatIdx];
             setTimeout(() => {
                 ui.title.innerText = data.cat;
@@ -562,41 +564,36 @@
             
             preloadWinnerMedia();
 
-            // --- LÓGICA DE AUDIO MEJORADA ---
+            // --- NUEVA LÓGICA DE AUDIO (Victoria Específica) ---
             const audioFondo = document.getElementById('audio-fondo');
             const audioGala = document.getElementById('audio-gala');
+            const data = winnersData[currentCatIdx]; // Datos de la categoría actual
 
-            // 1. Pausar música de fondo (se queda donde estaba)
+            // 1. Pausar música de fondo
             audioFondo.pause();
 
-            // 2. Preparar audio victoria
-            audioGala.volume = 1.0;
-            audioGala.currentTime = 0;
-            
-            // 3. Cuando acabe la victoria, reanudar fondo
-            audioGala.onended = function() {
-                audioFondo.play();
-            };
+            // 2. Cargar el audio ESPECÍFICO de esta categoría
+            if (data.audio) {
+                audioGala.src = data.audio; // Asignamos victoria1.mp3, victoria2.mp3, etc.
+                audioGala.load(); // Importante cargar el nuevo recurso
+                audioGala.volume = 1.0;
+                audioGala.play().catch(e => console.log("Error audio victoria:", e));
+            } else {
+                console.log("No hay audio definido para esta categoría");
+            }
 
-            // 4. Reproducir victoria
-            const playPromise = audioGala.play();
-            // ---------------------------------
+            // NOTA: Hemos quitado el 'audioGala.onended' para que el fondo NO vuelva solo.
+            // El fondo volverá cuando llames a 'updateAwardUI' (al dar al botón siguiente).
+            // ----------------------------------------------------
 
-            // Activar Blackout y temblor (código existente...)
+            // Efectos visuales (Blackout y Temblor)
             ui.body.classList.add('blackout-active'); 
             ui.front.classList.add('animate-shake-hard');
 
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    safetyTimer = setTimeout(() => {
-                        executeRevealAction();
-                    }, 3250); 
-                }).catch(error => {
-                    setTimeout(() => executeRevealAction(), 3250);
-                });
-            } else {
-                setTimeout(() => executeRevealAction(), 3250);
-            }
+            // Tiempo de tensión antes de abrir el sobre (ajustado a 3.2s)
+            setTimeout(() => {
+                executeRevealAction();
+            }, 3250);
         }
 
         function launchFireworks() {
