@@ -158,6 +158,9 @@
             <button onclick="goToScreen('screen-candidates'); toggleMenu()" class="text-right text-white hover:text-gold text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-end gap-2 group">
                 Candidatos <i data-lucide="users" class="w-3 h-3 group-hover:text-gold transition-colors"></i>
             </button>
+            <button onclick="goToScreen('screen-ads'); toggleMenu()" class="text-right text-white hover:text-gold text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-end gap-2 group">
+            Sponsors <i data-lucide="tv" class="w-3 h-3 group-hover:text-gold transition-colors"></i>
+            </button>
             <button onclick="goToScreen('screen-awards'); toggleMenu()" class="text-right text-white hover:text-gold text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-end gap-2 group">
                 Premios <i data-lucide="trophy" class="w-3 h-3 group-hover:text-gold transition-colors"></i>
             </button>
@@ -229,11 +232,44 @@
                     <button onclick="nextCandidate()" class="btn-epic p-4 rounded-full"><i data-lucide="arrow-right"></i></button>
                     
                     <div class="flex-1"></div>
-                    
-                    <button onclick="goToScreen('screen-awards')" class="btn-epic px-8 py-4 rounded-sm uppercase text-sm font-bold flex items-center gap-2">
-                        Entrega de Premios <i data-lucide="trophy" class="w-4 h-4"></i>
+
+                    <button onclick="goToScreen('screen-ads')" class="btn-epic px-8 py-4 rounded-sm uppercase text-sm font-bold flex items-center gap-2">
+                    Entrega de Premios <i data-lucide="tv" class="w-4 h-4"></i>
                     </button>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-ads" class="screen-section flex flex-col items-center justify-center p-8 bg-black">
+        
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.1)_0%,transparent_70%)] pointer-events-none"></div>
+
+        <div class="relative z-10 w-full max-w-5xl flex flex-col items-center">
+            
+            <div class="mb-6 flex items-center gap-4 animate-pulse">
+                <div class="h-px w-12 bg-gold/50"></div>
+                <span class="text-gold text-xs font-black uppercase tracking-[0.4em]">Pausa Publicitaria</span>
+                <div class="h-px w-12 bg-gold/50"></div>
+            </div>
+
+            <div class="relative w-full aspect-video border-4 border-neutral-900 rounded-lg shadow-[0_0_100px_rgba(212,175,55,0.15)] bg-black overflow-hidden group">
+                
+                <video id="ad-video" src="fotos/anuncio.mp4" class="w-full h-full object-cover" playsinline></video>
+                
+                <div class="absolute top-6 right-6 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full animate-pulse shadow-lg flex items-center gap-2">
+                    <div class="w-2 h-2 bg-white rounded-full"></div> LIVE
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between w-full mt-12 px-4">
+                <button onclick="goToScreen('screen-candidates')" class="text-neutral-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Candidatos
+                </button>
+
+                <button onclick="goToScreen('screen-awards')" class="btn-epic px-10 py-4 rounded-full uppercase text-sm font-black tracking-widest flex items-center gap-3 shadow-[0_0_30px_rgba(212,175,55,0.4)] animate-bounce hover:animate-none">
+                    Continuar con la Gala <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
             </div>
         </div>
     </section>
@@ -346,7 +382,7 @@
             { cat: "Premio al más desaparecido", name: "CARLOS", type: "img", media: "fotos/carlos.jpg", audio: "fotos/victoria4.mp3" }, 
             { cat: "Premio al que más come", name: "PABLO DOLZ", type: "img", media: "fotos/pablod.jpg", audio: "fotos/victoria5.mp3" }, 
             { cat: "Fantasmada del año", name: "@", type: "img", media: "fotos/", audio: "fotos/victoria6.mp3" }, 
-            { cat: "Pareja del año", name: "NICO Y ADRIANA", type: "img", media: "fotos/.jpg", audio: "fotos/victoria7.mp3" }, 
+            { cat: "Momento más Out Of Context", name: "@", type: "img", media: "fotos/.jpg", audio: "fotos/victoria7.mp3" }, 
             { cat: "Mejor culo del grupo", name: "PABLO GARCÍA", type: "img", media: "fotos/pablog.jpg", audio: "fotos/victoria8.mp3" }, 
             { cat: "Plot twist del año", name: "ADRIANA Y NICO SE LÍAN", type: "img", media: "fotos/nicoxadriana.jpg", audio: "fotos/victoria9.mp3" }, 
             { cat: "Mejor foto del año", name: "@", type: "img", media: "fotos/foto_ganadora.jpg", audio: "fotos/victoria10.mp3" },  // No hecha
@@ -362,20 +398,30 @@
             const audioBye = document.getElementById('audio-despedida');
             const audioAmbiente = document.getElementById('audio-ambiente');
             const audioNominados = document.getElementById('audio-nominados');
-            const audioFondo = document.getElementById('audio-fondo'); // Referencia nueva
+            const audioFondo = document.getElementById('audio-fondo');
+            
+            // Referencia al vídeo del anuncio
+            const adVideo = document.getElementById('ad-video');
 
-            // 1. PAUSAR TODO
+            // 1. PAUSAR TODO (Audios y Vídeos)
             audioGala.pause();
             audioBye.pause();
             audioAmbiente.pause();
             audioNominados.pause();
             audioFondo.pause();
+            
+            // Pausar vídeo anuncio y resetear si salimos de la pantalla de ads
+            if (id !== 'screen-ads') {
+                if(adVideo) {
+                    adVideo.pause();
+                    adVideo.currentTime = 0; // Reiniciar anuncio para la próxima vez
+                }
+            }
 
-            // Resetear tiempos para que empiecen de cero al cambiar de sección
+            // Resetear tiempos de audios
             audioBye.currentTime = 0;
             audioAmbiente.currentTime = 0;
             audioNominados.currentTime = 0;
-            // audioFondo.currentTime = 0; // Descomenta si quieres que empiece de 0 cada vez que entras a Premios
 
             // 2. REPRODUCIR SEGÚN PANTALLA
             if (id === 'screen-intro') {
@@ -384,8 +430,15 @@
             else if (id === 'screen-candidates') {
                 audioNominados.play().catch(e => console.log(e));
             }
+            else if (id === 'screen-ads') {
+                // Al entrar en publicidad: Play al vídeo (con sonido)
+                if(adVideo) {
+                    adVideo.muted = false;
+                    adVideo.volume = 1.0;
+                    adVideo.play().catch(e => console.log("Error play anuncio:", e));
+                }
+            }
             else if (id === 'screen-awards') {
-                // Al entrar a premios, suena el fondo
                 audioFondo.play().catch(e => console.log(e));
             }
             else if (id === 'screen-closing') {
