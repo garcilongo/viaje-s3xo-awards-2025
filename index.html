@@ -405,7 +405,8 @@
                             Gran Gala & <br/> Amigo Invisible
                         </h3>
                         <div class="flex flex-col md:flex-row gap-6 justify-center text-sm font-bold tracking-widest text-neutral-400 mt-6">
-                            <span class="flex items-center gap-2 justify-center"><i data-lucide="calendar" class="w-4 h-4 text-gold"></i> 19 DE DICIEMBRE, 2025</span>
+                            <span class="flex items-center gap-2 justify-center"><i data-lucide="calendar" class="w-4 h-4 text-gold"></i> 20 DE DICIEMBRE, 2025</span>
+                            <span class="flex items-center gap-2 justify-center"><i data-lucide="clock" class="w-4 h-4 text-gold"></i> 19:30 H</span>
                             <span class="flex items-center gap-2 justify-center"><i data-lucide="map-pin" class="w-4 h-4 text-gold"></i> UBICACIÓN SECRETA</span>
                         </div>
                     </div>
@@ -1755,8 +1756,9 @@
           
           tCtx.font = detailsFont;
           tCtx.fillStyle = detailsColor;
-          tCtx.fillText('📅 19 DE DICIEMBRE, 2025', textLeftMargin + textOffsetX, 235);
+          tCtx.fillText('📅 20 DE DICIEMBRE, 2025', textLeftMargin + textOffsetX, 235);
           tCtx.fillText('📍 UBICACIÓN SECRETA', textLeftMargin + textOffsetX, 260);
+          tCtx.fillText('⏰ 19:30 H', textLeftMargin + textOffsetX, 285);
 
           // Pie de ticket
           tCtx.font = 'italic 400 11px Montserrat';
@@ -1829,7 +1831,7 @@
       animateParticles();
 
       // Countdown Lógica
-      const targetDate = new Date("December 19, 2025 20:00:00").getTime();
+      const targetDate = new Date("December 20, 2025 19:30:00").getTime();
       const timer = setInterval(function() {
           const now = new Date().getTime();
           const distance = targetDate - now;
